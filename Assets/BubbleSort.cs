@@ -5,21 +5,23 @@ using System;
 
 public class BubbleSort : MonoBehaviour
 {
-    // Start is called before the first frame update
-    ballclass[] myball = new ballclass[5];
+    BallClass[] myball = new BallClass[5];
+
     void Start()
     {
         GameObject[] objects = GameObject.FindGameObjectsWithTag("ball");
         
+        // ボール番号を名前から整数で取得
+        // BallClassとして取得
         for(int i=0;i<5;i++){
             int ballnum = int.Parse(objects[i].name.Substring(5));
-            myball[i] = new ballclass(objects[i],ballnum);
+            myball[i] = new BallClass(objects[i],ballnum);
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
+        // ボールの動きをBallClassの情報と連動させる
         for(int i=0;i<5;i++){
             Transform balltrans = myball[i].ballobject.transform;
 
@@ -30,6 +32,7 @@ public class BubbleSort : MonoBehaviour
             balltrans.position = pos;
         }
 
+        // キー入力があった時配列をソートする
         if(Input.anyKey){
             //myball.Sort ((a, b) => a.ballnumber - b.ballnumber);
             Array.Sort (myball, (a, b) => a.ballnumber - b.ballnumber);
