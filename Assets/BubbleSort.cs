@@ -64,24 +64,26 @@ public class BubbleSort : MonoBehaviour
     bool swapped=false;
     void Update()
     {
-        // ボールの動きをBallClassの情報と連動させる
-        for(int i=0;i<5;i++){
-            Transform balltrans = myball[i].ballobject.transform;
+        if(selectscr.sortkind==1){
+            // ボールの動きをBallClassの情報と連動させる
+            for(int i=0;i<5;i++){
+                Transform balltrans = myball[i].ballobject.transform;
 
-            Vector3 pos = balltrans.position;
+                Vector3 pos = balltrans.position;
 
-            pos.x=-ballinterval*(3-i)+ballinterval;
+                pos.x=-ballinterval*(3-i)+ballinterval;
 
-            balltrans.position = pos;
+                balltrans.position = pos;
+            }
+
+            // キー入力があった時配列をソートする
+            if(Input.anyKey){
+                //myball.Sort ((a, b) => a.ballnumber - b.ballnumber);
+                //Array.Sort (myball, (a, b) => a.ballnumber - b.ballnumber);
+                if(!swapped)AdvanceSorting();
+                swapped=true;
+            }
+            else swapped=false;
         }
-
-        // キー入力があった時配列をソートする
-        if(Input.anyKey){
-            //myball.Sort ((a, b) => a.ballnumber - b.ballnumber);
-            //Array.Sort (myball, (a, b) => a.ballnumber - b.ballnumber);
-            if(!swapped)AdvanceSorting();
-            swapped=true;
-        }
-        else swapped=false;
     }
 }
