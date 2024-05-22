@@ -16,9 +16,31 @@ public class SortController : MonoBehaviour
     const float BallInterval = 0.8f;
     bool isSorging = false; //ソート実行中かを表すフラグ
 
+    float GetAngle(Vector2 start,Vector2 target)
+	{
+		Vector2 dt = target - start;
+		float rad = Mathf.Atan2 (dt.y, dt.x);
+		float degree = rad * Mathf.Rad2Deg;
+		
+		return degree;
+	}
+
     void Swap(BallClass[] balls, int idx1, int idx2)
     {
         (balls[idx1], balls[idx2]) = (balls[idx2], balls[idx1]);
+
+        GameObject whiteBall = GameObject.Find("WhiteBall");
+
+        Vector2 start = whiteBall.transform.position;
+
+        int idx = Math.Max(idx1, idx2);
+
+        Vector2 target = balls[idx].ballobject.transform.position;
+        
+        float BallAngle = GetAngle(start, target);
+
+        WhiteBall.Angle = BallAngle;
+        WhiteBall.isMoving = true;
     }
 
     // 各ボールの下へバーを移動させる関数
