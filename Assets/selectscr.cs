@@ -11,10 +11,9 @@ public class SelectScr : MonoBehaviour
     void OnMouseUp()
     {
         string SortName = this.gameObject.name;
-        Debug.Log(SortName);
-        if (SortName == "Bubble")SortKind = 1;
-        else if (SortName == "Select")SortKind = 2;
-        else if (SortName == "Insert")SortKind = 3;
-        Debug.Log(SortKind);
+        if (SortName == "Bubble") SortKind = 1;
+        else if (SortName == "Select") SortKind = 2;
+        else if (SortName == "Insert") SortKind = 3;
+        Debug.Log(SortName + " " + SortKind);
     }
 }

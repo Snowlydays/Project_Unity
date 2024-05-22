@@ -2,74 +2,112 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Net;
+using Unity.VisualScripting;
 
 public class SortController : MonoBehaviour
 {
-    BallClass[] MyBall = new BallClass[5];
-    GameObject bar;
+    BallClass[] myBall = new BallClass[5];
+    GameObject bar1;
+    GameObject bar2;
     GameObject arrow;
 
-    int checkpos = 0;
+    int current_idx = 0;
+    const float BallInterval = 0.8f;
+    bool isSorging = false; //ソート実行中かを表すフラグ
 
-    // バブルソートの手順を一つ進める関数
-    void BubbleSorting()
+    void Swap(BallClass[] balls, int idx1, int idx2)
     {
-        var ballA = MyBall[checkpos];
-        var ballB = MyBall[checkpos + 1];
-        var ax = ballA.ballobject.transform.position.x;
-        var bx = ballB.ballobject.transform.position.x;
-
-        arrow.SetActive(false);
-        if (MyBall[checkpos].ballnumber > MyBall[checkpos + 1].ballnumber)
-        {
-            // ボールをスワップ
-            MyBall[checkpos] = ballB;
-            MyBall[checkpos + 1] = ballA;
-
-            // 矢印の位置を指定
-            arrow.SetActive(true);
-            Vector3 arrowpos = arrow.transform.position;
-            arrowpos.x = (ax + bx) / 2;
-            arrow.transform.position = arrowpos;
-        }
-
-        // バーの位置を設定
-        bar.SetActive(true);
-        Vector3 barpos = bar.transform.position;
-        barpos.x = (ax + bx) / 2;
-        bar.transform.position = barpos;
-
-        checkpos = (checkpos + 1) % (MyBall.Length - 1);
+        (balls[idx1], balls[idx2]) = (balls[idx2], balls[idx1]);
     }
 
-    void SelectSorting()
+    // 各ボールの下へバーを移動させる関数
+    void MoveBar(BallClass b1, BallClass b2)
     {
-        var ballA = MyBall[checkpos];
-        var minBall = MyBall[checkpos];
-        var ax = ballA.ballobject.transform.position.x;
-        var bx = minBall.ballobject.transform.position.x;
+        Vector3 bar1Pos = bar1.transform.position;
+        Vector3 bar2Pos = bar2.transform.position;
+        bar1Pos.x = b1.ballobject.transform.position.x;
+        bar2Pos.x = b2.ballobject.transform.position.x;
+        bar1.transform.position = bar1Pos;
+        bar2.transform.position = bar2Pos;
+    }
 
-        arrow.SetActive(false);
-        if (MyBall[checkpos].ballnumber > MyBall[checkpos + 1].ballnumber)
+    IEnumerator BubbleSort()
+    {
+        isSorging = true;
+        bar1.SetActive(true);
+        bar2.SetActive(true);
+        int myBallLen = myBall.Length;
+        for (int j = myBallLen - 1; j >= current_idx + 1; j--)
         {
-            // ボールをスワップ
-            // MyBall[checkpos] = ballB;
-            // MyBall[checkpos + 1] = ballA;
-
-            // 矢印の位置を指定
-            arrow.SetActive(true);
-            Vector3 arrowpos = arrow.transform.position;
-            arrowpos.x = (ax + bx) / 2;
-            arrow.transform.position = arrowpos;
+            BallClass ball1 = myBall[j - 1];
+            BallClass ball2 = myBall[j];
+            MoveBar(ball1, ball2); // バーをball1、ball2の下へ移動
+            yield return new WaitForSeconds(1f); //ボールを交換する前に遅延を入れる
+            if (ball1.ballnumber > ball2.ballnumber) Swap(myBall, j - 1, j);
+            yield return new WaitForSeconds(1f); //ボールを交換した後に遅延を入れる
         }
 
-        // バーの位置を設定
-        bar.SetActive(true);
-        Vector3 barPos = bar.transform.position;
-        barPos.x = (ax + bx) / 2;
-        bar.transform.position = barPos;
+        current_idx++;
+        bar1.SetActive(false);
+        bar2.SetActive(false);
+        isSorging = false;
+    }
 
-        checkpos = (checkpos + 1) % (MyBall.Length - 1);
+    IEnumerator SelectionSort()
+    {
+        isSorging = true;
+        bar1.SetActive(true);
+        bar2.SetActive(true);
+        int myBallLen = myBall.Length;
+        int minIdx = current_idx;
+        for (int j = current_idx + 1; j < myBallLen; j++)
+        {
+            BallClass ball1 = myBall[minIdx];
+            BallClass ball2 = myBall[j];
+            MoveBar(ball1, ball2);
+            yield return new WaitForSeconds(1f); // 遅延を入れる
+            if (ball1.ballnumber > ball2.ballnumber) minIdx = j;
+        }
+
+        Swap(myBall, minIdx, current_idx);
+        current_idx++;
+        bar1.SetActive(false);
+        bar2.SetActive(false);
+        isSorging = false;
+    }
+
+
+    IEnumerator InsertionSort()
+    {
+        isSorging = true;
+        bar1.SetActive(true);
+        bar2.SetActive(true);
+        BallClass work = myBall[current_idx + 1];
+
+        Vector3 workPos = work.ballobject.transform.position;
+
+        Vector3 tmp = workPos;
+        workPos.y = 3.5f;
+        work.ballobject.transform.position = workPos;
+
+        int j = current_idx;
+        while (j >= 0 && myBall[j].ballnumber > work.ballnumber)
+        {
+            MoveBar(work, myBall[j]);
+            yield return new WaitForSeconds(1f); // 遅延を入れる
+            myBall[j + 1] = myBall[j];
+            j--;
+        }
+
+        yield return new WaitForSeconds(1f); // 遅延を入れる
+        work.ballobject.transform.position = tmp;
+        myBall[j + 1] = work;
+
+        current_idx++;
+        bar1.SetActive(false);
+        bar2.SetActive(false);
+        isSorging = false;
     }
 
     void Start()
@@ -80,48 +118,50 @@ public class SortController : MonoBehaviour
         // BallClassとして取得
         for (int i = 0; i < 5; i++)
         {
-            int ballnum = int.Parse(objects[i].name.Substring(5));
-            MyBall[i] = new BallClass(objects[i], ballnum);
+            int ballNum = int.Parse(objects[i].name.Substring(5));
+            myBall[i] = new BallClass(objects[i], ballNum);
         }
 
-        // スワップされたボールを示すバーと矢印を取得
-        bar = GameObject.FindGameObjectsWithTag("bar")[0];
+        // スワップするボールを示すバーと矢印を取得
+        bar1 = GameObject.FindGameObjectsWithTag("bar")[0];
+        bar2 = GameObject.FindGameObjectsWithTag("bar")[1];
         arrow = GameObject.FindGameObjectsWithTag("arrow")[0];
-        bar.SetActive(false);
+        bar1.SetActive(false);
+        bar2.SetActive(false);
         arrow.SetActive(false);
     }
 
-    float ballinterval = 0.8f;
 
     void Update()
     {
         // ボールの動きをBallClassの情報と連動させる
         for (int i = 0; i < 5; i++)
         {
-            Transform balltrans = MyBall[i].ballobject.transform;
-
-            Vector3 pos = balltrans.position;
-
-            pos.x = -ballinterval * (3 - i) + ballinterval;
-
-            balltrans.position = pos;
+            Transform ballTrans = myBall[i].ballobject.transform;
+            Vector3 pos = ballTrans.position;
+            pos.x = -BallInterval * (3 - i) + BallInterval;
+            ballTrans.position = pos;
         }
 
-        if (SelectScr.SortKind == 1)
+
+        if (Input.GetKeyUp(KeyCode.Space))
         {
-            // キー入力があった時配列をソートする
-            if (Input.anyKeyDown)
+            int myBallLen = myBall.Length;
+            if (current_idx >= myBallLen - 1)
             {
-                BubbleSorting();
+                // ソート完了時の処理
+                Debug.Log("ソート完了");
             }
-        }
-        else if (SelectScr.SortKind == 2)
-        {
-            // Select
-        }
-        else if (SelectScr.SortKind == 3)
-        {
-            // Insert
+            else
+            {
+                // なんらかのソートを実行中でないならソートを始める
+                if (!isSorging)
+                {
+                    if (SelectScr.SortKind == 1) StartCoroutine(BubbleSort());
+                    else if (SelectScr.SortKind == 2) StartCoroutine(SelectionSort());
+                    else if (SelectScr.SortKind == 3) StartCoroutine(InsertionSort());
+                }
+            }
         }
     }
 }
