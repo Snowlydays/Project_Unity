@@ -11,7 +11,8 @@ public class SortController : MonoBehaviour
     GameObject bar1;
     GameObject bar2;
     GameObject arrow;
-
+    
+    float timeInterval = 0.5f;
     int current_idx = 0;
     const float BallInterval = 0.8f;
     bool isSorging = false; //ソート実行中かを表すフラグ
@@ -27,20 +28,23 @@ public class SortController : MonoBehaviour
 
     void Swap(BallClass[] balls, int idx1, int idx2)
     {
-        (balls[idx1], balls[idx2]) = (balls[idx2], balls[idx1]);
-
+        // キューボールのオブジェクトを取得
         GameObject whiteBall = GameObject.Find("WhiteBall");
+        BallClass ballA = balls[Math.Min(idx1, idx2)];
+        BallClass ballB = balls[Math.Max(idx1, idx2)];
 
         Vector2 start = whiteBall.transform.position;
-
-        int idx = Math.Max(idx1, idx2);
-
-        Vector2 target = balls[idx].ballobject.transform.position;
+        Vector2 target = ballB.ballobject.transform.position;
         
         float BallAngle = GetAngle(start, target);
 
-        WhiteBall.Angle = BallAngle;
+        WhiteBall.angle = BallAngle;
         WhiteBall.isMoving = true;
+        WhiteBall.leftBall = ballA;
+        WhiteBall.rightBall = ballB;
+
+        // 実際のスワップ
+        (balls[idx1], balls[idx2]) = (balls[idx2], balls[idx1]);
     }
 
     // 各ボールの下へバーを移動させる関数
@@ -65,9 +69,13 @@ public class SortController : MonoBehaviour
             BallClass ball1 = myBall[j - 1];
             BallClass ball2 = myBall[j];
             MoveBar(ball1, ball2); // バーをball1、ball2の下へ移動
-            yield return new WaitForSeconds(1f); //ボールを交換する前に遅延を入れる
-            if (ball1.ballnumber > ball2.ballnumber) Swap(myBall, j - 1, j);
-            yield return new WaitForSeconds(1f); //ボールを交換した後に遅延を入れる
+            yield return new WaitForSeconds(timeInterval); //ボールを交換する前に遅延を入れる
+            if (ball1.ballnumber > ball2.ballnumber)
+            {
+                Swap(myBall, j - 1, j);
+                yield return new WaitForSeconds(0.4f / WhiteBall.speed);
+            }
+            yield return new WaitForSeconds(timeInterval); //ボールを交換した後に遅延を入れる
         }
 
         current_idx++;
@@ -88,11 +96,12 @@ public class SortController : MonoBehaviour
             BallClass ball1 = myBall[minIdx];
             BallClass ball2 = myBall[j];
             MoveBar(ball1, ball2);
-            yield return new WaitForSeconds(1f); // 遅延を入れる
+            yield return new WaitForSeconds(timeInterval); // 遅延を入れる
             if (ball1.ballnumber > ball2.ballnumber) minIdx = j;
         }
 
         Swap(myBall, minIdx, current_idx);
+        yield return new WaitForSeconds(0.4f / WhiteBall.speed); 
         current_idx++;
         bar1.SetActive(false);
         bar2.SetActive(false);
@@ -117,12 +126,12 @@ public class SortController : MonoBehaviour
         while (j >= 0 && myBall[j].ballnumber > work.ballnumber)
         {
             MoveBar(work, myBall[j]);
-            yield return new WaitForSeconds(1f); // 遅延を入れる
+            yield return new WaitForSeconds(timeInterval); // 遅延を入れる
             myBall[j + 1] = myBall[j];
             j--;
         }
-
-        yield return new WaitForSeconds(1f); // 遅延を入れる
+        
+        yield return new WaitForSeconds(timeInterval); // 遅延を入れる
         work.ballobject.transform.position = tmp;
         myBall[j + 1] = work;
 
@@ -153,18 +162,21 @@ public class SortController : MonoBehaviour
         arrow.SetActive(false);
     }
 
-
-    void Update()
+    void SyncBallPos()
     {
-        // ボールの動きをBallClassの情報と連動させる
+       // ボールの動きをBallClassの情報と連動させる
         for (int i = 0; i < 5; i++)
         {
             Transform ballTrans = myBall[i].ballobject.transform;
             Vector3 pos = ballTrans.position;
             pos.x = -BallInterval * (3 - i) + BallInterval;
             ballTrans.position = pos;
-        }
+        } 
+    }
 
+    void Update()
+    {
+        if(!WhiteBall.isMoving)SyncBallPos();
 
         if (Input.GetKeyUp(KeyCode.Space))
         {
