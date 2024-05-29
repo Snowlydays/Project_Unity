@@ -22,6 +22,15 @@ public class WhiteBall : MonoBehaviour
     float rotationAngle = 0; // ボールの回転位置
     Vector3 TempBallPos;
 
+    float GetAngle(Vector2 start,Vector2 target)
+	{
+		Vector2 dt = target - start;
+		float rad = Mathf.Atan2 (dt.y, dt.x);
+		float degree = rad * Mathf.Rad2Deg;
+		
+		return degree;
+	}
+
     Vector2 resultPosition()
     {
         float r = rightBallPos.x - midPos.x;
@@ -165,11 +174,36 @@ public class WhiteBall : MonoBehaviour
                         if(leftBall.ballobject.transform.position.x > TempBallPos.x)
                         {
                             swapstart=false;
-                            Vector3 Temp;
-                            Temp = leftBall.ballobject.transform.position;
                             leftBall.ballobject.transform.position = TempBallPos;
-                            TempBallPos = Temp;
+                            TempBallPos.x -= 0.8f;
                         }
+                    }
+                }else if(stat == 4){
+                    angle = GetAngle(workBall.ballobject.transform.position,TempBallPos);
+                    Vector3 addTrans = new Vector3(
+                        speed*Mathf.Cos(angle * Mathf.Deg2Rad),
+                        speed*Mathf.Sin(angle * Mathf.Deg2Rad),
+                        0
+                    );
+
+                    workBall.ballobject.transform.position += addTrans;
+                    if(Math.Abs(TempBallPos.y - workBall.ballobject.transform.position.y) < 0.2)
+                    {
+                        stat = 5;
+                        workBall.ballobject.transform.position = TempBallPos;
+                    }
+                }else if(stat == 5){
+                    Vector3 addTrans = new Vector3(0, speed, 0);
+                    this.gameObject.transform.position += addTrans;
+
+                    if(this.gameObject.transform.position.y > -0.8f)
+                    {
+                        stat = 1;
+                        isMoving = false;
+                        gettingPos = false;
+                        
+                        Vector3 defaultPosition = new Vector3(0f, -0.8f, 0);
+                        this.gameObject.transform.position = defaultPosition;
                     }
                 }
             }

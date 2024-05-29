@@ -60,6 +60,8 @@ public class SortController : MonoBehaviour
         Vector3 bar2Pos = bar2.transform.position;
         bar1Pos.x = b1.ballobject.transform.position.x;
         bar2Pos.x = b2.ballobject.transform.position.x;
+        bar1Pos.y = b1.ballobject.transform.position.y-0.5f;
+        bar2Pos.y = b2.ballobject.transform.position.y-0.5f;
         bar1.transform.position = bar1Pos;
         bar2.transform.position = bar2Pos;
     }
@@ -129,26 +131,35 @@ public class SortController : MonoBehaviour
         Vector3 tmp = workPos;
 
         int j = current_idx;
-        while (j >= 0 && myBall[j].ballnumber > work.ballnumber)
+        yield return new WaitForSeconds(timeInterval);
+        while (j >= 0)
         {
-            bar1.SetActive(true);
-            bar2.SetActive(true);
-            yield return new WaitForSeconds(timeInterval); // 遅延を入れる
-            MoveBar(work, myBall[j]);
-            yield return new WaitForSeconds(timeInterval); // 遅延を入れる
-            bar1.SetActive(false);
-            bar2.SetActive(false);
-            //myBall[j + 1] = myBall[j];
-            WhiteBall.leftBall = myBall[j];
-            //WhiteBall.rightBall = myBall[j + 1];
-            WhiteBall.swapstart = true;
             yield return new WaitForSeconds(timeInterval);
-            j--;
+            if(WhiteBall.swapstart == false){
+                bar1.SetActive(true);
+                bar2.SetActive(true);
+                //yield return new WaitForSeconds(timeInterval); // 遅延を入れる
+                MoveBar(work, myBall[j]);
+                yield return new WaitForSeconds(timeInterval); // 遅延を入れる
+                bar1.SetActive(false);
+                bar2.SetActive(false);
+                if(myBall[j]!=work){
+                    if(myBall[j].ballnumber > work.ballnumber){
+                        myBall[j + 1] = myBall[j];
+                        WhiteBall.leftBall = myBall[j];
+                        WhiteBall.swapstart = true;
+                        yield return new WaitForSeconds(timeInterval);
+                    }else{
+                        break;
+                    }
+                }
+                j--;
+            }
         }
-        
+        WhiteBall.stat = 4;//workballを空いている場所に入れるアニメーション
+        myBall[j+1] = work;//配列側でも空いている場所に入れる操作
             
         yield return new WaitForSeconds(timeInterval); // 遅延を入れる
-        myBall[j + 1] = work;
 
         current_idx++;
         isSorging = false;
