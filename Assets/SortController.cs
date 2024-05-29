@@ -17,7 +17,6 @@ public class SortController : MonoBehaviour
     const float BallInterval = 0.8f;
     bool isSorging = false; //ソート実行中かを表すフラグ
 
-    //https://t-stove-k.hatenablog.com/entry/2018/08/27/153609
     float GetAngle(Vector2 start,Vector2 target)
 	{
 		Vector2 dt = target - start;
@@ -55,8 +54,6 @@ public class SortController : MonoBehaviour
         Vector3 bar2Pos = bar2.transform.position;
         bar1Pos.x = b1.ballobject.transform.position.x;
         bar2Pos.x = b2.ballobject.transform.position.x;
-        bar1Pos.y = b1.ballobject.transform.position.y-0.5f;
-        bar2Pos.y = b2.ballobject.transform.position.y-0.5f;
         bar1.transform.position = bar1Pos;
         bar2.transform.position = bar2Pos;
     }
@@ -115,13 +112,9 @@ public class SortController : MonoBehaviour
     IEnumerator InsertionSort()
     {
         isSorging = true;
-<<<<<<< Updated upstream
         bar1.SetActive(true);
         bar2.SetActive(true);
         BallClass work = myBall[current_idx + 1];
-=======
-        BallClass work = myBall[current_idx + 1];//2つ目を上に飛ばす
->>>>>>> Stashed changes
 
         Vector3 workPos = work.ballobject.transform.position;
 
@@ -130,7 +123,6 @@ public class SortController : MonoBehaviour
         work.ballobject.transform.position = workPos;
 
         int j = current_idx;
-<<<<<<< Updated upstream
         while (j >= 0 && myBall[j].ballnumber > work.ballnumber)
         {
             MoveBar(work, myBall[j]);
@@ -142,37 +134,6 @@ public class SortController : MonoBehaviour
         yield return new WaitForSeconds(timeInterval); // 遅延を入れる
         work.ballobject.transform.position = tmp;
         myBall[j + 1] = work;
-=======
-        //while (j >= 0 && myBall[j].ballnumber > work.ballnumber)
-        yield return new WaitForSeconds(timeInterval);
-        while(j >= 0)
-        {//1つ目から順に比較
-            yield return new WaitForSeconds(timeInterval);
-            if(WhiteBall.swapstart == false){
-                bar1.SetActive(true);
-                bar2.SetActive(true);
-                MoveBar(work, myBall[j]);
-                yield return new WaitForSeconds(timeInterval); // 遅延を入れる
-                bar1.SetActive(false);
-                bar2.SetActive(false);
-                if(myBall[j]!=work){
-                    if(myBall[j].ballnumber > work.ballnumber){
-                        myBall[j + 1] = myBall[j];//配列側で入れかえ
-                        WhiteBall.leftBall = myBall[j];//アニメーション対象のボールを定義
-                        WhiteBall.swapstart = true;//アニメーション開始
-                        yield return new WaitForSeconds(timeInterval);
-                    }else{
-                        break;
-                    }
-                }
-                j--;
-            }
-        }
-        WhiteBall.stat = 4;//workballを空いている場所に入れるアニメーション
-        myBall[j+1] = work;//配列側でも空いている場所に入れる操作
-            
-        yield return new WaitForSeconds(timeInterval); // 遅延を入れる
->>>>>>> Stashed changes
 
         current_idx++;
         bar1.SetActive(false);
