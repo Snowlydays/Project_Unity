@@ -26,6 +26,17 @@ public class SortController : MonoBehaviour
 		return degree;
 	}
 
+    void MoveWhiteBall(BallClass ball){//ballBを入れるとする
+        GameObject whiteBall = GameObject.Find("WhiteBall");
+        Vector2 start = whiteBall.transform.position;
+        Vector2 target = ball.ballobject.transform.position;
+
+        float BallAngle = GetAngle(start, target);
+
+        WhiteBall.angle = BallAngle;
+        WhiteBall.isMoving = true;
+    }
+
     void Swap(BallClass[] balls, int idx1, int idx2)
     {
         // キューボールのオブジェクトを取得
@@ -33,13 +44,8 @@ public class SortController : MonoBehaviour
         BallClass ballA = balls[Math.Min(idx1, idx2)];
         BallClass ballB = balls[Math.Max(idx1, idx2)];
 
-        Vector2 start = whiteBall.transform.position;
-        Vector2 target = ballB.ballobject.transform.position;
-        
-        float BallAngle = GetAngle(start, target);
+        MoveWhiteBall(ballB);
 
-        WhiteBall.angle = BallAngle;
-        WhiteBall.isMoving = true;
         WhiteBall.leftBall = ballA;
         WhiteBall.rightBall = ballB;
 
@@ -54,6 +60,8 @@ public class SortController : MonoBehaviour
         Vector3 bar2Pos = bar2.transform.position;
         bar1Pos.x = b1.ballobject.transform.position.x;
         bar2Pos.x = b2.ballobject.transform.position.x;
+        bar1Pos.y = b1.ballobject.transform.position.y-0.5f;
+        bar2Pos.y = b2.ballobject.transform.position.y-0.5f;
         bar1.transform.position = bar1Pos;
         bar2.transform.position = bar2Pos;
     }
@@ -74,8 +82,9 @@ public class SortController : MonoBehaviour
             {
                 Swap(myBall, j - 1, j);
                 yield return new WaitForSeconds(0.4f / WhiteBall.speed);
+                yield return new WaitForSeconds(timeInterval);
             }
-            yield return new WaitForSeconds(timeInterval); //ボールを交換した後に遅延を入れる
+             //ボールを交換した後に遅延を入れる
         }
 
         current_idx++;
@@ -112,32 +121,47 @@ public class SortController : MonoBehaviour
     IEnumerator InsertionSort()
     {
         isSorging = true;
-        bar1.SetActive(true);
-        bar2.SetActive(true);
         BallClass work = myBall[current_idx + 1];
 
         Vector3 workPos = work.ballobject.transform.position;
 
+        MoveWhiteBall(work);
+        WhiteBall.workBall = work;
+
         Vector3 tmp = workPos;
-        workPos.y = 3.5f;
-        work.ballobject.transform.position = workPos;
 
         int j = current_idx;
-        while (j >= 0 && myBall[j].ballnumber > work.ballnumber)
+        yield return new WaitForSeconds(timeInterval);
+        while (j >= 0)
         {
-            MoveBar(work, myBall[j]);
-            yield return new WaitForSeconds(timeInterval); // 遅延を入れる
-            myBall[j + 1] = myBall[j];
-            j--;
+            yield return new WaitForSeconds(timeInterval);
+            if(WhiteBall.swapstart == false){
+                bar1.SetActive(true);
+                bar2.SetActive(true);
+                //yield return new WaitForSeconds(timeInterval); // 遅延を入れる
+                MoveBar(work, myBall[j]);
+                yield return new WaitForSeconds(timeInterval); // 遅延を入れる
+                bar1.SetActive(false);
+                bar2.SetActive(false);
+                if(myBall[j]!=work){
+                    if(myBall[j].ballnumber > work.ballnumber){
+                        myBall[j + 1] = myBall[j];
+                        WhiteBall.leftBall = myBall[j];
+                        WhiteBall.swapstart = true;
+                        yield return new WaitForSeconds(timeInterval);
+                    }else{
+                        break;
+                    }
+                }
+                j--;
+            }
         }
-        
+        WhiteBall.stat = 4;//workballを空いている場所に入れるアニメーション
+        myBall[j+1] = work;//配列側でも空いている場所に入れる操作
+            
         yield return new WaitForSeconds(timeInterval); // 遅延を入れる
-        work.ballobject.transform.position = tmp;
-        myBall[j + 1] = work;
 
         current_idx++;
-        bar1.SetActive(false);
-        bar2.SetActive(false);
         isSorging = false;
     }
 
