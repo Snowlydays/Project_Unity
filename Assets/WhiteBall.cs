@@ -29,6 +29,16 @@ public class WhiteBall : MonoBehaviour
         );
         return resPos;
     }
+
+    float GetAngle(Vector2 start,Vector2 target)
+	{
+		Vector2 dt = target - start;
+		float rad = Mathf.Atan2 (dt.y, dt.x);
+		float degree = rad * Mathf.Rad2Deg;
+		
+		return degree;
+	}
+
     void FixedUpdate()
     {
         if(isMoving){
@@ -99,6 +109,7 @@ public class WhiteBall : MonoBehaviour
                 Vector3 addTrans = new Vector3(0, speed, 0);
                 this.gameObject.transform.position += addTrans;
 
+<<<<<<< Updated upstream
                 if(this.gameObject.transform.position.y > -0.8f)
                 {
                     stat = 1;
@@ -107,6 +118,44 @@ public class WhiteBall : MonoBehaviour
                     
                     Vector3 defaultPosition = new Vector3(0f, -0.8f, 0);
                     this.gameObject.transform.position = defaultPosition;
+=======
+                    if(swapstart==true){
+                        Vector3 addTrans = new Vector3(speed,0,0);
+                        leftBall.ballobject.transform.position += addTrans;
+
+                        if(leftBall.ballobject.transform.position.x > TempBallPos.x)
+                        {
+                            swapstart=false;
+                            leftBall.ballobject.transform.position = TempBallPos;
+                            TempBallPos.x -= 0.8f;
+                        }
+                    }
+                }else if(stat == 4){
+                    angle = GetAngle(workBall.ballobject.transform.position,TempBallPos);
+                    Vector3 addTrans = new Vector3(
+                        speed*Mathf.Cos(angle * Mathf.Deg2Rad),
+                        speed*Mathf.Sin(angle * Mathf.Deg2Rad),
+                        0
+                    );
+                    workBall.ballobject.transform.position += addTrans;
+                    if(Math.Abs(workBall.ballobject.transform.position.y - TempBallPos.y) < speed)
+                    {
+                        stat = 5;
+                        workBall.ballobject.transform.position = TempBallPos;
+                    }
+                }else if(stat == 5){
+                    Vector3 addTrans = new Vector3(0, speed, 0);
+                    this.gameObject.transform.position += addTrans;
+                    if(this.gameObject.transform.position.y > -0.8f)
+                    {
+                        stat = 1;
+                        isMoving = false;
+                        gettingPos = false;
+                        
+                        Vector3 defaultPosition = new Vector3(0f, -0.8f, 0);
+                        this.gameObject.transform.position = defaultPosition;
+                    }
+>>>>>>> Stashed changes
                 }
             }
         }
