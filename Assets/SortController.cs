@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using System.Net;
 using Unity.VisualScripting;
+using Random = UnityEngine.Random;
 
 public class SortController : MonoBehaviour
 {
@@ -11,22 +12,24 @@ public class SortController : MonoBehaviour
     GameObject bar1;
     GameObject bar2;
     GameObject arrow;
-    
-    float timeInterval = 0.5f;
+
+    float timeInterval = 0.75f;
     int current_idx = 0;
     const float BallInterval = 0.8f;
     bool isSorging = false; //ソート実行中かを表すフラグ
 
-    float GetAngle(Vector2 start,Vector2 target)
-	{
-		Vector2 dt = target - start;
-		float rad = Mathf.Atan2 (dt.y, dt.x);
-		float degree = rad * Mathf.Rad2Deg;
-		
-		return degree;
-	}
+    float GetAngle(Vector2 start, Vector2 target)
+    {
+        Vector2 dt = target - start;
+        float rad = Mathf.Atan2(dt.y, dt.x);
+        float degree = rad * Mathf.Rad2Deg;
 
-    void MoveWhiteBall(BallClass ball){//ballBを入れるとする
+        return degree;
+    }
+
+    void MoveWhiteBall(BallClass ball)
+    {
+        //ballBを入れるとする
         GameObject whiteBall = GameObject.Find("WhiteBall");
         Vector2 start = whiteBall.transform.position;
         Vector2 target = ball.ballobject.transform.position;
@@ -49,7 +52,7 @@ public class SortController : MonoBehaviour
         WhiteBall.leftBall = ballA;
         WhiteBall.rightBall = ballB;
 
-        // 実際のスワップ
+        // 配列の要素のスワップ
         (balls[idx1], balls[idx2]) = (balls[idx2], balls[idx1]);
     }
 
@@ -60,8 +63,8 @@ public class SortController : MonoBehaviour
         Vector3 bar2Pos = bar2.transform.position;
         bar1Pos.x = b1.ballobject.transform.position.x;
         bar2Pos.x = b2.ballobject.transform.position.x;
-        bar1Pos.y = b1.ballobject.transform.position.y-0.5f;
-        bar2Pos.y = b2.ballobject.transform.position.y-0.5f;
+        bar1Pos.y = b1.ballobject.transform.position.y - 0.5f; //ボールの下に表示したいため、0.5f引く
+        bar2Pos.y = b2.ballobject.transform.position.y - 0.5f; //ボールの下に表示したいため、0.5f引く
         bar1.transform.position = bar1Pos;
         bar2.transform.position = bar2Pos;
     }
@@ -82,9 +85,8 @@ public class SortController : MonoBehaviour
             {
                 Swap(myBall, j - 1, j);
                 yield return new WaitForSeconds(0.4f / WhiteBall.speed);
-                yield return new WaitForSeconds(timeInterval);
+                // yield return new WaitForSeconds(timeInterval);
             }
-             //ボールを交換した後に遅延を入れる
         }
 
         current_idx++;
@@ -109,11 +111,16 @@ public class SortController : MonoBehaviour
             if (ball1.ballnumber > ball2.ballnumber) minIdx = j;
         }
 
-        Swap(myBall, minIdx, current_idx);
-        yield return new WaitForSeconds(0.4f / WhiteBall.speed); 
-        current_idx++;
+        // 比較が終わったため、バーを非表示に
         bar1.SetActive(false);
         bar2.SetActive(false);
+        if (minIdx != current_idx)
+        {
+            Swap(myBall, minIdx, current_idx);
+            yield return new WaitForSeconds(0.4f / WhiteBall.speed);
+        }
+
+        current_idx++;
         isSorging = false;
     }
 
@@ -135,34 +142,49 @@ public class SortController : MonoBehaviour
         while (j >= 0)
         {
             yield return new WaitForSeconds(timeInterval);
-            if(WhiteBall.swapstart == false){
+            if (WhiteBall.swapstart == false)
+            {
                 bar1.SetActive(true);
                 bar2.SetActive(true);
-                //yield return new WaitForSeconds(timeInterval); // 遅延を入れる
                 MoveBar(work, myBall[j]);
                 yield return new WaitForSeconds(timeInterval); // 遅延を入れる
                 bar1.SetActive(false);
                 bar2.SetActive(false);
-                if(myBall[j]!=work){
-                    if(myBall[j].ballnumber > work.ballnumber){
+                if (myBall[j] != work)
+                {
+                    if (myBall[j].ballnumber > work.ballnumber)
+                    {
                         myBall[j + 1] = myBall[j];
                         WhiteBall.leftBall = myBall[j];
                         WhiteBall.swapstart = true;
                         yield return new WaitForSeconds(timeInterval);
-                    }else{
+                    }
+                    else
+                    {
                         break;
                     }
                 }
+
                 j--;
             }
         }
-        WhiteBall.stat = 4;//workballを空いている場所に入れるアニメーション
-        myBall[j+1] = work;//配列側でも空いている場所に入れる操作
-            
+
+        WhiteBall.stat = 4; //workballを空いている場所に入れるアニメーション
+        myBall[j + 1] = work; //配列側でも空いている場所に入れる操作
+
         yield return new WaitForSeconds(timeInterval); // 遅延を入れる
 
         current_idx++;
         isSorging = false;
+    }
+
+    void ShuffleBalls(BallClass[] array)
+    {
+        for (int i = array.Length - 1; i > 0; i--)
+        {
+            var j = Random.Range(0, i + 1); // UnityEnginのRandomを使用
+            (array[i], array[j]) = (array[j], array[i]); // スワップ
+        }
     }
 
     void Start()
@@ -177,6 +199,9 @@ public class SortController : MonoBehaviour
             myBall[i] = new BallClass(objects[i], ballNum);
         }
 
+        // myBallをランダムに並び替え
+        ShuffleBalls(myBall);
+
         // スワップするボールを示すバーと矢印を取得
         bar1 = GameObject.FindGameObjectsWithTag("bar")[0];
         bar2 = GameObject.FindGameObjectsWithTag("bar")[1];
@@ -188,19 +213,19 @@ public class SortController : MonoBehaviour
 
     void SyncBallPos()
     {
-       // ボールの動きをBallClassの情報と連動させる
+        // ボールの動きをBallClassの情報と連動させる
         for (int i = 0; i < 5; i++)
         {
             Transform ballTrans = myBall[i].ballobject.transform;
             Vector3 pos = ballTrans.position;
             pos.x = -BallInterval * (3 - i) + BallInterval;
             ballTrans.position = pos;
-        } 
+        }
     }
 
     void Update()
     {
-        if(!WhiteBall.isMoving)SyncBallPos();
+        if (!WhiteBall.isMoving) SyncBallPos();
 
         if (Input.GetKeyUp(KeyCode.Space))
         {
