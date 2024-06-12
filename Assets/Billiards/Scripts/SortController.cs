@@ -229,22 +229,23 @@ public class SortController : MonoBehaviour
 
         if (Input.GetKeyUp(KeyCode.Space))
         {
-            int myBallLen = myBall.Length;
-            if (current_idx >= myBallLen - 1)
+            if(!isSorging)// なんらかのソートを実行中でないならソートを始める
             {
-                // ソート完了時の処理
-                Debug.Log("ソート完了");
-            }
-            else
-            {
-                // なんらかのソートを実行中でないならソートを始める
-                if (!isSorging)
+                Debug.Log("Key preesed");
+                int myBallLen = myBall.Length;
+                if (current_idx >= myBallLen - 1)
+                {
+                    // ソート完了時の処理
+                    Debug.Log("ソート完了");
+                }
+                else
                 {
                     if (SelectScr.SortKind == 1) StartCoroutine(BubbleSort());
                     else if (SelectScr.SortKind == 2) StartCoroutine(SelectionSort());
                     else if (SelectScr.SortKind == 3) StartCoroutine(InsertionSort());
                 }
             }
+            
         }
     }
 }
