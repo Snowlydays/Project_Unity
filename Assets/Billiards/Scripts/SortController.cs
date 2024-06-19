@@ -229,7 +229,8 @@ public class SortController : MonoBehaviour
 
         if (Input.GetKeyUp(KeyCode.Space))
         {
-            if(!isSorging)// なんらかのソートを実行中でないならソートを始める
+            //「ソートを実行中でない」かつ「アニメーションも実行中でない」なら入力を受け付ける
+            if (!isSorging && !WhiteBall.isMoving)
             {
                 Debug.Log("Key preesed");
                 int myBallLen = myBall.Length;
@@ -240,12 +241,12 @@ public class SortController : MonoBehaviour
                 }
                 else
                 {
+                    WhiteBall.SortKind = SelectScr.SortKind;
                     if (SelectScr.SortKind == 1) StartCoroutine(BubbleSort());
                     else if (SelectScr.SortKind == 2) StartCoroutine(SelectionSort());
                     else if (SelectScr.SortKind == 3) StartCoroutine(InsertionSort());
                 }
             }
-            
         }
     }
 }

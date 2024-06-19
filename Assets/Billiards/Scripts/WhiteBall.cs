@@ -6,6 +6,7 @@ using Unity.VisualScripting;
 
 public class WhiteBall : MonoBehaviour
 {
+    public static int SortKind;
     public static bool isMoving = false;
     public static float angle;
 
@@ -106,7 +107,7 @@ public class WhiteBall : MonoBehaviour
                 }
             }
 
-            if (SelectScr.SortKind != 3)
+            if (SortKind != 3)
             {
                 if (!gettingPos)
                 {
@@ -187,7 +188,7 @@ public class WhiteBall : MonoBehaviour
                 {
                     MoveCueBall(workBall);
                 }
-                else if (stat == 2)
+                else if (stat == 2) // ボールを一時的に上に保管する
                 {
                     Vector3 workBallAfterPos = workBallPos;
                     TempBallPos = workBallPos;
@@ -202,7 +203,7 @@ public class WhiteBall : MonoBehaviour
                         workBall.ballobject.transform.position = workBallAfterPos;
                     }
                 }
-                else if (stat == 3)
+                else if (stat == 3) // ボールを横にずらす
                 {
                     Vector3 outOfScreen = new Vector3(0f, -6.0f, 0);
                     this.gameObject.transform.position = outOfScreen;
@@ -220,7 +221,7 @@ public class WhiteBall : MonoBehaviour
                         }
                     }
                 }
-                else if (stat == 4)
+                else if (stat == 4) // 挿入するボールを適切な位置に入れる
                 {
                     angle = GetAngle(workBall.ballobject.transform.position, TempBallPos);
                     Vector3 addTrans = new Vector3(
@@ -236,7 +237,7 @@ public class WhiteBall : MonoBehaviour
                         workBall.ballobject.transform.position = TempBallPos;
                     }
                 }
-                else if (stat == 5)
+                else if (stat == 5) // キューボールを初期位置に戻す, 変数の初期化
                 {
                     Vector3 addTrans = new Vector3(0, speed, 0);
                     this.gameObject.transform.position += addTrans;
