@@ -4,19 +4,21 @@ using UnityEngine;
 using System;
 using System.Net;
 using Unity.VisualScripting;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class SortController : MonoBehaviour
 {
-    BallClass[] myBall = new BallClass[5];
+    public static BallClass[] myBall = new BallClass[5];
     GameObject bar1;
     GameObject bar2;
     GameObject arrow;
+    GameObject resButton;
 
     float timeInterval = 0.75f;
-    int current_idx = 0;
+    public static int current_idx = 0;
     const float BallInterval = 0.8f;
-    bool isSorging = false; //ソート実行中かを表すフラグ
+    public static bool isSorging = false; //ソート実行中かを表すフラグ
 
     float GetAngle(Vector2 start, Vector2 target)
     {
@@ -178,13 +180,14 @@ public class SortController : MonoBehaviour
         isSorging = false;
     }
 
-    void ShuffleBalls(BallClass[] array)
+    public static void ShuffleBalls(BallClass[] array)
     {
         for (int i = array.Length - 1; i > 0; i--)
         {
             var j = Random.Range(0, i + 1); // UnityEnginのRandomを使用
             (array[i], array[j]) = (array[j], array[i]); // スワップ
         }
+        current_idx = 0;
     }
 
     void Start()
@@ -206,6 +209,7 @@ public class SortController : MonoBehaviour
         bar1 = GameObject.FindGameObjectsWithTag("bar")[0];
         bar2 = GameObject.FindGameObjectsWithTag("bar")[1];
         arrow = GameObject.FindGameObjectsWithTag("arrow")[0];
+        resButton = GameObject.Find("ResetButton"); 
         bar1.SetActive(false);
         bar2.SetActive(false);
         arrow.SetActive(false);
@@ -227,12 +231,14 @@ public class SortController : MonoBehaviour
     {
         if (!WhiteBall.isMoving) SyncBallPos();
 
+        // 動作中はリセットボタンを消す
+        resButton.SetActive(!(isSorging || WhiteBall.isMoving));
+
         if (Input.GetKeyUp(KeyCode.Space))
         {
             //「ソートを実行中でない」かつ「アニメーションも実行中でない」なら入力を受け付ける
             if (!isSorging && !WhiteBall.isMoving)
             {
-                Debug.Log("Key preesed");
                 int myBallLen = myBall.Length;
                 if (current_idx >= myBallLen - 1)
                 {

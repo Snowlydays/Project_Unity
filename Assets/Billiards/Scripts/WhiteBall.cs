@@ -78,22 +78,6 @@ public class WhiteBall : MonoBehaviour
             // キューボールが画面外に飛んでいく
             if (isWhiteBallTouching)
             {
-                // 直進ver
-                // Vector3 addTrans = new Vector3(
-                //     speed * Mathf.Cos(angle * Mathf.Deg2Rad),
-                //     speed * Mathf.Sin(angle * Mathf.Deg2Rad),
-                //     0
-                // );
-                //
-                // this.gameObject.transform.position += addTrans;
-                // Vector2 whiteBallPos = this.gameObject.transform.position;
-                // if (whiteBallPos.x > 6.0f || whiteBallPos.x < -6.0f || whiteBallPos.y > 6.0f || whiteBallPos.y < -6.0f)
-                // {
-                //     Vector3 outOfScreen = new Vector3(0f, -6.0f, 0);
-                //     this.gameObject.transform.position = outOfScreen;
-                //     isWhiteBallTouching = false;
-                // }
-
                 // 反射ver
                 Vector3 addTrans = new Vector3(speed * Mathf.Cos(angle * Mathf.Deg2Rad),
                     -speed * Mathf.Sin(angle * Mathf.Deg2Rad), 0);

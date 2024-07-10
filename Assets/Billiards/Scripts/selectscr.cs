@@ -5,15 +5,18 @@ using UnityEngine;
 
 public class SelectScr : MonoBehaviour
 {
-    // Start is called before the first frame update
     public static int SortKind = 0;
 
     void OnMouseUp()
     {
-        string SortName = this.gameObject.name;
-        if (SortName == "Bubble") SortKind = 1;
-        else if (SortName == "Select") SortKind = 2;
-        else if (SortName == "Insert") SortKind = 3;
-        Debug.Log(SortName + " " + SortKind);
+        // ソート実行中でないときのみ変更を受け付け
+        if (!SortController.isSorging && !WhiteBall.isMoving)
+        {
+            string SortName = this.gameObject.name;
+            if (SortName == "Bubble") SortKind = 1;
+            else if (SortName == "Select") SortKind = 2;
+            else if (SortName == "Insert") SortKind = 3;
+            Debug.Log(SortName + " " + SortKind);
+        }
     }
 }
