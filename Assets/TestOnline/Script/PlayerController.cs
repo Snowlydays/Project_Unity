@@ -25,18 +25,14 @@ public class PlayerController : NetworkBehaviour
 
     void Awake()
     {
-        //clientが入室した時にnetworklistを初期化してバグるので以下のように修正
-        //これによってhostが入ってきた時のみ送受信データを初期化できる(初期化しておかないとエラーが出る)
-        if(HostNetworkData==null & ClientNetworkData==null){
-            HostNetworkData = new NetworkList<int>();
-            ClientNetworkData = new NetworkList<int>();
-        }
+        //どうやらちゃんとclient側でも初期化していなかったのがバグの原因だった
+        HostNetworkData = new NetworkList<int>();
+        ClientNetworkData = new NetworkList<int>();
     }
 
     public override void OnNetworkSpawn()
     {
         // NetworkListの初期化と変更イベントの登録
-        //クライアント側だとOnListChangedイベントがトリガーされない仕様？バグ？があるらしいが、ここではうまく確認できていない
         HostNetworkData.OnListChanged += OnHostNetworkDataChanged;
         ClientNetworkData.OnListChanged += OnClientNetworkDataChanged;
     }
@@ -223,4 +219,10 @@ networklistのデータにアクセスできるようにしたかったのだが
 どうやらClient側だとOnListChangedがトリガーされないことがあるらしく、これに類するバグが起きている
 深刻なのはリストデータがクライアント側で正常に表示されないバグ(HostListは最初のデータが、ClientListはそもそもずっと表示されない)が起きている。
 逆にいうとこれ以外で不備はない。OnListChangedをクライアント側でもトリガーさせる方法はまだうまく見つかっていない。
+
+上についてはnetworklistをクライアントでもちゃんと初期化するように変更したら治った。
+onistchangedがトリガーされていないかどうかはエラーに関係なかったと言える。
+
+同じようなエラーが再発した場合はClientRPCを用いてサーバーがlistの変更を検知したら
+サーバーがクライアントに表示メソッドを処理するよう実行を変えてみる方法もあるので、それも考えたい
 */
