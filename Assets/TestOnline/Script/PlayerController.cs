@@ -143,7 +143,7 @@ public class PlayerController : NetworkBehaviour
 
             UpdateHostText();
             UpdateClientText();
-        }else if(IsClient){
+        }else{
             //クライアントとしてplayerが生成された時点で、networklistはすでに構築されているので、テキストに表示させる処理だけする。
             UpdateHostText();
             UpdateClientText();
