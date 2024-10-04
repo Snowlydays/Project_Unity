@@ -228,12 +228,15 @@ RectTransform:
   - {fileID: 1513339819}
   - {fileID: 1180948755}
 <<<<<<< HEAD
+<<<<<<< HEAD
   - {fileID: 1576003670}
   - {fileID: 61397070}
   - {fileID: 1458908848}
 =======
   - {fileID: 1006150202}
 >>>>>>> 015fc9f (Unityファイルの変更を適用)
+=======
+>>>>>>> 8735b23 (オブジェクトのPrefab化)
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 27.681, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1168,6 +1171,7 @@ CanvasRenderer:
   m_GameObject: {fileID: 715019053}
   m_CullTransparentMesh: 1
 <<<<<<< HEAD
+<<<<<<< HEAD
 --- !u!1 &947011038
 =======
 --- !u!1 &950680541
@@ -1455,6 +1459,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
 >>>>>>> 015fc9f (Unityファイルの変更を適用)
+=======
+>>>>>>> 8735b23 (オブジェクトのPrefab化)
 --- !u!1 &1016255446
 GameObject:
   m_ObjectHideFlags: 0
