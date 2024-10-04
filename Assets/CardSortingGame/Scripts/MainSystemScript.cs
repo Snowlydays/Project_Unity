@@ -1,6 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
+using UnityEngine.UI;
+using TMPro;
 
 public class MainSystemScript : MonoBehaviour
 {
@@ -13,8 +17,13 @@ public class MainSystemScript : MonoBehaviour
 
     GameObject[] mycard = new GameObject[7];//自分の手札
     GameObject[] othercard = new GameObject[7];//相手の手札
+
+    [SerializeField] public Button readyButton; // 準備完了ボタン
+    [SerializeField] public TextMeshProUGUI phaseText; // 表示するフェーズ名を管理するオブジェクト
+    
     void Start()
     {
+        Debug.Log("ゲームスタート");
         //開始時にカードオブジェクトのクローンを作成、配列で管理して並び替え等可能にしていきたい。
         for(int i = 0; i < 7; i++)
         {
@@ -22,6 +31,32 @@ public class MainSystemScript : MonoBehaviour
             mycard[i].GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 0f);
             othercard[i]=Instantiate(CardObject, new Vector3(1.5f*(float)(3-i),1.05f,0.0f), Quaternion.identity);
             othercard[i].GetComponent<SpriteRenderer>().color = new Color(1f, 0f, 0f);
+        }
+        
+        readyButton.onClick.AddListener(OnReadyButtonClicked); // readyボタンにリスナーを追加
+        phaseText.text = "phase0"; // フェーズが変わるごとに表示するテキスト
+    }
+
+    void OnReadyButtonClicked()
+    {
+        Debug.Log("readyButton clicked");
+        const int itemPhase = 1;
+        if (NetworkSystem.phase == 0)
+        {
+            NetworkSystem.phase = itemPhase;
+            UpdatePhaseUI();
+            ItemPhaseManager itemPhaseManager = FindObjectOfType<ItemPhaseManager>();
+            itemPhaseManager.StartItemPhase();
+        }
+    }
+
+    void UpdatePhaseUI()
+    {
+        const int itemPhase = 1;
+        if (NetworkSystem.phase == itemPhase)
+        {
+            Debug.Log("itemPhase: UIを更新");
+            phaseText.text = "ItemPhase";
         }
     }
 
