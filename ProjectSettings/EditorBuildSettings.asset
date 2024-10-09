@@ -17,4 +17,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TestOnline.unity
     guid: 0603898a289514f84932fe74b18b8e61
+  - enabled: 1
+    path: Assets/Scenes/SoAPhaseScenes/ItemPhase.unity
+    guid: e51e18d3736c74a4591a04f708857277
+  - enabled: 1
+    path: Assets/Scenes/SoAPhaseScenes/QuestionPhase.unity
+    guid: d175de4e05bcd4592a3b81f7a0dc14da
   m_configObjects: {}
