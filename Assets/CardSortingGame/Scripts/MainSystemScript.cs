@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class MainSystemScript : MonoBehaviour
 {
@@ -59,6 +60,9 @@ public class MainSystemScript : MonoBehaviour
 
     void Start()
     {
+        SceneManager.LoadScene("Scenes/SoAPhaseScenes/ItemPhase",LoadSceneMode.Additive);
+        SceneManager.LoadScene("Scenes/SoAPhaseScenes/QuestionPhase",LoadSceneMode.Additive);
+
         Debug.Log("ゲームスタート");
         //開始時にカードオブジェクトのクローンを作成、配列で管理して並び替え等可能にしていきたい。
         for(int i = 0; i < 7; i++)
@@ -71,19 +75,21 @@ public class MainSystemScript : MonoBehaviour
         
         readyButton.onClick.AddListener(OnReadyButtonClicked); // readyボタンにリスナーを追加
         phaseText.text = "phase0"; // フェーズが変わるごとに表示するテキスト
+
+        
     }
 
     void OnReadyButtonClicked()
     {
         Debug.Log("readyButton clicked");
-        const int itemPhase = 1;
+        /*const int itemPhase = 1;
         if (NetworkSystem.phase == 0)
         {
             NetworkSystem.phase = itemPhase;
             UpdatePhaseUI();
             ItemPhaseManager itemPhaseManager = FindObjectOfType<ItemPhaseManager>();
             itemPhaseManager.StartItemPhase();
-        }
+        }*/
     }
 
     void UpdatePhaseUI()
