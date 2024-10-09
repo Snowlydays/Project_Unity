@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -13,6 +15,12 @@ public class ItemPhaseManager : MonoBehaviour
     [SerializeField] private GameObject itemTogglePrefab; // アイテム選択用トグルのプレハブ
     [SerializeField] private Button confirmButton; // 決定ボタン
 
+    // Toggleオブジェクトを管理するリスト
+    private List<GameObject> toggleList = new List<GameObject>();
+    [SerializeField] private Color toggleOnColor = Color.green; // トグルがオンの時の色
+    [SerializeField] private Color toggleOffColor = Color.white; // トグルがオフの時の色
+
+
     void Start()
     {
         // 非表示
@@ -24,6 +32,7 @@ public class ItemPhaseManager : MonoBehaviour
         {
             myItems[i] = false;
         }
+
         // 決定ボタンにリスナーを追加
         confirmButton.onClick.AddListener(OnConfirmButtonClicked);
     }
@@ -32,7 +41,7 @@ public class ItemPhaseManager : MonoBehaviour
     {
         Debug.Log("アイテムフェーズ開始");
         DistributeItem();
-        DistributeItem();
+        SortToggles(); // トグルのボタンをソート
         itemDisplayPanel.gameObject.SetActive(true); // アイテムディスプレイを表示
         confirmButton.gameObject.SetActive(true); // 決定ボタンを表示
     }
@@ -45,6 +54,17 @@ public class ItemPhaseManager : MonoBehaviour
             Debug.Log($"アイテム{itemIdx} を使用");
             ApplyItemEffect(itemIdx);
             myItems[itemIdx] = false;
+        }
+
+        // 使用したアイテムのtoggleを削除
+        foreach (GameObject toggleObj in toggleList.ToList())
+        {
+            Toggle toggle = toggleObj.GetComponent<Toggle>();
+            if (toggle.isOn)
+            {
+                toggleList.Remove(toggleObj);
+                Destroy(toggleObj);
+            }
         }
 
         selectedItems.Clear(); // 選択していたアイテムをクリア
@@ -76,7 +96,7 @@ public class ItemPhaseManager : MonoBehaviour
             Debug.Log($"アイテム{distributedItemIdx}:を配布");
 
             // アイテム選択用トグルを作成
-            CreateItemToggle(distributedItemIdx);
+            CreateToggle(distributedItemIdx);
         }
         else
         {
@@ -85,13 +105,54 @@ public class ItemPhaseManager : MonoBehaviour
     }
 
     // アイテムの使用・不使用を選択できるトグルを作成するメソッド
-    private void CreateItemToggle(int itemIdx)
+    private void CreateToggle(int itemIdx)
     {
+        // プレハブをインスタンス化して、itemDisplayPanelの子として配置
         GameObject toggleObj = Instantiate(itemTogglePrefab, itemDisplayPanel);
+
+        // Layout Groupを機能させるために、RectTransformをリセット
+        RectTransform rectTransform = toggleObj.GetComponent<RectTransform>();
+        rectTransform.localScale = Vector3.one;
+        rectTransform.localPosition = Vector3.zero;
+        rectTransform.anchoredPosition = Vector2.zero;
+
+        // Toggleコンポーネントとテキストの設定
         Toggle toggle = toggleObj.GetComponent<Toggle>();
         TextMeshProUGUI toggleText = toggleObj.GetComponentInChildren<TextMeshProUGUI>();
         toggleText.text = $"{itemIdx}";
-        toggle.onValueChanged.AddListener((isOn) => OnToggleValueChanged(isOn, itemIdx));
+
+        // Toggleの背景Imageを取得
+        Image backgroundImage = toggleObj.GetComponentInChildren<Image>();
+        // 初期色を設定
+        backgroundImage.color = toggle.isOn ? toggleOnColor : toggleOffColor;
+
+        // Toggleのリスナーを追加し、色を変更
+        toggle.onValueChanged.AddListener((isOn) =>
+        {
+            backgroundImage.color = isOn ? toggleOnColor : toggleOffColor;
+            OnToggleValueChanged(isOn, itemIdx);
+        });
+
+        // Toggleをリストに追加
+        toggleList.Add(toggleObj);
+    }
+
+    // Toggleのボタンを昇順に並び変えるメソッド(これがないとボタンが作成された順に並ぶ)
+    private void SortToggles()
+    {
+        // ソート(Toggleのテキストの昇順)
+        toggleList.Sort((a, b) =>
+        {
+            string textA = a.GetComponentInChildren<TextMeshProUGUI>().text;
+            string textB = b.GetComponentInChildren<TextMeshProUGUI>().text;
+            return String.CompareOrdinal(textA, textB);
+        });
+
+        // ソートされた順にUI上の順序を再設定
+        for (int i = 0; i < toggleList.Count; i++)
+        {
+            toggleList[i].transform.SetSiblingIndex(i);
+        }
     }
 
     private void OnToggleValueChanged(bool isOn, int itemIdx)
