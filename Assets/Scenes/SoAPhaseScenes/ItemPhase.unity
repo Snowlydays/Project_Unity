@@ -611,9 +611,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myItems: 000000000000
-  itemDisplayPanel: {fileID: 0}
+  itemDisplayPanel: {fileID: 1353334399}
   itemTogglePrefab: {fileID: 4444555943351918298, guid: 996ff370f383e4aeca1b336a3d1e7b9b, type: 3}
-  confirmButton: {fileID: 0}
+  confirmButton: {fileID: 1310864688}
   toggleOnColor: {r: 0, g: 1, b: 0, a: 1}
   toggleOffColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!4 &1774143079
