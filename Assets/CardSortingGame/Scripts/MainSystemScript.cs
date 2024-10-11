@@ -75,21 +75,19 @@ public class MainSystemScript : MonoBehaviour
         
         readyButton.onClick.AddListener(OnReadyButtonClicked); // readyボタンにリスナーを追加
         phaseText.text = "phase0"; // フェーズが変わるごとに表示するテキスト
-
-        
     }
 
     void OnReadyButtonClicked()
     {
         Debug.Log("readyButton clicked");
-        /*const int itemPhase = 1;
+        const int itemPhase = 1;
         if (NetworkSystem.phase == 0)
         {
             NetworkSystem.phase = itemPhase;
             UpdatePhaseUI();
             ItemPhaseManager itemPhaseManager = FindObjectOfType<ItemPhaseManager>();
             itemPhaseManager.StartItemPhase();
-        }*/
+        }
     }
 
     void UpdatePhaseUI()
