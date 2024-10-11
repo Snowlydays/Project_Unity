@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  https-portal:
+    image: steveltn/https-portal:1
+    ports:
+      - '3443:443' # HTTPSアクセス用
+      - '3080:80'  # HTTPからHTTPSへのリダイレクト
+    environment:
+      STAGE: local
+      DOMAINS: 'localhost -> http://nginx:80' # Nginxへのリバースプロキシ
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - nginx
+
+  webgl:
+    build: .
+    ports:
+      - "8080:80"
+    volumes:
+      - ./webgl:/webgl  # TestBuild/webgl をマウント
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"  # Nginxで使用するポート
+    volumes:
+      - ./webgl:/usr/share/nginx/html # TestBuild/webgl をマウントしてUnity WebGLのファイルを提供
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro # TestBuild/nginx.conf をNginxの設定として読み込む
+    expose:
+      - "80"  # 他のコンテナがアクセスできるようにポートを公開
