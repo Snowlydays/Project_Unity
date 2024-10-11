@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
-public class Draggable : MonoBehaviour
+public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     private UnityAction onBeginDrag;
     private UnityAction onDrag;
@@ -14,17 +15,25 @@ public class Draggable : MonoBehaviour
         this.onEndDrag = onEndDrag;
     }
 
-    void OnMouseDown()
+    // ドラッグ開始時に呼び出される
+    public void OnBeginDrag(PointerEventData eventData)
     {
         onBeginDrag?.Invoke();
     }
 
-    void OnMouseDrag()
+    // ドラッグ中に呼び出される
+    public void OnDrag(PointerEventData eventData)
     {
         onDrag?.Invoke();
+        
+        // マウスに追従させるためのコード
+        Vector3 newPosition = eventData.position;
+        newPosition.z = 0; // Z座標を0に固定する
+        transform.position = newPosition;
     }
 
-    void OnMouseUp()
+    // ドラッグ終了時に呼び出される
+    public void OnEndDrag(PointerEventData eventData)
     {
         onEndDrag?.Invoke();
     }
