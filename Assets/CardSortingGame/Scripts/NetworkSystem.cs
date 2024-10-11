@@ -24,10 +24,6 @@ public class NetworkSystem : NetworkBehaviour
 
     void Update()
     {
-        if (IsOwner == false)
-        {
-            return;
-        }
         if(IsHost){
             if(Input.GetKeyDown(KeyCode.Alpha0)){
                 netphase.Value=0;
