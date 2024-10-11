@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class QutstionController : MonoBehaviour
 {
@@ -15,6 +16,8 @@ public class QutstionController : MonoBehaviour
     void Start()
     {
         bg = GameObject.Find("QuestioningBG");
+
+        confirmButton = GameObject.Find("ConfirmButton");
     }
 
     private GameObject selectedCard1 = null;
@@ -31,8 +34,20 @@ public class QutstionController : MonoBehaviour
             MainSystemScript mainSystem = FindObjectOfType<MainSystemScript>();
             GameObject[] clonedCards = mainSystem.CloneMyCardsAsUI(); // クローンカードを取得
             
-            foreach (GameObject card in clonedCards)
+            if(clonedCards == null)
             {
+                Debug.LogError("clonedCards are null!");
+            }
+
+            // キャンバスを探す
+            Canvas canvas = GameObject.Find("QuestionCanvas").GetComponent<Canvas>();
+            
+            foreach(GameObject card in clonedCards)
+            {
+                // キャンバスにカードを追加
+                card.transform.SetParent(canvas.transform);
+
+                // カードをボタンとして設定
                 Button cardButton = card.GetComponent<Button>();
                 cardButton.onClick.AddListener(() => ToggleCardSelection(card));
             }
@@ -88,10 +103,6 @@ public class QutstionController : MonoBehaviour
 
             // 比較結果を表示する処理
             CompareCards(selectedCard1, selectedCard2);
-
-            // 比較後に選択をリセット
-            selectedCard1 = null;
-            selectedCard2 = null;
         }
     }
 

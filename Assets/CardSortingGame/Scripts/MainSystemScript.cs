@@ -14,36 +14,30 @@ public class MainSystemScript : MonoBehaviour
     //オブジェクトはプレファブ化して単一で管理、操作したい場合は以下の配列で行う。
     //後々これをビリヤードよろしく自作クラスで管理できると上々
 
-
-
     GameObject[] mycard = new GameObject[7];//自分の手札
     GameObject[] othercard = new GameObject[7];//相手の手札
 
     [SerializeField] public Button readyButton; // 準備完了ボタン
     [SerializeField] public TextMeshProUGUI phaseText; // 表示するフェーズ名を管理するオブジェクト
 
+    public GameObject[] GetMyCards()
+    {
+        return mycard;
+    }
+
     public GameObject[] CloneMyCardsAsUI()
     {
-        /*
-        この時点では、カードが番号の情報を持っていないため、比較に使用する属性は無視している。
-        カードの情報を保持する新しいクラスを定義するのが良いかもしれない。
-        */
-
-        // キャンバスを探す
-        Canvas canvas = FindObjectOfType<Canvas>();
-
         GameObject[] clonedCards = new GameObject[mycard.Length];
         for (int i = 0; i < mycard.Length; i++)
         {
             // カードのクローンをUIとして生成
             GameObject clonedCard = new GameObject("ClonedCard_" + i);
             clonedCard.tag = "ClonedCard";
-            clonedCard.transform.SetParent(canvas.transform);
-
+            
             // RectTransformを設定してUI要素にする
             RectTransform rectTransform = clonedCard.AddComponent<RectTransform>();
             rectTransform.sizeDelta = new Vector2(100, 150); // カードのサイズを指定
-            rectTransform.anchoredPosition = new Vector2(110f*(float)(3-i), 0); // カードの位置を指定
+            rectTransform.anchoredPosition = new Vector2(130f*(float)(3-i) + 960, 540); // カードの位置を指定
 
             // Imageコンポーネントを追加してUI画像として表示
             Image image = clonedCard.AddComponent<Image>();
@@ -60,7 +54,7 @@ public class MainSystemScript : MonoBehaviour
 
     void Start()
     {
-        SceneManager.LoadScene("Scenes/SoAPhaseScenes/ItemPhase",LoadSceneMode.Additive);
+        // SceneManager.LoadScene("Scenes/SoAPhaseScenes/ItemPhase",LoadSceneMode.Additive);
         SceneManager.LoadScene("Scenes/SoAPhaseScenes/QuestionPhase",LoadSceneMode.Additive);
 
         Debug.Log("ゲームスタート");
