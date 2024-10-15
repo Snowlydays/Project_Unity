@@ -8,6 +8,7 @@ TagManager:
   - bar
   - arrow
   - ClonedCard
+  - InventoryPanel
   layers:
   - Default
   - TransparentFX
