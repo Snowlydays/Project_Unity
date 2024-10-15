@@ -614,6 +614,15 @@ MonoBehaviour:
   itemDisplayPanel: {fileID: 1353334399}
   itemTogglePrefab: {fileID: 4444555943351918298, guid: 996ff370f383e4aeca1b336a3d1e7b9b, type: 3}
   confirmButton: {fileID: 1310864688}
+  inventoryPanel: {fileID: 0}
+  inventoryItemPrefab: {fileID: 7083425294987572048, guid: 05e718d2ca6654d1d855c4d8500e994b, type: 3}
+  itemIcons:
+  - {fileID: 21300000, guid: 1bac38a90817b41c8a50d07079830bc0, type: 3}
+  - {fileID: 21300000, guid: c0c6b64a1200c4f61a1d7972e57a2436, type: 3}
+  - {fileID: 21300000, guid: 79ed22cf431af4165a68b18c8bdbe652, type: 3}
+  - {fileID: 21300000, guid: c7ffb6d92cdf84c4f9052539be71564a, type: 3}
+  - {fileID: 21300000, guid: c61c289c9286945a78007da1e4baab6d, type: 3}
+  - {fileID: 21300000, guid: 041d4b51aa909415bb39f8e28320ebb0, type: 3}
   toggleOnColor: {r: 0, g: 1, b: 0, a: 1}
   toggleOffColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!4 &1774143079

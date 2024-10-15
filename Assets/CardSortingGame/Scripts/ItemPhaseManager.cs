@@ -15,12 +15,28 @@ public class ItemPhaseManager : MonoBehaviour
     [SerializeField] private GameObject itemTogglePrefab; // アイテム選択用トグルのプレハブ
     [SerializeField] private Button confirmButton; // 決定ボタン
 
+    // 所有アイテム表示用の変数
+    [SerializeField] private Transform inventoryPanel; // 所有アイテムを表示するパネル
+    [SerializeField] private GameObject inventoryItemPrefab; // 所有アイテム表示用のプレハブ
+    [SerializeField] private Sprite[] itemIcons; // 各アイテムのアイコン
+    
     // Toggleオブジェクトを管理するリスト
     private List<GameObject> toggleList = new List<GameObject>();
     [SerializeField] private Color toggleOnColor = Color.green; // トグルがオンの時の色
     [SerializeField] private Color toggleOffColor = Color.white; // トグルがオフの時の色
 
 
+    /* AwakeとStartの違い
+     これらは呼ばれるタイミングが違う。Awakeが先で、Startが後
+     具体的には、
+     Awakeはスクリプトが有効化された直後に、シーンにロードされた時点で呼び出される。
+     Startはオブジェクトが有効化された後に呼ばれる。
+     */
+    void Awake()
+    {
+        GameObject inventoryPanelObj = GameObject.FindGameObjectWithTag("InventoryPanel");
+        inventoryPanel = inventoryPanelObj.transform;
+    }
     void Start()
     {
         // 非表示
@@ -44,6 +60,47 @@ public class ItemPhaseManager : MonoBehaviour
         SortToggles(); // トグルのボタンをソート
         itemDisplayPanel.gameObject.SetActive(true); // アイテムディスプレイを表示
         confirmButton.gameObject.SetActive(true); // 決定ボタンを表示
+
+        UpdateInventoryUI(); // 所有アイテムの表示を更新
+    }
+
+    private void UpdateInventoryUI()
+    {
+        // 既存のアイコンをクリア
+        foreach (Transform child in inventoryPanel)
+        {
+            Destroy(child.gameObject);
+        }
+        
+        // 所有しているアイテムのアイコンを表示
+        for(int i = 0;i < ITEM_NUM;i++)
+        {
+            if (myItems[i])
+            {
+                CreateInventoryItem(i);
+            }
+        }
+    }
+
+    private void CreateInventoryItem(int itemIdx)
+    {
+        // プレハブをインスタンス化して、inventoryPanelの子として配置
+        GameObject inventoryItem = Instantiate(inventoryItemPrefab, inventoryPanel);
+
+        // RectTransformをリセット
+        RectTransform rectTransform = inventoryItem.GetComponent<RectTransform>();
+        rectTransform.localScale = Vector3.one;
+
+        // Imageコンポーネントにアイコンを設定
+        Image itemImage = inventoryItem.GetComponent<Image>();
+        if (itemImage != null && itemIcons.Length > itemIdx)
+        {
+            itemImage.sprite = itemIcons[itemIdx];
+        }
+        else
+        {
+            Debug.LogWarning($"ItemIconが設定されていません。アイテムID: {itemIdx}");
+        }
     }
 
     private void OnConfirmButtonClicked()
@@ -66,12 +123,14 @@ public class ItemPhaseManager : MonoBehaviour
                 Destroy(toggleObj);
             }
         }
+        
+        UpdateInventoryUI(); // 所有アイテムの表示を更新
 
         selectedItems.Clear(); // 選択していたアイテムをクリア
         itemDisplayPanel.gameObject.SetActive(false);
         confirmButton.gameObject.SetActive(false);
 
-        NetworkSystem.phase = 2; // 質問・詠唱フェーズへ進める
+        NetworkSystem.phase = 0; // 質問・詠唱フェーズへ進める
     }
 
     // プレイヤーにアイテムを配布するメソッド
@@ -93,7 +152,7 @@ public class ItemPhaseManager : MonoBehaviour
             int randomIdx = UnityEngine.Random.Range(0, unownedItems.Count);
             int distributedItemIdx = unownedItems[randomIdx];
             myItems[distributedItemIdx] = true;
-            Debug.Log($"アイテム{distributedItemIdx}:を配布");
+            Debug.Log($"アイテム{distributedItemIdx+1}:を配布");
 
             // アイテム選択用トグルを作成
             CreateToggle(distributedItemIdx);
@@ -119,7 +178,7 @@ public class ItemPhaseManager : MonoBehaviour
         // Toggleコンポーネントとテキストの設定
         Toggle toggle = toggleObj.GetComponent<Toggle>();
         TextMeshProUGUI toggleText = toggleObj.GetComponentInChildren<TextMeshProUGUI>();
-        toggleText.text = $"{itemIdx}";
+        toggleText.text = $"{itemIdx+1}";
 
         // Toggleの背景Imageを取得
         Image backgroundImage = toggleObj.GetComponentInChildren<Image>();
