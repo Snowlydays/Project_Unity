@@ -80,7 +80,9 @@ public class MainSystemScript : MonoBehaviour
         const int itemPhase = 1;
         if (NetworkSystem.phase == 0)
         {
-            NetworkSystem.phase = itemPhase;
+            // NetworkSystem.phase = itemPhase;
+            NetworkSystem netWorkSystem = FindObjectOfType<NetworkSystem>();
+            netWorkSystem.changePhase(itemPhase);
             UpdatePhaseUI();
             ItemPhaseManager itemPhaseManager = FindObjectOfType<ItemPhaseManager>();
             itemPhaseManager.StartItemPhase();
