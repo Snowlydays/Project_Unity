@@ -64,6 +64,7 @@ public class ItemPhaseManager : MonoBehaviour
         UpdateInventoryUI(); // 所有アイテムの表示を更新
     }
 
+    // 表示するアイテムを更新するメソッド
     private void UpdateInventoryUI()
     {
         // 既存のアイコンをクリア
@@ -87,20 +88,13 @@ public class ItemPhaseManager : MonoBehaviour
         // プレハブをインスタンス化して、inventoryPanelの子として配置
         GameObject inventoryItem = Instantiate(inventoryItemPrefab, inventoryPanel);
 
-        // RectTransformをリセット
+        // RectTransformを設定
         RectTransform rectTransform = inventoryItem.GetComponent<RectTransform>();
         rectTransform.localScale = Vector3.one;
 
         // Imageコンポーネントにアイコンを設定
         Image itemImage = inventoryItem.GetComponent<Image>();
-        if (itemImage != null && itemIcons.Length > itemIdx)
-        {
-            itemImage.sprite = itemIcons[itemIdx];
-        }
-        else
-        {
-            Debug.LogWarning($"ItemIconが設定されていません。アイテムID: {itemIdx}");
-        }
+        itemImage.sprite = itemIcons[itemIdx];
     }
 
     private void OnConfirmButtonClicked()
@@ -130,7 +124,7 @@ public class ItemPhaseManager : MonoBehaviour
         itemDisplayPanel.gameObject.SetActive(false);
         confirmButton.gameObject.SetActive(false);
 
-        NetworkSystem.phase = 0; // 質問・詠唱フェーズへ進める
+        NetworkSystem.phase = 2; // 質問・詠唱フェーズへ進める
     }
 
     // プレイヤーにアイテムを配布するメソッド
