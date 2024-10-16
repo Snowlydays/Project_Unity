@@ -124,9 +124,9 @@ public class ItemPhaseManager : MonoBehaviour
         itemDisplayPanel.gameObject.SetActive(false);
         confirmButton.gameObject.SetActive(false);
 
-        //NetworkSystem.phase = 2; // 質問・詠唱フェーズへ進める
+        // 質問・詠唱フェーズへ進める
         NetworkSystem netWorkSystem = FindObjectOfType<NetworkSystem>();
-        netWorkSystem.changePhase(0);
+        netWorkSystem.changePhase(2);
     }
 
     // プレイヤーにアイテムを配布するメソッド
