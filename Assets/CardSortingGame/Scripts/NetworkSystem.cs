@@ -17,6 +17,15 @@ public class NetworkSystem : NetworkBehaviour
         };
     }
 
+    public void changePhase(int phaseNum)
+    {
+        if (IsHost)
+        {
+            netphase.Value=phaseNum;
+            Debug.Log("netphase.value変更");
+        }
+    }
+
     void Start()
     {
         
