@@ -815,7 +815,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6f292943196d449aac7658f43c11597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CardObject: {fileID: 329253337323091623, guid: 3cfad15445db34bb0b80fd7f15403179, type: 3}
+  CardObject: {fileID: 3033808387279149045, guid: 3cfad15445db34bb0b80fd7f15403179, type: 3}
   readyButton: {fileID: 195278635}
   phaseText: {fileID: 1576003671}
 --- !u!212 &534725844
