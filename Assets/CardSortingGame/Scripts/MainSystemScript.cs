@@ -41,7 +41,7 @@ public class MainSystemScript : MonoBehaviour
 
             // Imageコンポーネントを追加してUI画像として表示
             Image image = clonedCard.AddComponent<Image>();
-            image.sprite = mycard[i].GetComponent<SpriteRenderer>().sprite; // 元のカードのスプライトを取得して設定
+            image.sprite = mycard[i].GetComponent<Image>().sprite; // 元のカードのスプライトを取得して設定
 
             // 必要であればクリックイベントのためにButtonコンポーネントを追加
             clonedCard.AddComponent<Button>();
