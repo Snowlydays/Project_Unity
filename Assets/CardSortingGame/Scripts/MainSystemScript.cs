@@ -65,12 +65,15 @@ public class MainSystemScript : MonoBehaviour
 
         Debug.Log("ゲームスタート");
         //開始時にカードオブジェクトのクローンを作成、配列で管理して並び替え等可能にしていきたい。
+        GameObject canvas = GameObject.Find("Canvas");//Canvasオブジェクトを取得
         for(int i = 0; i < 7; i++)
         {
-            mycard[i]=Instantiate(CardObject, new Vector3(1.5f*(float)(3-i),-0.75f,0.0f), Quaternion.identity);
-            mycard[i].GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 0f);
-            othercard[i]=Instantiate(CardObject, new Vector3(1.5f*(float)(3-i),1.05f,0.0f), Quaternion.identity);
-            othercard[i].GetComponent<SpriteRenderer>().color = new Color(1f, 0f, 0f);
+            mycard[i]=Instantiate(CardObject, new Vector3(95f*(float)(3-i),-60f,0.0f), Quaternion.identity);
+            //mycard[i].GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 0f);
+            mycard[i].transform.SetParent (canvas.transform,false);
+            othercard[i]=Instantiate(CardObject, new Vector3(95f*(float)(3-i),85f,0.0f), Quaternion.identity);
+            othercard[i].GetComponent<Image>().color = new Color(1f, 0f, 0f);
+            othercard[i].transform.SetParent (canvas.transform,false);
         }
         
         readyButton.onClick.AddListener(OnReadyButtonClicked); // readyボタンにリスナーを追加
