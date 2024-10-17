@@ -10,6 +10,12 @@ public class CardsManager : MonoBehaviour
     private int draggingCardIndex = -1; // ドラッグ中のカードのインデックス
     private int hoveringIndex = -1; // マウスが重なっているカードのインデックス
 
+    public List<CardClass> myCards = new List<CardClass>(); // 手札のリスト
+    private Vector3 originalPosition; // 元の位置を記憶
+    private GameObject draggingCard = null; // 現在ドラッグ中のカード
+    private int draggingCardIndex = -1; // ドラッグ中のカードのインデックス
+    private int hoveringIndex = -1; // マウスが重なっているカードのインデックス
+
     void Start()
     {
         MainSystemScript mainSystem = FindObjectOfType<MainSystemScript>();
@@ -19,7 +25,16 @@ public class CardsManager : MonoBehaviour
         
         // カードにドラッグ機能を追加してリストに登録
         for (int i = 0; i < cardObjects.Length; i++)
+        GameObject[] cardObjects = mainSystem.GetMyCards(); // MainSystemScriptで生成されたカードを取得
+        
+        int[] idx = GenRandomIdx(1, cardObjects.Length); // シャッフルインデックスを生成
+        
+        // カードにドラッグ機能を追加してリストに登録
+        for (int i = 0; i < cardObjects.Length; i++)
         {
+            GameObject cardObject = cardObjects[i];
+            AddDragFunctionality(cardObject, i); // ドラッグ機能を追加
+            CardClass card = new CardClass(cardObject, idx[i]);
             GameObject cardObject = cardObjects[i];
             AddDragFunctionality(cardObject, i); // ドラッグ機能を追加
             CardClass card = new CardClass(cardObject, idx[i]);
@@ -56,20 +71,22 @@ public class CardsManager : MonoBehaviour
             image.sprite = card.cardObject.GetComponent<Image>().sprite; // 元のカードのスプライトを取得して設定
 
             clonedCards.Add(clonedCard);
+            // Debug.Log(idx[i]);
         }
 
         return clonedCards.ToArray();
     }
 
     // ランダムインデックス生成
+    // ランダムインデックス生成
     public int[] GenRandomIdx(int origin, int len)
     {
         int[] idx = new int[len];
-        for (int i = 0; i < len; i++)
+        for  (int i = 0; i < len; i++)
         {
             idx[i] = i + origin;
         }
-        for (int i = 0; i < len; i++)
+        for  (int i = 0; i < len; i++)
         {
             int j = Random.Range(0, len);
             (idx[i], idx[j]) = (idx[j], idx[i]);
@@ -175,7 +192,7 @@ public class CardsManager : MonoBehaviour
         }
         else
         {
-            // 元の位置に戻す（UI座標系）
+            // 元の位置に戻す
             card.transform.localPosition = originalPosition;
         }
 
@@ -183,7 +200,6 @@ public class CardsManager : MonoBehaviour
         draggingCard = null;
         draggingCardIndex = -1;
     }
-
 
     // 元の配置に戻す関数
     private void ResetTemporaryRearrangement()
@@ -259,6 +275,7 @@ public class CardsManager : MonoBehaviour
     void Update()
     {
         // printMyCards();
+        KeepMyCardsFollowingThePositions();printMyCards();
         KeepMyCardsFollowingThePositions();
     }
 }
