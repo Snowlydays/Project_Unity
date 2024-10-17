@@ -54,7 +54,7 @@ public class MainSystemScript : MonoBehaviour
 
     void Start()
     {
-        // SceneManager.LoadScene("Scenes/SoAPhaseScenes/ItemPhase",LoadSceneMode.Additive);
+        SceneManager.LoadScene("Scenes/SoAPhaseScenes/ItemPhase",LoadSceneMode.Additive);
         SceneManager.LoadScene("Scenes/SoAPhaseScenes/QuestionPhase",LoadSceneMode.Additive);
 
         Debug.Log("ゲームスタート");

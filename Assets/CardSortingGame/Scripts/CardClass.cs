@@ -2,14 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CardClass : MonoBehaviour
+public class CardClass
 {
     public GameObject cardObject;
-    public int cardNumber;
+    public int cardIdx;
 
     public CardClass(GameObject objCard, int num)
     {
         cardObject = objCard;
-        cardNumber = num;
+        cardIdx = num;
     }
 }
