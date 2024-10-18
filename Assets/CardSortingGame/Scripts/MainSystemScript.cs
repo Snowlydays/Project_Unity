@@ -27,33 +27,6 @@ public class MainSystemScript : MonoBehaviour
         return mycard;
     }
 
-    public GameObject[] GetMyCards()
-    {
-        GameObject[] clonedCards = new GameObject[mycard.Length];
-        for (int i = 0; i < mycard.Length; i++)
-        {
-            // カードのクローンをUIとして生成
-            GameObject clonedCard = new GameObject("ClonedCard_" + i);
-            clonedCard.tag = "ClonedCard";
-            
-            // RectTransformを設定してUI要素にする
-            RectTransform rectTransform = clonedCard.AddComponent<RectTransform>();
-            rectTransform.sizeDelta = new Vector2(100, 150); // カードのサイズを指定
-            rectTransform.anchoredPosition = new Vector2(130f*(float)(3-i) + 960, 540); // カードの位置を指定
-
-            // Imageコンポーネントを追加してUI画像として表示
-            Image image = clonedCard.AddComponent<Image>();
-            image.sprite = mycard[i].GetComponent<Image>().sprite; // 元のカードのスプライトを取得して設定
-
-            // 必要であればクリックイベントのためにButtonコンポーネントを追加
-            clonedCard.AddComponent<Button>();
-
-            clonedCards[i] = clonedCard;
-        }
-
-        return clonedCards;
-    }
-
     void Awake(){
         SceneManager.LoadScene("Scenes/SoAPhaseScenes/ItemPhase",LoadSceneMode.Additive);
         SceneManager.LoadScene("Scenes/SoAPhaseScenes/QuestionPhase",LoadSceneMode.Additive);

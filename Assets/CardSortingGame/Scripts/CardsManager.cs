@@ -71,7 +71,38 @@ public class CardsManager : MonoBehaviour
             image.sprite = card.cardObject.GetComponent<Image>().sprite; // 元のカードのスプライトを取得して設定
 
             clonedCards.Add(clonedCard);
-            // Debug.Log(idx[i]);
+        }
+    }
+
+    // myCardsのカードをクローンしてUI用のオブジェクトを生成
+    public GameObject[] CloneMyCardsAsUI()
+    {
+        List<GameObject> clonedCards = new List<GameObject>();
+
+        for(int i = 0; i < myCards.Count; i++)
+        {
+            var card = myCards[i];
+            // カードのゲームオブジェクトを複製
+            GameObject clonedCard = new GameObject("ClonedCard_" + card.cardIdx);
+            
+            // カードにUI用の設定（例：ボタン、画像など）を追加
+            clonedCard.AddComponent<Button>();
+            clonedCard.tag = "ClonedCard";  // タグを設定
+
+            // UI用の適切な位置やサイズを設定
+            clonedCard.transform.localScale = new Vector3(1.2f, 1.3f, 1f);  // スケールを調整
+            // clonedCard.GetComponent<Image>().color = Color.white;  // 色をリセット
+            
+            // RectTransformを設定してUI要素にする
+            RectTransform rectTransform = clonedCard.AddComponent<RectTransform>();
+            rectTransform.sizeDelta = new Vector2(100, 150); // カードのサイズを指定
+            rectTransform.anchoredPosition = new Vector2(130f*(float)(3-i) + 960, 540); // カードの位置を指定
+
+            // Imageコンポーネントを追加してUI画像として表示
+            Image image = clonedCard.AddComponent<Image>();
+            image.sprite = card.cardObject.GetComponent<Image>().sprite; // 元のカードのスプライトを取得して設定
+
+            clonedCards.Add(clonedCard);
         }
 
         return clonedCards.ToArray();
@@ -192,7 +223,7 @@ public class CardsManager : MonoBehaviour
         }
         else
         {
-            // 元の位置に戻す
+            // 元の位置に戻す（UI座標系）
             card.transform.localPosition = originalPosition;
         }
 
@@ -200,6 +231,7 @@ public class CardsManager : MonoBehaviour
         draggingCard = null;
         draggingCardIndex = -1;
     }
+
 
     // 元の配置に戻す関数
     private void ResetTemporaryRearrangement()
