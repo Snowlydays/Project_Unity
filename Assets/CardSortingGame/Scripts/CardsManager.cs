@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CardsManager : MonoBehaviour
 {
@@ -23,8 +24,41 @@ public class CardsManager : MonoBehaviour
             AddDragFunctionality(cardObject, i); // ドラッグ機能を追加
             CardClass card = new CardClass(cardObject, idx[i]);
             myCards.Add(card);
-            // Debug.Log(idx[i]);
         }
+    }
+
+    // myCardsのカードをクローンしてUI用のオブジェクトを生成
+    public GameObject[] CloneMyCardsAsUI()
+    {
+        List<GameObject> clonedCards = new List<GameObject>();
+
+        for(int i = 0; i < myCards.Count; i++)
+        {
+            var card = myCards[i];
+            // カードのゲームオブジェクトを複製
+            GameObject clonedCard = new GameObject("ClonedCard_" + card.cardIdx);
+            
+            // カードにUI用の設定（例：ボタン、画像など）を追加
+            clonedCard.AddComponent<Button>();
+            clonedCard.tag = "ClonedCard";  // タグを設定
+
+            // UI用の適切な位置やサイズを設定
+            clonedCard.transform.localScale = new Vector3(1.2f, 1.3f, 1f);  // スケールを調整
+            // clonedCard.GetComponent<Image>().color = Color.white;  // 色をリセット
+            
+            // RectTransformを設定してUI要素にする
+            RectTransform rectTransform = clonedCard.AddComponent<RectTransform>();
+            rectTransform.sizeDelta = new Vector2(100, 150); // カードのサイズを指定
+            rectTransform.anchoredPosition = new Vector2(130f*(float)(3-i) + 960, 540); // カードの位置を指定
+
+            // Imageコンポーネントを追加してUI画像として表示
+            Image image = clonedCard.AddComponent<Image>();
+            image.sprite = card.cardObject.GetComponent<Image>().sprite; // 元のカードのスプライトを取得して設定
+
+            clonedCards.Add(clonedCard);
+        }
+
+        return clonedCards.ToArray();
     }
 
     // ランダムインデックス生成
@@ -46,7 +80,11 @@ public class CardsManager : MonoBehaviour
     // ドラッグ機能をカードに追加
     private void AddDragFunctionality(GameObject card, int cardIndex)
     {
-        card.AddComponent<BoxCollider2D>(); // コライダーを追加
+        var image = card.GetComponent<Image>();
+        if (image != null)
+        {
+            image.raycastTarget = true; // RaycastTargetを有効にする
+        }
 
         // マウスダウンでドラッグ開始
         card.AddComponent<Draggable>().Initialize(
@@ -65,10 +103,15 @@ public class CardsManager : MonoBehaviour
 
     private void OnDrag(GameObject card)
     {
-        // マウスの位置にカードを追従させる
+        // UI座標系でマウスの位置を取得し、カードに反映させる
         Vector3 newPosition = Input.mousePosition;
-        newPosition.z = 10f; // カメラの適切な距離
-        card.transform.position = Camera.main.ScreenToWorldPoint(newPosition);
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            card.transform.parent as RectTransform, // 親のRectTransform
+            newPosition,
+            Camera.main, // カメラ
+            out Vector2 localPoint // ローカル座標系に変換されたマウス位置
+        );
+        card.transform.localPosition = localPoint;
 
         // 一時的な並べ替えを仮表示
         /*
@@ -125,14 +168,14 @@ public class CardsManager : MonoBehaviour
 
     private void OnEndDrag(GameObject card)
     {
-        // ドロップ時の処理 (以前と同じ)
+        // ドロップ時の処理
         if (hoveringIndex != -1)
         {
             RearrangeCards(draggingCardIndex, hoveringIndex);
         }
         else
         {
-            // 元の位置に戻す
+            // 元の位置に戻す（UI座標系）
             card.transform.localPosition = originalPosition;
         }
 
@@ -140,6 +183,7 @@ public class CardsManager : MonoBehaviour
         draggingCard = null;
         draggingCardIndex = -1;
     }
+
 
     // 元の配置に戻す関数
     private void ResetTemporaryRearrangement()
@@ -214,7 +258,7 @@ public class CardsManager : MonoBehaviour
 
     void Update()
     {
-        printMyCards();
+        // printMyCards();
         KeepMyCardsFollowingThePositions();
     }
 }

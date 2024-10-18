@@ -12,17 +12,23 @@ public class QutstionController : MonoBehaviour
     private Color originalColor = Color.white;  // デフォルトのカードの色
     private Color selectedColor = Color.yellow; // 選択されたカードの色
 
+    // CardsManagerを参照する
+    private CardsManager cardsManager;
+
     // Start is called before the first frame update
     void Start()
     {
         bg = GameObject.Find("QuestioningBG");
 
         confirmButton = GameObject.Find("ConfirmButton");
+
+        // CardsManagerを取得
+        cardsManager = FindObjectOfType<CardsManager>();
     }
 
     private GameObject selectedCard1 = null;
     private GameObject selectedCard2 = null;
-    
+
     // phaseの値によってオブジェクトのActive状態を変更する関数
     void ManageActive()
     {
@@ -30,9 +36,8 @@ public class QutstionController : MonoBehaviour
         {
             bg.SetActive(true);
             
-            // MainSystemScriptからクローンカードを取得
-            MainSystemScript mainSystem = FindObjectOfType<MainSystemScript>();
-            GameObject[] clonedCards = mainSystem.CloneMyCardsAsUI(); // クローンカードを取得
+            // CardsManagerからクローンカードを取得
+            GameObject[] clonedCards = cardsManager.CloneMyCardsAsUI();
             
             if(clonedCards == null)
             {
@@ -57,13 +62,17 @@ public class QutstionController : MonoBehaviour
         }
         else if(NetworkSystem.phase != 2 && bg.activeSelf) 
         {
-            // クローンカードのUIを削除する処理
+            // クローンカードのUIを削除
             GameObject[] clonedCards = GameObject.FindGameObjectsWithTag("ClonedCard");
-            foreach (GameObject card in clonedCards)Destroy(card);
+            foreach (GameObject card in clonedCards)
+            {
+                Destroy(card);
+            }
 
             bg.SetActive(false);
         }
     }
+
     
     // カード選択状態の切り替え関数
     void ToggleCardSelection(GameObject card)
@@ -114,9 +123,10 @@ public class QutstionController : MonoBehaviour
 
     void CompareSelectedCards()
     {
+        int ans = -1;
         if (selectedCards.Count == 2)
         {
-            CompareCards(selectedCards[0], selectedCards[1]);
+            ans = CompareCards(selectedCards[0], selectedCards[1]);
             
             // 比較後に選択状態をリセット
             foreach (GameObject card in selectedCards)
@@ -124,6 +134,9 @@ public class QutstionController : MonoBehaviour
                 card.GetComponent<Image>().color = originalColor;  // 色を元に戻す
             }
             selectedCards.Clear();
+            // 通常フェーズへ戻る
+            NetworkSystem netWorkSystem = FindObjectOfType<NetworkSystem>();
+            netWorkSystem.changePhase(0);
         }
         else
         {
@@ -131,17 +144,31 @@ public class QutstionController : MonoBehaviour
         }
     }
 
-    void CompareCards(GameObject card1, GameObject card2)
+    int CompareCards(GameObject leftCard, GameObject rightCard)
     {
-        // カード比較ロジックをここに実装
-        Debug.Log("Comparing " + card1.name + " with " + card2.name);
+        if(leftCard.transform.position.x > rightCard.transform.position.x)
+        {
+            (leftCard, rightCard) = (rightCard, leftCard);
+        }
+
+        string leftName = leftCard.name, rightName = rightCard.name;
+        if(leftName[leftName.Length - 1] < rightName[rightName.Length - 1])
+        {
+            Debug.Log("right card is greater");
+        }
+        else
+        {
+            Debug.Log("left card is greater");
+        }
+
+        return 0;
     }
     
     // Update is called once per frame
     void Update()
     {
         ManageActive();
-
+        // Debug.Log(NetworkSystem.phase);
         // クリックして選択する
         if(Input.GetMouseButtonDown(0))
         {
