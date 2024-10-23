@@ -796,6 +796,7 @@ GameObject:
   - component: {fileID: 534725848}
   - component: {fileID: 534725846}
   - component: {fileID: 534725847}
+  - component: {fileID: 534725849}
   m_Layer: 0
   m_Name: Main System
   m_TagString: Untagged
@@ -930,6 +931,18 @@ MonoBehaviour:
   SpawnWithObservers: 1
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
+--- !u!114 &534725849
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 534725842}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a17681b2ae5b4da09a192237ae3d3111, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &558216564
 GameObject:
   m_ObjectHideFlags: 0
@@ -2643,6 +2656,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ProtocolType: 0
+  m_UseWebSockets: 1
+  m_UseEncryption: 0
   m_MaxPacketQueueSize: 128
   m_MaxPayloadSize: 6144
   m_HeartbeatTimeoutMS: 500

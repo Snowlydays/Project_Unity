@@ -126,7 +126,7 @@ public class ItemPhaseManager : MonoBehaviour
 
         // 質問・詠唱フェーズへ進める
         NetworkSystem netWorkSystem = FindObjectOfType<NetworkSystem>();
-        netWorkSystem.changePhase(2);
+        netWorkSystem.ChangePhase(2);
     }
 
     // プレイヤーにアイテムを配布するメソッド

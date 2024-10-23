@@ -333,7 +333,7 @@ public class SimpleRelayUtp : MonoBehaviour
         hostDriver = NetworkDriver.Create(settings);
 
         // Relayサーバーにバインドします。
-        if (hostDriver.Bind(NetworkEndPoint.AnyIpv4) != 0)
+        if (hostDriver.Bind(NetworkEndpoint.AnyIpv4) != 0)
         {
             Debug.LogError("Host client failed to bind");
         }
@@ -411,7 +411,7 @@ public class SimpleRelayUtp : MonoBehaviour
         playerDriver = NetworkDriver.Create(settings);
 
         // Relayサーバーにバインドします。
-        if (playerDriver.Bind(NetworkEndPoint.AnyIpv4) != 0)
+        if (playerDriver.Bind(NetworkEndpoint.AnyIpv4) != 0)
         {
             Debug.LogError("Player client failed to bind");
         }

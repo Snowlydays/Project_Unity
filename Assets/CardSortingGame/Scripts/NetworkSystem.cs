@@ -17,11 +17,11 @@ public class NetworkSystem : NetworkBehaviour
         };
     }
 
-    public void changePhase(int phaseNum)
+    public void ChangePhase(int newphase)
     {
         if (IsHost)
         {
-            netphase.Value=phaseNum;
+            netphase.Value = newphase;
             Debug.Log("netphase.value変更");
         }
     }
