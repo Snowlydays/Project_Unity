@@ -10,6 +10,7 @@ using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
+using Unity.Networking.Transport.Relay;
 using TMPro;
 
 public class ManagerUIscript : MonoBehaviour
@@ -67,9 +68,13 @@ public class ManagerUIscript : MonoBehaviour
             //アロコーションとは部屋のようなもので、各自が接続をする空間を用意するようなもの。第一引数でクライアントの接続人数を設定できる
             //ここでは1対1のカードゲームなので、ホストで一人、クライアントで一人の計二人を接続可能人数に設定
 
-            //部屋に入るためのコードを取得
             string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
 
+            //通信の設定 ここで　relayでwebsocket通信をするよう設定している
+            RelayServerData relayServerData = new RelayServerData(allocation, "wss");
+            NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
+            
+            /*
             //ここで
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetHostRelayData(
                 allocation.RelayServer.IpV4,
@@ -78,8 +83,8 @@ public class ManagerUIscript : MonoBehaviour
                 allocation.Key,
                 allocation.ConnectionData
                 );
-            
-            Debug.Log(joinCode);
+            */
+            Debug.Log(joinCode);//入室用コードの出力
             codeText.text = "JoinCode:";
             codeText.text += joinCode;
             NetworkManager.Singleton.StartHost();
@@ -104,6 +109,7 @@ public class ManagerUIscript : MonoBehaviour
             //今後再び404エラーが出る可能性もある
 			JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
 
+            /*
 			NetworkManager.Singleton.GetComponent<UnityTransport>().SetClientRelayData(
                 joinAllocation.RelayServer.IpV4,
                 (ushort)joinAllocation.RelayServer.Port,
@@ -112,6 +118,11 @@ public class ManagerUIscript : MonoBehaviour
                 joinAllocation.ConnectionData,
                 joinAllocation.HostConnectionData
                 );
+            */
+
+            //通信の設定 client側も同様に設定する
+            RelayServerData relayServerData = new RelayServerData(joinAllocation, "wss");
+            NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
 
             NetworkManager.Singleton.StartClient();
 
