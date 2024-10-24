@@ -14,7 +14,7 @@ public class MainSystemScript : MonoBehaviour
     //オブジェクトはプレファブ化して単一で管理、操作したい場合は以下の配列で行う。
     //後々これをビリヤードよろしく自作クラスで管理できると上々
 
-    NetworkSystem netWorkSystem;
+    NetworkSystem networkSystem;
 
     GameObject[] mycard = new GameObject[7];//自分の手札
     GameObject[] othercard = new GameObject[7];//相手の手札
@@ -59,14 +59,13 @@ public class MainSystemScript : MonoBehaviour
     }
 
     void Awake(){
-        netWorkSystem = FindObjectOfType<NetworkSystem>();
+        SceneManager.LoadScene("Scenes/SoAPhaseScenes/ItemPhase",LoadSceneMode.Additive);
+        SceneManager.LoadScene("Scenes/SoAPhaseScenes/QuestionPhase",LoadSceneMode.Additive);
+        networkSystem = FindObjectOfType<NetworkSystem>();
     }
 
     void Start()
     {
-        SceneManager.LoadScene("Scenes/SoAPhaseScenes/ItemPhase",LoadSceneMode.Additive);
-        SceneManager.LoadScene("Scenes/SoAPhaseScenes/QuestionPhase",LoadSceneMode.Additive);
-
         Debug.Log("ゲームスタート");
         //開始時にカードオブジェクトのクローンを作成、配列で管理して並び替え等可能にしていきたい。
         GameObject canvas = GameObject.Find("Canvas");//Canvasオブジェクトを取得
@@ -87,15 +86,7 @@ public class MainSystemScript : MonoBehaviour
     void OnReadyButtonClicked()
     {
         Debug.Log("readyButton clicked");
-        const int itemPhase = 1;
-        if (NetworkSystem.phase == 0)
-        {
-            // NetworkSystem.phase = itemPhase;
-            netWorkSystem.ChangePhase(itemPhase);
-            UpdatePhaseUI();
-            ItemPhaseManager itemPhaseManager = FindObjectOfType<ItemPhaseManager>();
-            itemPhaseManager.StartItemPhase();
-        }
+        networkSystem.ToggleReady();
     }
 
     void UpdatePhaseUI()

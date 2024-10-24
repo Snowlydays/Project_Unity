@@ -25,6 +25,7 @@ public class ItemPhaseManager : MonoBehaviour
     [SerializeField] private Color toggleOnColor = Color.green; // トグルがオンの時の色
     [SerializeField] private Color toggleOffColor = Color.white; // トグルがオフの時の色
 
+    private NetworkSystem networkSystem;
 
     /* AwakeとStartの違い
      これらは呼ばれるタイミングが違う。Awakeが先で、Startが後
@@ -34,6 +35,7 @@ public class ItemPhaseManager : MonoBehaviour
      */
     void Awake()
     {
+        networkSystem = FindObjectOfType<NetworkSystem>();
         GameObject inventoryPanelObj = GameObject.FindGameObjectWithTag("InventoryPanel");
         inventoryPanel = inventoryPanelObj.transform;
     }
@@ -124,11 +126,8 @@ public class ItemPhaseManager : MonoBehaviour
         itemDisplayPanel.gameObject.SetActive(false);
         confirmButton.gameObject.SetActive(false);
 
-        // 質問・詠唱フェーズへ進める
-        NetworkSystem netWorkSystem = FindObjectOfType<NetworkSystem>();
-        netWorkSystem.ToggleReady();
-        /*NetworkSystem netWorkSystem = FindObjectOfType<NetworkSystem>();
-        netWorkSystem.ChangePhase(2);*/
+        // 質問・詠唱フェーズへ進めるために、readyをトグルする
+        networkSystem.ToggleReady();
     }
 
     // プレイヤーにアイテムを配布するメソッド
