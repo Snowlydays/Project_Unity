@@ -14,7 +14,7 @@ public class MainSystemScript : MonoBehaviour
     //オブジェクトはプレファブ化して単一で管理、操作したい場合は以下の配列で行う。
     //後々これをビリヤードよろしく自作クラスで管理できると上々
 
-
+    NetworkSystem netWorkSystem;
 
     GameObject[] mycard = new GameObject[7];//自分の手札
     GameObject[] othercard = new GameObject[7];//相手の手札
@@ -58,6 +58,10 @@ public class MainSystemScript : MonoBehaviour
         return clonedCards;
     }
 
+    void Awake(){
+        netWorkSystem = FindObjectOfType<NetworkSystem>();
+    }
+
     void Start()
     {
         SceneManager.LoadScene("Scenes/SoAPhaseScenes/ItemPhase",LoadSceneMode.Additive);
@@ -87,8 +91,7 @@ public class MainSystemScript : MonoBehaviour
         if (NetworkSystem.phase == 0)
         {
             // NetworkSystem.phase = itemPhase;
-            NetworkSystem netWorkSystem = FindObjectOfType<NetworkSystem>();
-            netWorkSystem.changePhase(itemPhase);
+            netWorkSystem.ChangePhase(itemPhase);
             UpdatePhaseUI();
             ItemPhaseManager itemPhaseManager = FindObjectOfType<ItemPhaseManager>();
             itemPhaseManager.StartItemPhase();
