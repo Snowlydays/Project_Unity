@@ -16,11 +16,11 @@ public class MainSystemScript : MonoBehaviour
 
     NetworkSystem networkSystem;
 
-    private const int CARD_NUM = 7;
-    GameObject[] mycard = new GameObject[CARD_NUM];//自分の手札
-    GameObject[] othercard = new GameObject[CARD_NUM];//相手の手札
+    GameObject[] mycard = new GameObject[7];//自分の手札
+    GameObject[] othercard = new GameObject[7];//相手の手札
 
     [SerializeField] public Button readyButton; // 準備完了ボタン
+    [SerializeField] public TextMeshProUGUI phaseText; // 表示するフェーズ名を管理するオブジェクト
 
     public GameObject[] GetMyCards()
     {
@@ -69,7 +69,7 @@ public class MainSystemScript : MonoBehaviour
         Debug.Log("ゲームスタート");
         //開始時にカードオブジェクトのクローンを作成、配列で管理して並び替え等可能にしていきたい。
         GameObject canvas = GameObject.Find("Canvas");//Canvasオブジェクトを取得
-        for(int i = 0; i < CARD_NUM; i++)
+        for(int i = 0; i < 7; i++)
         {
             mycard[i]=Instantiate(CardObject, new Vector3(95f*(float)(3-i),-60f,0.0f), Quaternion.identity);
             //mycard[i].GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 0f);
@@ -80,6 +80,7 @@ public class MainSystemScript : MonoBehaviour
         }
         
         readyButton.onClick.AddListener(OnReadyButtonClicked); // readyボタンにリスナーを追加
+        phaseText.text = "phase0"; // フェーズが変わるごとに表示するテキスト
     }
 
     void OnReadyButtonClicked()
@@ -87,7 +88,16 @@ public class MainSystemScript : MonoBehaviour
         Debug.Log("readyButton clicked");
         networkSystem.ToggleReady();
     }
-    
+
+    void UpdatePhaseUI()
+    {
+        const int itemPhase = 1;
+        if (NetworkSystem.phase == itemPhase)
+        {
+            Debug.Log("itemPhase: UIを更新");
+            phaseText.text = "ItemPhase";
+        }
+    }
 
     // Update is called once per frame
     void Update()
