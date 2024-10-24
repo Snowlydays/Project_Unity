@@ -14,6 +14,8 @@ public class MainSystemScript : MonoBehaviour
     //オブジェクトはプレファブ化して単一で管理、操作したい場合は以下の配列で行う。
     //後々これをビリヤードよろしく自作クラスで管理できると上々
 
+    NetworkSystem netWorkSystem;
+
     GameObject[] mycard = new GameObject[7];//自分の手札
     GameObject[] othercard = new GameObject[7];//相手の手札
 
@@ -22,7 +24,42 @@ public class MainSystemScript : MonoBehaviour
 
     public GameObject[] GetMyCards()
     {
-        return mycard;
+        /*
+        この時点では、カードが番号の情報を持っていないため、比較に使用する属性は無視している。
+        カードの情報を保持する新しいクラスを定義するのが良いかもしれない。
+        */
+
+        // キャンバスを探す
+        Canvas canvas = FindObjectOfType<Canvas>();
+
+        GameObject[] clonedCards = new GameObject[mycard.Length];
+        for (int i = 0; i < mycard.Length; i++)
+        {
+            // カードのクローンをUIとして生成
+            GameObject clonedCard = new GameObject("ClonedCard_" + i);
+            clonedCard.tag = "ClonedCard";
+            clonedCard.transform.SetParent(canvas.transform);
+
+            // RectTransformを設定してUI要素にする
+            RectTransform rectTransform = clonedCard.AddComponent<RectTransform>();
+            rectTransform.sizeDelta = new Vector2(100, 150); // カードのサイズを指定
+            rectTransform.anchoredPosition = new Vector2(110f*(float)(3-i), 0); // カードの位置を指定
+
+            // Imageコンポーネントを追加してUI画像として表示
+            Image image = clonedCard.AddComponent<Image>();
+            image.sprite = mycard[i].GetComponent<Image>().sprite; // 元のカードのスプライトを取得して設定
+
+            // 必要であればクリックイベントのためにButtonコンポーネントを追加
+            clonedCard.AddComponent<Button>();
+
+            clonedCards[i] = clonedCard;
+        }
+
+        return clonedCards;
+    }
+
+    void Awake(){
+        netWorkSystem = FindObjectOfType<NetworkSystem>();
     }
 
     void Start()
@@ -54,8 +91,7 @@ public class MainSystemScript : MonoBehaviour
         if (NetworkSystem.phase == 0)
         {
             // NetworkSystem.phase = itemPhase;
-            NetworkSystem netWorkSystem = FindObjectOfType<NetworkSystem>();
-            netWorkSystem.changePhase(itemPhase);
+            netWorkSystem.ChangePhase(itemPhase);
             UpdatePhaseUI();
             ItemPhaseManager itemPhaseManager = FindObjectOfType<ItemPhaseManager>();
             itemPhaseManager.StartItemPhase();
