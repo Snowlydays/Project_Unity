@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,10 +7,18 @@ using Random = UnityEngine.Random;
 
 public class NetworkSystem : NetworkBehaviour
 {
+    // フェーズごとの数字を変数で管理
+    const int initialPhase = 0;
+    const int itemPhase = 1;
+    const int questionPhase = 2;
+
+    private ItemPhaseManager itemPhaseManager;
+
+    // フェーズを管理するNetWrokVariable
     private NetworkVariable<int> netphase = new NetworkVariable<int>(0);
 
+    // プレイヤーのReady状態を管理するNetworkVariables
     private NetworkVariable<bool> netHostReady = new NetworkVariable<bool>(false);
-
     private NetworkVariable<bool> netClientReady = new NetworkVariable<bool>(false);
 
     public static int cardNum = 7;//盤面上にあるカードの枚数
@@ -29,9 +38,7 @@ public class NetworkSystem : NetworkBehaviour
     public static List<int> clientItem = new List<int>();
 
     public static int phase = 0;
-
     public static bool hostReady = false;
-
     public static bool clientReady = false;
 
     void Awake()
@@ -57,16 +64,22 @@ public class NetworkSystem : NetworkBehaviour
         netphase.OnValueChanged += (int oldParam, int newParam) =>
         {
             phase = newParam;
+            Debug.Log($"フェーズが {newParam} になりました。");
+            HandlePhaseChange(newParam);
         };
 
         netHostReady.OnValueChanged += (bool oldParam, bool newParam) =>
         {
             hostReady = newParam;
+            Debug.Log($"hostのReady状態が {newParam} になりました。");
+            CheckAllPlayersReady();
         };
 
         netClientReady.OnValueChanged += (bool oldParam, bool newParam) =>
         {
             clientReady = newParam;
+            Debug.Log($"clientのReady状態が {newParam} になりました。");
+            CheckAllPlayersReady();
         };
 
         netHostCard.OnListChanged += OnNetHostCardChanged;
@@ -142,21 +155,73 @@ public class NetworkSystem : NetworkBehaviour
         //クライアントのアイテムログ 以降上記と同様
     }
 
-    public void ChangePhase(int phaseNum)
+    public void ChangePhase(int nextPhase)
     {
         if (IsHost)
         {
-            netphase.Value=phaseNum;
-            Debug.Log("netphase.value変更");
+            netphase.Value = nextPhase;
         }
     }
 
-    public void ToggleReady(){
-        if (IsHost){
-            netHostReady.Value=!netHostReady.Value;
-            Debug.Log("Host changed ready");
-            Debug.Log(netHostReady.Value);
-        }else{
+    // フェーズ変更された際の処理をここに追加
+    private void HandlePhaseChange(int newPhase)
+    {
+        switch (newPhase)
+        {
+            case initialPhase:
+                break;
+
+            case itemPhase:
+                // アイテムフェーズの処理
+                itemPhaseManager = FindObjectOfType<ItemPhaseManager>();
+                itemPhaseManager.StartItemPhase();
+                break;
+
+            case questionPhase:
+                break;
+        }
+    }
+
+    // すべてのプレイヤーがReadyかをチェックし、フェーズを進める
+    public void CheckAllPlayersReady()
+    {
+        if (hostReady && clientReady)
+        {
+            switch (phase)
+            {
+                case initialPhase:
+                    ChangePhase(itemPhase);
+                    break;
+
+                case itemPhase:
+                    ChangePhase(questionPhase);
+                    break;
+
+                case questionPhase:
+                    ChangePhase(initialPhase);
+                    break;
+            }
+            ResetReadyStates(); // プレイヤーのReadyフラグを初期化
+        }
+    }
+
+    // プレイヤーのReadyフラグを初期化
+    private void ResetReadyStates()
+    {
+        hostReady = false;
+        clientReady = false;
+        netHostReady.Value = false;
+        netClientReady.Value = false;
+    }
+
+    public void ToggleReady()
+    {
+        if (IsHost)
+        {
+            netHostReady.Value = !netHostReady.Value;
+        }
+        else
+        {
             ClientReadyChange();
         }
     }
@@ -177,25 +242,38 @@ public class NetworkSystem : NetworkBehaviour
 
     void Update()
     {
-        if(IsHost){
-            if(Input.GetKeyDown(KeyCode.Alpha0)){
-                netphase.Value=0;
+        if (IsHost)
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha0))
+            {
+                netphase.Value = 0;
                 Debug.Log("host changed phase 0");
-            }else if(Input.GetKeyDown(KeyCode.Alpha1)){
-                netphase.Value=1;
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                netphase.Value = 1;
                 Debug.Log("host changed phase 1");
-            }else if(Input.GetKeyDown(KeyCode.Alpha2)){
-                netphase.Value=2;
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                netphase.Value = 2;
                 Debug.Log("host changed phase 2");
             }
-        }else{
-            if(Input.GetKeyDown(KeyCode.Alpha0)){
+        }
+        else
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha0))
+            {
                 ClientPhaseChange(0);
                 Debug.Log("client changed phase 0");
-            }else if(Input.GetKeyDown(KeyCode.Alpha1)){
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
                 ClientPhaseChange(1);
                 Debug.Log("client changed phase 1");
-            }else if(Input.GetKeyDown(KeyCode.Alpha2)){
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
                 ClientPhaseChange(2);
                 Debug.Log("client changed phase 2");
             }
@@ -211,10 +289,8 @@ public class NetworkSystem : NetworkBehaviour
     void ClientReadyChangeServerRpc()
     {
         netClientReady.Value = !netClientReady.Value;
-        Debug.Log("Client changed ready");
-        Debug.Log(netClientReady.Value);
     }
-    
+
     void ClientPhaseChange(int num)
     {
         ClientPhaseChangeServerRpc(num);
@@ -223,6 +299,6 @@ public class NetworkSystem : NetworkBehaviour
     [Unity.Netcode.ServerRpc(RequireOwnership = false)]
     void ClientPhaseChangeServerRpc(int num)
     {
-        netphase.Value=num;
+        netphase.Value = num;
     }
 }
