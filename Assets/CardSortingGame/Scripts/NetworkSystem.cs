@@ -40,6 +40,13 @@ public class NetworkSystem : NetworkBehaviour
     public static int phase = 0;
     public static bool hostReady = false;
     public static bool clientReady = false;
+    
+    private PhaseManager phaseManager;
+
+    private void Awake()
+    {
+        phaseManager = FindObjectOfType<PhaseManager>();
+    }
 
     void Awake()
     {
@@ -65,7 +72,7 @@ public class NetworkSystem : NetworkBehaviour
         {
             phase = newParam;
             Debug.Log($"フェーズが {newParam} になりました。");
-            HandlePhaseChange(newParam);
+            phaseManager.HandlePhaseChange(newParam);
         };
 
         netHostReady.OnValueChanged += (bool oldParam, bool newParam) =>
@@ -162,26 +169,7 @@ public class NetworkSystem : NetworkBehaviour
             netphase.Value = nextPhase;
         }
     }
-
-    // フェーズ変更された際の処理をここに追加
-    private void HandlePhaseChange(int newPhase)
-    {
-        switch (newPhase)
-        {
-            case initialPhase:
-                break;
-
-            case itemPhase:
-                // アイテムフェーズの処理
-                itemPhaseManager = FindObjectOfType<ItemPhaseManager>();
-                itemPhaseManager.StartItemPhase();
-                break;
-
-            case questionPhase:
-                break;
-        }
-    }
-
+    
     // すべてのプレイヤーがReadyかをチェックし、フェーズを進める
     public void CheckAllPlayersReady()
     {
@@ -201,7 +189,7 @@ public class NetworkSystem : NetworkBehaviour
                     ChangePhase(initialPhase);
                     break;
             }
-            ResetReadyStates(); // プレイヤーのReadyフラグを初期化
+            ResetReadyStates();
         }
     }
 
