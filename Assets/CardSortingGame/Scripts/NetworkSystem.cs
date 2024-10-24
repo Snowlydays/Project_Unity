@@ -7,7 +7,15 @@ public class NetworkSystem : NetworkBehaviour
 {
     private NetworkVariable<int> netphase = new NetworkVariable<int>(0);
 
+    private NetworkVariable<bool> netHostReady = new NetworkVariable<bool>(false);
+
+    private NetworkVariable<bool> netClientReady = new NetworkVariable<bool>(false);
+
     public static int phase = 0;
+
+    public static bool hostReady = false;
+
+    public static bool clientReady = false;
 
     public override void OnNetworkSpawn()
     {
@@ -15,14 +23,34 @@ public class NetworkSystem : NetworkBehaviour
         {
             phase = newParam;
         };
+
+        netHostReady.OnValueChanged += (bool oldParam, bool newParam) =>
+        {
+            hostReady = newParam;
+        };
+
+        netClientReady.OnValueChanged += (bool oldParam, bool newParam) =>
+        {
+            clientReady = newParam;
+        };
     }
 
-    public void changePhase(int phaseNum)
+    public void ChangePhase(int phaseNum)
     {
         if (IsHost)
         {
             netphase.Value=phaseNum;
             Debug.Log("netphase.value変更");
+        }
+    }
+
+    public void ToggleReady(){
+        if (IsHost){
+            netHostReady.Value=!netHostReady.Value;
+            Debug.Log("Host changed ready");
+            Debug.Log(netHostReady.Value);
+        }else{
+            ClientReadyChange();
         }
     }
 
@@ -56,6 +84,19 @@ public class NetworkSystem : NetworkBehaviour
                 Debug.Log("client changed phase 2");
             }
         }
+    }
+
+    void ClientReadyChange()
+    {
+        ClientReadyChangeServerRpc();
+    }
+
+    [Unity.Netcode.ServerRpc(RequireOwnership = false)]
+    void ClientReadyChangeServerRpc()
+    {
+        netClientReady.Value = !netClientReady.Value;
+        Debug.Log("Client changed ready");
+        Debug.Log(netClientReady.Value);
     }
     
     void ClientPhaseChange(int num)
