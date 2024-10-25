@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using Random = UnityEngine.Random;
 
 public class NetworkSystem : NetworkBehaviour
 {
@@ -11,11 +12,45 @@ public class NetworkSystem : NetworkBehaviour
 
     private NetworkVariable<bool> netClientReady = new NetworkVariable<bool>(false);
 
+    public static int cardNum = 7;//盤面上にあるカードの枚数
+
+    private NetworkList<int> netHostCard;//カードのnetworklist
+    private NetworkList<int> netClientCard;
+
+    private NetworkList<int> netHostItem;//アイテムのnetworklist
+    private NetworkList<int> netClientItem;
+
+    //カードは要素数が変わることがないのでarray、アイテムは常に要素数が変化するのでlist管理
+
+    public static int[] hostCard = new int[cardNum];//カード配列取得用変数
+    public static int[] clientCard = new int[cardNum];
+
+    public static List<int> hostItem = new List<int>();//アイテム配列取得用変数
+    public static List<int> clientItem = new List<int>();
+
     public static int phase = 0;
 
     public static bool hostReady = false;
 
     public static bool clientReady = false;
+
+    void Awake()
+    {
+        //各種networklist初期化
+        netHostCard = new NetworkList<int>();
+        netClientCard = new NetworkList<int>();
+        netHostItem = new NetworkList<int>();
+        netClientItem = new NetworkList<int>();
+    }
+
+    public override void OnDestroy()
+    {
+        //接続終了時にnetworklistを破棄
+        netHostCard?.Dispose();
+        netClientCard?.Dispose();
+        netHostItem?.Dispose();
+        netClientItem?.Dispose();
+    }
 
     public override void OnNetworkSpawn()
     {
@@ -33,6 +68,78 @@ public class NetworkSystem : NetworkBehaviour
         {
             clientReady = newParam;
         };
+
+        netHostCard.OnListChanged += OnNetHostCardChanged;
+        netClientCard.OnListChanged += OnNetClientCardChanged;
+
+        netHostItem.OnListChanged += OnNetHostItemChanged;
+        netClientItem.OnListChanged += OnNetClientItemChanged;
+
+        if(IsHost){
+            //カード配列の初期設定(ここでは純粋なランダム入れ替え)
+            for(int i=0;i<cardNum;i++){
+                netHostCard.Add(i+1);
+                netClientCard.Add(i+1);
+            }
+            ShuffleCards(netHostCard);
+            ShuffleCards(netClientCard);
+
+        }
+    }
+
+    private void OnNetHostCardChanged(NetworkListEvent<int> changeEvent)
+    {
+        string log=" ";
+        for(int i=0;i<netHostCard.Count;i++){
+            hostCard[i]=netHostCard[i];
+            log+=netHostCard[i].ToString()+",";
+        }
+
+        //Debug.Log("Host Card is :"+log.Remove(log.Length-1));
+        //このログで現在のホストのカードの状態を見れる
+        //ただコンソール画面を埋め尽くすほど大量に出力するので、基本コメントアウト推奨
+    }
+
+    private void OnNetClientCardChanged(NetworkListEvent<int> changeEvent)
+    {
+        string log=" ";
+        for(int i=0;i<netClientCard.Count;i++){
+            clientCard[i]=netClientCard[i];
+            log+=netClientCard[i].ToString()+",";
+        }
+
+       //Debug.Log("Client Card is :"+log.Remove(log.Length-1)); 
+       //クライアントのカードログ 以降上記と同様
+    }
+
+    private void OnNetHostItemChanged(NetworkListEvent<int> changeEvent)
+    {
+        string log=" ";
+        hostItem = new List<int>();
+        if(netHostItem?.Count>0){
+            for(int i=0;i<netHostItem.Count;i++){
+                hostItem.Add(netHostItem[i]);
+                log+=netHostItem[i].ToString()+",";
+            }
+        }
+
+        //Debug.Log("Host Item is :"+log.Remove(log.Length-1)); 
+        //ホストのアイテムログ 以降上記と同様
+    }
+
+    private void OnNetClientItemChanged(NetworkListEvent<int> changeEvent)
+    {
+        string log=" ";
+        clientItem = new List<int>();
+        if(netClientItem?.Count>0){
+            for(int i=0;i<netClientItem.Count;i++){
+                clientItem.Add(netClientItem[i]);
+                log+=netClientItem[i].ToString()+",";
+            }
+        }
+
+        //Debug.Log("Client Item is :"+log.Remove(log.Length-1)); 
+        //クライアントのアイテムログ 以降上記と同様
     }
 
     public void ChangePhase(int phaseNum)
@@ -56,7 +163,16 @@ public class NetworkSystem : NetworkBehaviour
 
     void Start()
     {
-        
+
+    }
+
+    void ShuffleCards(NetworkList<int> array)
+    {
+        for (int i = array.Count - 1; i > 0; i--)
+        {
+            var j = Random.Range(0, i + 1); 
+            (array[i], array[j]) = (array[j], array[i]); 
+        }
     }
 
     void Update()
