@@ -136,7 +136,7 @@ public class QutstionController : MonoBehaviour
             selectedCards.Clear();
             // 通常フェーズへ戻る
             NetworkSystem netWorkSystem = FindObjectOfType<NetworkSystem>();
-            netWorkSystem.changePhase(0);
+            netWorkSystem.ChangePhase(0);
         }
         else
         {
