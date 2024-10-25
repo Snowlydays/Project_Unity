@@ -11,9 +11,7 @@ public class NetworkSystem : NetworkBehaviour
     const int initialPhase = 0;
     const int itemPhase = 1;
     const int questionPhase = 2;
-
-    private ItemPhaseManager itemPhaseManager;
-
+    
     // フェーズを管理するNetWrokVariable
     private NetworkVariable<int> netphase = new NetworkVariable<int>(0);
 
@@ -42,11 +40,7 @@ public class NetworkSystem : NetworkBehaviour
     public static bool clientReady = false;
     
     private PhaseManager phaseManager;
-
-    private void Awake()
-    {
-        phaseManager = FindObjectOfType<PhaseManager>();
-    }
+    private ItemPhaseManager itemPhaseManager;
 
     void Awake()
     {
@@ -55,6 +49,8 @@ public class NetworkSystem : NetworkBehaviour
         netClientCard = new NetworkList<int>();
         netHostItem = new NetworkList<int>();
         netClientItem = new NetworkList<int>();
+        
+        phaseManager = FindObjectOfType<PhaseManager>();
     }
 
     public override void OnDestroy()
