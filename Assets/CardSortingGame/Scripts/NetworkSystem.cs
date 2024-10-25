@@ -41,27 +41,7 @@ public class NetworkSystem : NetworkBehaviour
     
     private PhaseManager phaseManager;
     private ItemPhaseManager itemPhaseManager;
-
-    void Awake()
-    {
-        //各種networklist初期化
-        netHostCard = new NetworkList<int>();
-        netClientCard = new NetworkList<int>();
-        netHostItem = new NetworkList<int>();
-        netClientItem = new NetworkList<int>();
-        
-        phaseManager = FindObjectOfType<PhaseManager>();
-    }
-
-    public override void OnDestroy()
-    {
-        //接続終了時にnetworklistを破棄
-        netHostCard?.Dispose();
-        netClientCard?.Dispose();
-        netHostItem?.Dispose();
-        netClientItem?.Dispose();
-    }
-
+    
     void Awake()
     {
         //各種networklist初期化
