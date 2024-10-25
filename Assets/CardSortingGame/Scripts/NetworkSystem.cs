@@ -41,7 +41,7 @@ public class NetworkSystem : NetworkBehaviour
     
     private PhaseManager phaseManager;
     private ItemPhaseManager itemPhaseManager;
-    
+
     void Awake()
     {
         //各種networklist初期化
@@ -49,6 +49,8 @@ public class NetworkSystem : NetworkBehaviour
         netClientCard = new NetworkList<int>();
         netHostItem = new NetworkList<int>();
         netClientItem = new NetworkList<int>();
+        
+        phaseManager = FindObjectOfType<PhaseManager>();
     }
 
     public override void OnDestroy()
