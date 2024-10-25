@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Linq;
 
 public class CardsManager : MonoBehaviour
 {
@@ -155,32 +156,15 @@ public class CardsManager : MonoBehaviour
         // 一時的な並べ替えを仮表示
         int closestIndex = GetClosestCardIndex(card.transform.localPosition.x);
 
-        if (closestIndex != -1 && closestIndex != draggingCardIndex)
-        {
-            hoveringIndex = closestIndex;
-            // 一時的な配置を視覚化
-            UpdateTemporaryArrangement(draggingCardIndex, closestIndex);
-        }
-        else
-        {
-            // 元の並びに戻す
-            ResetTemporaryRearrangement();
-        }
+        hoveringIndex = closestIndex;
+        // 一時的な配置を視覚化
+        UpdateTemporaryArrangement(draggingCardIndex, closestIndex);
     }
 
     private void OnEndDrag(GameObject card)
     {
         // ドロップ時の処理
-        if (hoveringIndex != -1)
-        {
-            RearrangeCards(draggingCardIndex, hoveringIndex);
-        }
-        else
-        {
-            // 元の位置に戻す
-            card.transform.localPosition = originalPosition;
-        }
-
+        RearrangeCards(draggingCardIndex, hoveringIndex);
         hoveringIndex = -1;
         draggingCard = null;
         draggingCardIndex = -1;
@@ -227,12 +211,12 @@ public class CardsManager : MonoBehaviour
                 continue;
             }
 
-            if (oldIndex < i && i <= newIndex)
+            if (oldIndex < newIndex && i > oldIndex && i <= newIndex)
             {
                 // ドラッグ中のカードが右に移動、他のカードを左にずらす
                 myCards[i].cardObject.transform.localPosition = new Vector3(cardSpacing * (3 - (i - 1)), cardYPosition, 0);
             }
-            else if (newIndex <= i && i < oldIndex)
+            else if (oldIndex > newIndex && i >= newIndex && i < oldIndex)
             {
                 // ドラッグ中のカードが左に移動、他のカードを右にずらす
                 myCards[i].cardObject.transform.localPosition = new Vector3(cardSpacing * (3 - (i + 1)), cardYPosition, 0);
@@ -245,17 +229,6 @@ public class CardsManager : MonoBehaviour
         }
     }
 
-
-    // 元の配置に戻す関数
-    private void ResetTemporaryRearrangement()
-    {
-        // カードの元の位置を復元
-        for (int i = 0; i < myCards.Count; i++)
-        {
-            myCards[i].cardObject.transform.localPosition = new Vector3(cardSpacing * (3 - i), cardYPosition, 0.0f);
-        }
-    }
-
     // カードを再配置するロジック
     private void RearrangeCards(int oldIndex, int newIndex)
     {
@@ -263,8 +236,6 @@ public class CardsManager : MonoBehaviour
         var card = myCards[oldIndex];
 
         // カードの再配置
-        // myCards.RemoveAt(oldIndex);
-        // myCards.Insert(newIndex, card);
         KeepMyCardsFollowingThePositions();
         for (int i = 0; i < myCards.Count; i++)
         {
@@ -275,8 +246,6 @@ public class CardsManager : MonoBehaviour
     // myCardsでのインデックスをx座標の関係と同期
     void KeepMyCardsFollowingThePositions()
     {
-        // if(draggingCardIndex == -1)return;
-        // if(hoveringIndex != -1) return;
         // バブルソートで実装
         int n = myCards.Count;
         for(int i = 0; i < n - 1; i++)
@@ -310,6 +279,14 @@ public class CardsManager : MonoBehaviour
         GameObject txtObj = GameObject.Find("OderOfCards(Debug)");
         TextMeshProUGUI txt = txtObj.GetComponent<TextMeshProUGUI>();
         txt.text = arrange;
+
+
+        // arrange = "";
+        // for(int i = 0; i < myCards.Count; i++)
+        // {
+        //     arrange += myCards[i].cardNum.ToString() + ", ";
+        // }
+        // Debug.Log(new string((arrange.Reverse().ToArray())));
     }
 
     void Update()
@@ -318,3 +295,20 @@ public class CardsManager : MonoBehaviour
         KeepMyCardsFollowingThePositions();
     }
 }
+
+/*
+CloneMyCardsAsUI: QuestionControllerから参照するための関数。並べ替えには関係ない
+GenRandomIdx: 最初にランダムな並びを作るための関数
+AddDragFunctionality: カードにドラッグ機能を追加する関数
+OnBeginDrag: ドラッグを開始する時に実行される
+OnDrag: ドラッグ中にずっと実行される関数
+OnEndDrag: カードをドロップした時に実行される関数
+GetClosestCardIndex: 現在ドラッグしているカードにx座標が一番近いカードのインデックスを取得する。(ここが結構怪しい)
+UpdateTemporaryArrangemen: カードを動かしている時、カードを左右にずらす動作をここでやっている
+RearrangeCards: カードを離した時、カードの位置を整列させる。
+KeepMyCardsFollowingThePositions: x座標の並びにmyCardの中の並び順を合わせる。
+printMyCards: デバッグ用。
+
+無理やり後から修正しているので、関数名と役割が一致していないことがある。
+例えばUpdateTemporaryArrangemenなどは、Temporaryと言いつつここで動かしたカードの位置はほぼ確定。
+*/
