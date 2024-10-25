@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class CardsManager : MonoBehaviour
 {
@@ -83,9 +84,9 @@ public class CardsManager : MonoBehaviour
         {
             var card = myCards[i];
             // カードのゲームオブジェクトを複製
-            GameObject clonedCard = new GameObject("ClonedCard_" + card.cardIdx);
+            GameObject clonedCard = new GameObject("ClonedCard_" + card.cardNum);
             
-            // カードにUI用の設定（例：ボタン、画像など）を追加
+            // カードにUI用の設定を追加
             clonedCard.AddComponent<Button>();
             clonedCard.tag = "ClonedCard";  // タグを設定
 
@@ -103,12 +104,12 @@ public class CardsManager : MonoBehaviour
             image.sprite = card.cardObject.GetComponent<Image>().sprite; // 元のカードのスプライトを取得して設定
 
             clonedCards.Add(clonedCard);
+            // Debug.Log(idx[i]);
         }
 
         return clonedCards.ToArray();
     }
 
-    // ランダムインデックス生成
     // ランダムインデックス生成
     public int[] GenRandomIdx(int origin, int len)
     {
@@ -151,21 +152,7 @@ public class CardsManager : MonoBehaviour
 
     private void OnDrag(GameObject card)
     {
-        // UI座標系でマウスの位置を取得し、カードに反映させる
-        Vector3 newPosition = Input.mousePosition;
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            card.transform.parent as RectTransform, // 親のRectTransform
-            newPosition,
-            Camera.main, // カメラ
-            out Vector2 localPoint // ローカル座標系に変換されたマウス位置
-        );
-        card.transform.localPosition = localPoint;
-
         // 一時的な並べ替えを仮表示
-        /*
-        ここで引数として渡している値が、カードの中心ではない可能性が高い
-        中心を正しく指定して、一時的な並べ替えが綺麗に行えるようにしたい
-        */
         int closestIndex = GetClosestCardIndex(card.transform.localPosition.x);
 
         if (closestIndex != -1 && closestIndex != draggingCardIndex)
@@ -181,39 +168,6 @@ public class CardsManager : MonoBehaviour
         }
     }
 
-    // 一時的にカードを並べ替える
-    private void UpdateTemporaryArrangement(int oldIndex, int newIndex)
-    {
-        for (int i = 0; i < myCards.Count; i++)
-        {
-            if (i == oldIndex)
-            {
-                // ドラッグ中のカードの元の位置は空白
-                continue;
-            }
-
-            if (i > oldIndex && i <= newIndex)
-            {
-                // ドラッグ中のカードが右に移動、他のカードを左にずらす
-                myCards[i].cardObject.transform.localPosition = new Vector3(1.5f * (3 - (i - 1)), -0.75f, 0);
-            }
-            else if (i < oldIndex && i >= newIndex)
-            {
-                /*
-                カードを元の位置より左に持ってくるとバグる
-                いや、そうではなさそう
-                */
-                // ドラッグ中のカードが左に移動、他のカードを右にずらす
-                myCards[i].cardObject.transform.localPosition = new Vector3(1.5f * (3 - (i + 1)), -0.75f, 0);
-            }
-            else
-            {
-                // 通常の配置
-                myCards[i].cardObject.transform.localPosition = new Vector3(1.5f * (3 - i), -0.75f, 0);
-            }
-        }
-    }
-
     private void OnEndDrag(GameObject card)
     {
         // ドロップ時の処理
@@ -223,7 +177,7 @@ public class CardsManager : MonoBehaviour
         }
         else
         {
-            // 元の位置に戻す（UI座標系）
+            // 元の位置に戻す
             card.transform.localPosition = originalPosition;
         }
 
@@ -248,11 +202,10 @@ public class CardsManager : MonoBehaviour
     {
         float minDistance = Mathf.Infinity;
         int closestIndex = -1;
-
         // 各カードのx座標を基準に、最も近いカードを判定
         for (int i = 0; i < myCards.Count; i++)
         {
-            float cardX = 1.5f * (3 - i); // 配置座標に基づくx位置
+            float cardX = cardSpacing * (3 - i); // 配置座標に基づくx位置
             float distance = Mathf.Abs(cardX - xPosition);
             if (distance < minDistance)
             {
@@ -263,31 +216,74 @@ public class CardsManager : MonoBehaviour
         return closestIndex;
     }
 
+    // 一時的にカードを並べ替える
+    private void UpdateTemporaryArrangement(int oldIndex, int newIndex)
+    {
+        for (int i = 0; i < myCards.Count; i++)
+        {
+            if (i == oldIndex)
+            {
+                // ドラッグ中のカードの元の位置はスキップ
+                continue;
+            }
+
+            if (oldIndex < i && i <= newIndex)
+            {
+                // ドラッグ中のカードが右に移動、他のカードを左にずらす
+                myCards[i].cardObject.transform.localPosition = new Vector3(cardSpacing * (3 - (i - 1)), cardYPosition, 0);
+            }
+            else if (newIndex <= i && i < oldIndex)
+            {
+                // ドラッグ中のカードが左に移動、他のカードを右にずらす
+                myCards[i].cardObject.transform.localPosition = new Vector3(cardSpacing * (3 - (i + 1)), cardYPosition, 0);
+            }
+            else
+            {
+                // 通常の配置
+                myCards[i].cardObject.transform.localPosition = new Vector3(cardSpacing * (3 - i), cardYPosition, 0);
+            }
+        }
+    }
+
+
+    // 元の配置に戻す関数
+    private void ResetTemporaryRearrangement()
+    {
+        // カードの元の位置を復元
+        for (int i = 0; i < myCards.Count; i++)
+        {
+            myCards[i].cardObject.transform.localPosition = new Vector3(cardSpacing * (3 - i), cardYPosition, 0.0f);
+        }
+    }
+
     // カードを再配置するロジック
     private void RearrangeCards(int oldIndex, int newIndex)
     {
         Debug.Log("Rearranged: " + oldIndex + " and " + newIndex);
-        GameObject card = myCards[oldIndex].cardObject;
+        var card = myCards[oldIndex];
 
         // カードの再配置
+        // myCards.RemoveAt(oldIndex);
+        // myCards.Insert(newIndex, card);
+        KeepMyCardsFollowingThePositions();
         for (int i = 0; i < myCards.Count; i++)
         {
-            myCards[i].cardObject.transform.localPosition = new Vector3(1.5f * (3 - i), -0.75f, 0);
+            myCards[i].cardObject.transform.localPosition = new Vector3(cardSpacing * (3 - i), cardYPosition, 0.0f);
         }
     }
 
     // myCardsでのインデックスをx座標の関係と同期
     void KeepMyCardsFollowingThePositions()
     {
-        if(hoveringIndex != -1) return;
+        // if(draggingCardIndex == -1)return;
+        // if(hoveringIndex != -1) return;
         // バブルソートで実装
         int n = myCards.Count;
         for(int i = 0; i < n - 1; i++)
         {
             for(int j = i + 1; j < n; j++)
             {
-                if(myCards[i].cardObject.transform.localPosition.x <= myCards[j].cardObject.transform.localPosition.x)continue;
-                (myCards[i].cardIdx, myCards[j].cardIdx) = (myCards[j].cardIdx, myCards[i].cardIdx);
+                if(myCards[i].cardObject.transform.localPosition.x > myCards[j].cardObject.transform.localPosition.x)continue;
                 (myCards[i], myCards[j]) = (myCards[j], myCards[i]);
             }
         }
@@ -296,18 +292,29 @@ public class CardsManager : MonoBehaviour
     // printデバッグ用関数
     void printMyCards()
     {
-        string arrange = "";
-        for(int i = 0; i < myCards.Count; i++)
+        List<CardClass> tmp = new List<CardClass>(myCards);        
+        int n = tmp.Count;
+        for(int i = 0; i < n - 1; i++)
         {
-            arrange += myCards[i].cardIdx.ToString() + ", ";
+            for(int j = i + 1; j < n; j++)
+            {
+                if(tmp[i].cardObject.transform.localPosition.x <= tmp[j].cardObject.transform.localPosition.x)continue;
+                (tmp[i], tmp[j]) = (tmp[j], tmp[i]);
+            }
         }
-        Debug.Log(arrange);
+        string arrange = "";
+        for(int i = 0; i < tmp.Count; i++)
+        {
+            arrange += tmp[i].cardNum.ToString() + ", ";
+        }
+        GameObject txtObj = GameObject.Find("OderOfCards(Debug)");
+        TextMeshProUGUI txt = txtObj.GetComponent<TextMeshProUGUI>();
+        txt.text = arrange;
     }
 
     void Update()
     {
         // printMyCards();
-        KeepMyCardsFollowingThePositions();printMyCards();
         KeepMyCardsFollowingThePositions();
     }
 }

@@ -5,11 +5,11 @@ using UnityEngine;
 public class CardClass
 {
     public GameObject cardObject;
-    public int cardIdx;
+    public int cardNum;
 
     public CardClass(GameObject objCard, int num)
     {
         cardObject = objCard;
-        cardIdx = num;
+        cardNum = num;
     }
 }
