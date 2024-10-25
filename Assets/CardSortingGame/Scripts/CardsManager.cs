@@ -11,12 +11,10 @@ public class CardsManager : MonoBehaviour
     private GameObject draggingCard = null; // 現在ドラッグ中のカード
     private int draggingCardIndex = -1; // ドラッグ中のカードのインデックス
     private int hoveringIndex = -1; // マウスが重なっているカードのインデックス
+    
+    public static float cardSpacing = 130f;
+    public static float cardYPosition = -75f;
 
-    public List<CardClass> myCards = new List<CardClass>(); // 手札のリスト
-    private Vector3 originalPosition; // 元の位置を記憶
-    private GameObject draggingCard = null; // 現在ドラッグ中のカード
-    private int draggingCardIndex = -1; // ドラッグ中のカードのインデックス
-    private int hoveringIndex = -1; // マウスが重なっているカードのインデックス
 
     void Start()
     {
@@ -27,16 +25,7 @@ public class CardsManager : MonoBehaviour
         
         // カードにドラッグ機能を追加してリストに登録
         for (int i = 0; i < cardObjects.Length; i++)
-        GameObject[] cardObjects = mainSystem.GetMyCards(); // MainSystemScriptで生成されたカードを取得
-        
-        int[] idx = GenRandomIdx(1, cardObjects.Length); // シャッフルインデックスを生成
-        
-        // カードにドラッグ機能を追加してリストに登録
-        for (int i = 0; i < cardObjects.Length; i++)
         {
-            GameObject cardObject = cardObjects[i];
-            AddDragFunctionality(cardObject, i); // ドラッグ機能を追加
-            CardClass card = new CardClass(cardObject, idx[i]);
             GameObject cardObject = cardObjects[i];
             AddDragFunctionality(cardObject, i); // ドラッグ機能を追加
             CardClass card = new CardClass(cardObject, idx[i]);
@@ -53,7 +42,7 @@ public class CardsManager : MonoBehaviour
         {
             var card = myCards[i];
             // カードのゲームオブジェクトを複製
-            GameObject clonedCard = new GameObject("ClonedCard_" + card.cardIdx);
+            GameObject clonedCard = new GameObject("ClonedCard_" + card.cardNum);
             
             // カードにUI用の設定（例：ボタン、画像など）を追加
             clonedCard.AddComponent<Button>();
@@ -74,40 +63,6 @@ public class CardsManager : MonoBehaviour
 
             clonedCards.Add(clonedCard);
         }
-    }
-
-    // myCardsのカードをクローンしてUI用のオブジェクトを生成
-    public GameObject[] CloneMyCardsAsUI()
-    {
-        List<GameObject> clonedCards = new List<GameObject>();
-
-        for(int i = 0; i < myCards.Count; i++)
-        {
-            var card = myCards[i];
-            // カードのゲームオブジェクトを複製
-            GameObject clonedCard = new GameObject("ClonedCard_" + card.cardNum);
-            
-            // カードにUI用の設定を追加
-            clonedCard.AddComponent<Button>();
-            clonedCard.tag = "ClonedCard";  // タグを設定
-
-            // UI用の適切な位置やサイズを設定
-            clonedCard.transform.localScale = new Vector3(1.2f, 1.3f, 1f);  // スケールを調整
-            // clonedCard.GetComponent<Image>().color = Color.white;  // 色をリセット
-            
-            // RectTransformを設定してUI要素にする
-            RectTransform rectTransform = clonedCard.AddComponent<RectTransform>();
-            rectTransform.sizeDelta = new Vector2(100, 150); // カードのサイズを指定
-            rectTransform.anchoredPosition = new Vector2(130f*(float)(3-i) + 960, 540); // カードの位置を指定
-
-            // Imageコンポーネントを追加してUI画像として表示
-            Image image = clonedCard.AddComponent<Image>();
-            image.sprite = card.cardObject.GetComponent<Image>().sprite; // 元のカードのスプライトを取得して設定
-
-            clonedCards.Add(clonedCard);
-            // Debug.Log(idx[i]);
-        }
-
         return clonedCards.ToArray();
     }
 
@@ -177,7 +132,7 @@ public class CardsManager : MonoBehaviour
         // カードの元の位置を復元
         for (int i = 0; i < myCards.Count; i++)
         {
-            myCards[i].cardObject.transform.localPosition = new Vector3(1.5f * (3 - i), -0.75f, 0.0f);
+            myCards[i].cardObject.transform.localPosition = new Vector3(cardSpacing * (3 - i), cardYPosition, 0.0f);
         }
     }
 
