@@ -22,40 +22,9 @@ public class MainSystemScript : MonoBehaviour
 
     [SerializeField] public Button readyButton; // 準備完了ボタン
 
-    public GameObject[] CloneMyCardsAsUI()
+    public GameObject[] GetMyCards()
     {
-        /*
-        この時点では、カードが番号の情報を持っていないため、比較に使用する属性は無視している。
-        カードの情報を保持する新しいクラスを定義するのが良いかもしれない。
-        */
-
-        // キャンバスを探す
-        Canvas canvas = FindObjectOfType<Canvas>();
-
-        GameObject[] clonedCards = new GameObject[mycard.Length];
-        for (int i = 0; i < mycard.Length; i++)
-        {
-            // カードのクローンをUIとして生成
-            GameObject clonedCard = new GameObject("ClonedCard_" + i);
-            clonedCard.tag = "ClonedCard";
-            clonedCard.transform.SetParent(canvas.transform);
-
-            // RectTransformを設定してUI要素にする
-            RectTransform rectTransform = clonedCard.AddComponent<RectTransform>();
-            rectTransform.sizeDelta = new Vector2(100, 150); // カードのサイズを指定
-            rectTransform.anchoredPosition = new Vector2(110f*(float)(3-i), 0); // カードの位置を指定
-
-            // Imageコンポーネントを追加してUI画像として表示
-            Image image = clonedCard.AddComponent<Image>();
-            image.sprite = mycard[i].GetComponent<Image>().sprite; // 元のカードのスプライトを取得して設定
-
-            // 必要であればクリックイベントのためにButtonコンポーネントを追加
-            clonedCard.AddComponent<Button>();
-
-            clonedCards[i] = clonedCard;
-        }
-
-        return clonedCards;
+        return mycard;
     }
 
     void Awake(){
@@ -71,10 +40,10 @@ public class MainSystemScript : MonoBehaviour
         GameObject canvas = GameObject.Find("Canvas");//Canvasオブジェクトを取得
         for(int i = 0; i < CARD_NUM; i++)
         {
-            mycard[i]=Instantiate(CardObject, new Vector3(95f*(float)(3-i),-60f,0.0f), Quaternion.identity);
+            mycard[i]=Instantiate(CardObject, new Vector3(CardsManager.cardSpacing*(float)(3-i),CardsManager.cardYPosition,0.0f), Quaternion.identity);
             //mycard[i].GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 0f);
             mycard[i].transform.SetParent (canvas.transform,false);
-            othercard[i]=Instantiate(CardObject, new Vector3(95f*(float)(3-i),85f,0.0f), Quaternion.identity);
+            othercard[i]=Instantiate(CardObject, new Vector3(CardsManager.cardSpacing*(float)(3-i),85f,0.0f), Quaternion.identity);
             othercard[i].GetComponent<Image>().color = new Color(1f, 0f, 0f);
             othercard[i].transform.SetParent (canvas.transform,false);
         }
