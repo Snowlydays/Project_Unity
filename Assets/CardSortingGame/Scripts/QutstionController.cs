@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,73 +7,52 @@ using UnityEngine.SceneManagement;
 
 public class QutstionController : MonoBehaviour
 {
-    GameObject bg;
-    public GameObject confirmButton;  // 決定ボタンの参照
+    GameObject questionBG;
     private List<GameObject> selectedCards = new List<GameObject>();  // 選択されたカードのリスト
     private Color originalColor = Color.white;  // デフォルトのカードの色
     private Color selectedColor = Color.yellow; // 選択されたカードの色
 
-    // CardsManagerを参照する
+    [SerializeField] private Button confirmButton; // 決定ボタン
+    
     private CardsManager cardsManager;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        bg = GameObject.Find("QuestioningBG");
-
-        confirmButton = GameObject.Find("ConfirmButton");
-
-        // CardsManagerを取得
-        cardsManager = FindObjectOfType<CardsManager>();
-    }
-
+    private NetworkSystem networkSystem;
+    
     private GameObject selectedCard1 = null;
     private GameObject selectedCard2 = null;
-
-    // phaseの値によってオブジェクトのActive状態を変更する関数
-    void ManageActive()
+    
+    void Start()
     {
-        if(NetworkSystem.phase == 2 && !bg.activeSelf)
-        {
-            bg.SetActive(true);
-            
-            // CardsManagerからクローンカードを取得
-            GameObject[] clonedCards = cardsManager.CloneMyCardsAsUI();
-            
-            if(clonedCards == null)
-            {
-                Debug.LogError("clonedCards are null!");
-            }
-
-            // キャンバスを探す
-            Canvas canvas = GameObject.Find("QuestionCanvas").GetComponent<Canvas>();
-            
-            foreach(GameObject card in clonedCards)
-            {
-                // キャンバスにカードを追加
-                card.transform.SetParent(canvas.transform);
-
-                // カードをボタンとして設定
-                Button cardButton = card.GetComponent<Button>();
-                cardButton.onClick.AddListener(() => ToggleCardSelection(card));
-            }
-            
-            // 決定ボタンのクリックイベント設定
-            confirmButton.GetComponent<Button>().onClick.AddListener(CompareSelectedCards);
-        }
-        else if(NetworkSystem.phase != 2 && bg.activeSelf) 
-        {
-            // クローンカードのUIを削除
-            GameObject[] clonedCards = GameObject.FindGameObjectsWithTag("ClonedCard");
-            foreach (GameObject card in clonedCards)
-            {
-                Destroy(card);
-            }
-
-            bg.SetActive(false);
-        }
+        cardsManager = FindObjectOfType<CardsManager>();
+        networkSystem = FindObjectOfType<NetworkSystem>();
+        
+        questionBG = GameObject.Find("QuestioningBG");
+        questionBG.SetActive(false);// 非表示に
     }
 
+    public void StartQuestionPhase()
+    {
+        questionBG.SetActive(true);
+            
+        // CardsManagerからクローンカードを取得
+        GameObject[] clonedCards = cardsManager.CloneMyCardsAsUI();
+        if(clonedCards == null)Debug.LogError("clonedCards are null!");
+
+        // キャンバスを探す
+        Canvas canvas = GameObject.Find("QuestionCanvas").GetComponent<Canvas>();
+            
+        foreach(GameObject card in clonedCards)
+        {
+            // キャンバスにカードを追加
+            card.transform.SetParent(canvas.transform);
+
+            // カードをボタンとして設定
+            Button cardButton = card.GetComponent<Button>();
+            cardButton.onClick.AddListener(() => ToggleCardSelection(card));
+        }
+            
+        // 決定ボタンのクリックイベント設定
+        confirmButton.GetComponent<Button>().onClick.AddListener(CompareSelectedCards);
+    }
     
     // カード選択状態の切り替え関数
     void ToggleCardSelection(GameObject card)
@@ -134,9 +114,16 @@ public class QutstionController : MonoBehaviour
                 card.GetComponent<Image>().color = originalColor;  // 色を元に戻す
             }
             selectedCards.Clear();
-            // 通常フェーズへ戻る
-            NetworkSystem netWorkSystem = FindObjectOfType<NetworkSystem>();
-            netWorkSystem.ChangePhase(0);
+            
+            // クローンカードのUIを削除
+            GameObject[] clonedCards = GameObject.FindGameObjectsWithTag("ClonedCard");
+            foreach (GameObject card in clonedCards)Destroy(card);
+            
+            // 背景のパネルを非表示に
+            questionBG.SetActive(false); 
+            
+            // 通常フェーズへ戻るためにreadyをトグルする
+            networkSystem.ToggleReady();
         }
         else
         {
@@ -152,23 +139,14 @@ public class QutstionController : MonoBehaviour
         }
 
         string leftName = leftCard.name, rightName = rightCard.name;
-        if(leftName[leftName.Length - 1] < rightName[rightName.Length - 1])
-        {
-            Debug.Log("right card is greater");
-        }
-        else
-        {
-            Debug.Log("left card is greater");
-        }
-
+        if(leftName[leftName.Length - 1] < rightName[rightName.Length - 1]) Debug.Log("right card is greater");
+        else Debug.Log("left card is greater");
+        
         return 0;
     }
     
-    // Update is called once per frame
     void Update()
     {
-        ManageActive();
-        // Debug.Log(NetworkSystem.phase);
         // クリックして選択する
         if(Input.GetMouseButtonDown(0))
         {

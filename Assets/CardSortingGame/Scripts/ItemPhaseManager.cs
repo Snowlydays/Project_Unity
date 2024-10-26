@@ -26,13 +26,7 @@ public class ItemPhaseManager : MonoBehaviour
     [SerializeField] private Color toggleOffColor = Color.white; // トグルがオフの時の色
 
     private NetworkSystem networkSystem;
-
-    /* AwakeとStartの違い
-     これらは呼ばれるタイミングが違う。Awakeが先で、Startが後
-     具体的には、
-     Awakeはスクリプトが有効化された直後に、シーンにロードされた時点で呼び出される。
-     Startはオブジェクトが有効化された後に呼ばれる。
-     */
+    
     void Awake()
     {
         networkSystem = FindObjectOfType<NetworkSystem>();
