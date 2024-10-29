@@ -12,6 +12,6 @@ public class ButtonManager : MonoBehaviour
 
     public void ToCardSortingGame()
     {
-        SceneManager.LoadScene("CardSortingGame"); 
+        SceneManager.LoadScene("ChooseMatchSoA"); 
     }
 }

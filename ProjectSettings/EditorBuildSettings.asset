@@ -5,12 +5,15 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/StartScene.unity
     guid: 5dbbc2a7eb21748989e3a57cb97b25a0
   - enabled: 0
     path: Assets/Scenes/Billiards.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/ChooseMatchSoA.unity
+    guid: fec7cbdc18cd84c7ea5454c6735ef4f9
   - enabled: 1
     path: Assets/Scenes/CardSortingGame.unity
     guid: f74c6b8653b1c4076a4c098b861ed144
@@ -23,4 +26,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SoAPhaseScenes/QuestionPhase.unity
     guid: d175de4e05bcd4592a3b81f7a0dc14da
+  - enabled: 1
+    path: Assets/Scenes/ChooseServerSoA.unity
+    guid: 4829099cdf9d045e6b6004ef1e463db8
   m_configObjects: {}
