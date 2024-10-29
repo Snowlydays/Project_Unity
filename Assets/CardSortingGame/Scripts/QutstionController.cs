@@ -71,10 +71,10 @@ public class QutstionController : MonoBehaviour
 
     void SelectCard(GameObject card)
     {
-        Debug.Log(selectedCards.Count);
         // カードを選択状態にし、色を変更
         selectedCards.Add(card);
         card.GetComponent<Image>().color = selectedColor;  // 色を変更
+        Debug.Log("選択したカード枚数: "+selectedCards.Count);
     }
     
     void DeselectCard(GameObject card)
@@ -95,12 +95,13 @@ public class QutstionController : MonoBehaviour
         }
     }
 
-    void OnCardClicked(GameObject card)
-    {
-        SelectCard(card);
-        CheckSelection();
-    }
+    // void OnCardClicked(GameObject card)
+    // {
+    //     SelectCard(card);
+    //     CheckSelection();
+    // }
 
+    // confirmButtonを押したときに起動するメソッド
     void CompareSelectedCards()
     {
         int ans = -1;
