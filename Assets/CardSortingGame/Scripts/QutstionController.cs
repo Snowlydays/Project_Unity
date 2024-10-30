@@ -17,9 +17,6 @@ public class QutstionController : MonoBehaviour
     private CardsManager cardsManager;
     private NetworkSystem networkSystem;
     
-    private GameObject selectedCard1 = null;
-    private GameObject selectedCard2 = null;
-    
     void Start()
     {
         cardsManager = FindObjectOfType<CardsManager>();
@@ -83,24 +80,7 @@ public class QutstionController : MonoBehaviour
         selectedCards.Remove(card);
         card.GetComponent<Image>().color = originalColor;  // 元の色に戻す
     }
-
-    void CheckSelection()
-    {
-        if (selectedCard1 != null && selectedCard2 != null)
-        {
-            Debug.Log("Selected cards: " + selectedCard1.name + " and " + selectedCard2.name);
-
-            // 比較結果を表示する処理
-            CompareCards(selectedCard1, selectedCard2);
-        }
-    }
-
-    // void OnCardClicked(GameObject card)
-    // {
-    //     SelectCard(card);
-    //     CheckSelection();
-    // }
-
+    
     // confirmButtonを押したときに起動するメソッド
     void CompareSelectedCards()
     {
@@ -131,32 +111,19 @@ public class QutstionController : MonoBehaviour
             Debug.Log("Please select exactly two cards to compare.");
         }
     }
-
+    
     int CompareCards(GameObject leftCard, GameObject rightCard)
     {
         if(leftCard.transform.position.x > rightCard.transform.position.x)
         {
             (leftCard, rightCard) = (rightCard, leftCard);
         }
-
+        
         string leftName = leftCard.name, rightName = rightCard.name;
+        Debug.Log("left:"+leftName + " right:"+rightName);
         if(leftName[leftName.Length - 1] < rightName[rightName.Length - 1]) Debug.Log("right card is greater");
         else Debug.Log("left card is greater");
         
         return 0;
-    }
-    
-    void Update()
-    {
-        // クリックして選択する
-        if(Input.GetMouseButtonDown(0))
-        {
-            RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-            if(hit.collider != null && hit.collider.gameObject.CompareTag("ClonedCard"))
-            {
-                SelectCard(hit.collider.gameObject);
-                CheckSelection();
-            }
-        }
     }
 }
