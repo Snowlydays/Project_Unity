@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 6741718830627283381}
   - component: {fileID: 7105257845651691284}
   - component: {fileID: 9037832988324094002}
+  - component: {fileID: 2361751941881897308}
+  - component: {fileID: 888490769606199929}
   m_Layer: 5
   m_Name: Card
   m_TagString: Untagged
@@ -121,3 +123,29 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!225 &2361751941881897308
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3033808387279149045}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &888490769606199929
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3033808387279149045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a9a3b6fe46649bda0ab5bc08ad595db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  originalParent: {fileID: 0}
+  isDraggable: 1

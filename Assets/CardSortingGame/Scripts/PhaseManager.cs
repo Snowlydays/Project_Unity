@@ -9,17 +9,19 @@ public class PhaseManager : MonoBehaviour
     public const int QuestionPhase = 2;
 
     private ItemPhaseManager itemPhaseManager;
+    private QutstionController qutstionController;
 
     private void Start()
     {
         itemPhaseManager = FindObjectOfType<ItemPhaseManager>();
+        qutstionController = FindObjectOfType<QutstionController>();
     }
     
 
     // フェーズ変更時の処理
     public void HandlePhaseChange(int newPhase)
     {
-        Debug.Log($"フェーズが {newPhase} に変更されました。");
+        Debug.Log($"PhaseManager.HandlePhaseChangeが実行されました");
 
         switch (newPhase)
         {
@@ -31,6 +33,7 @@ public class PhaseManager : MonoBehaviour
                 break;
 
             case QuestionPhase:
+                qutstionController.StartQuestionPhase();
                 break;
         }
     }
