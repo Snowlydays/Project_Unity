@@ -14,11 +14,6 @@ public class MemoController : MonoBehaviour
     private Vector2 m_touchPos;
     private float m_clickTime, m_preClickTime;
 
-    public void ToggleMemo()
-    {
-        
-    }
-
 	public void OnDrag(BaseEventData arg) //線を描画
     {
         PointerEventData _event = arg as PointerEventData; //タッチの情報取得
