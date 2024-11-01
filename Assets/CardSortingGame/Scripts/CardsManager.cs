@@ -48,8 +48,7 @@ public class CardsManager : MonoBehaviour
             // RectTransformを設定してUI要素にする
             RectTransform rectTransform = clonedCard.AddComponent<RectTransform>();
             rectTransform.sizeDelta = new Vector2(100, 150); // カードのサイズを指定
-            // rectTransform.anchoredPosition = new Vector2((float)i + 960, 540);
-            rectTransform.anchoredPosition = new Vector2(130f*(float)(3-i) + 960, 540); // カードの位置を指定
+            rectTransform.anchoredPosition = new Vector2(570 + 130f * i, 540); // カードの位置を指定
     
             // Imageコンポーネントを追加してUI画像として表示
             Image image = clonedCard.AddComponent<Image>();
@@ -87,26 +86,8 @@ public class CardsManager : MonoBehaviour
     // printデバッグ用関数
     public void printMyCards()
     {
-        // List<CardClass> tmp = new List<CardClass>(myCards);        
-        // int n = tmp.Count;
-        // for(int i = 0; i < n - 1; i++)
-        // {
-        //     for(int j = i + 1; j < n; j++)
-        //     {
-        //         if(tmp[i].cardObject.transform.localPosition.x <= tmp[j].cardObject.transform.localPosition.x)continue;
-        //         (tmp[i], tmp[j]) = (tmp[j], tmp[i]);
-        //     }
-        // }
-        // string arrange = "";
-        // for(int i = 0; i < tmp.Count; i++)
-        // {
-        //     arrange += tmp[i].cardNum.ToString() + ", ";
-        // }
         GameObject txtObj = GameObject.Find("OderOfCards(Debug)");
         TextMeshProUGUI txt = txtObj.GetComponent<TextMeshProUGUI>();
-        // txt.text = arrange;
-        // Debug.Log(arrange);
-        
         Debug.Log("All card numbers:");
         string output = "";
         foreach (var card in myCards)
@@ -116,13 +97,5 @@ public class CardsManager : MonoBehaviour
         
         txt.text = output;
         Debug.Log(output);
-        
-        
-        // arrange = "";
-        // for(int i = 0; i < myCards.Count; i++)
-        // {
-        //     arrange += myCards[i].cardNum.ToString() + ", ";
-        // }
-        // Debug.Log(new string((arrange.Reverse().ToArray())));
     }
 }
