@@ -52,6 +52,10 @@ public class PhaseManager : MonoBehaviour
             {
                 networkSystem.HandleAttackAction(hostAttacked,clientAttacked);
             }
+            
+            // リセット
+            // networkSystem.netIsHostAttacking.Value = false;
+            // networkSystem.netIsClientAttacking.Value = false;
         }
     }
 }

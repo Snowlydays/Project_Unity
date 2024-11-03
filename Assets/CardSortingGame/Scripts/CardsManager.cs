@@ -7,15 +7,17 @@ using System.Linq;
 public class CardsManager : MonoBehaviour
 {
     public List<CardClass> myCards = new List<CardClass>(); // 手札のリスト
+    private NetworkSystem networkSystem;
     
     void Start()
     {
+        networkSystem = FindObjectOfType<NetworkSystem>(); 
         MainSystemScript mainSystem = FindObjectOfType<MainSystemScript>();
         GameObject[] cardObjects = mainSystem.GetMyCards(); // MainSystemScriptで生成されたカードを取得
         
         int[] idx = GenRandomIdx(1, cardObjects.Length); // シャッフルインデックスを生成
         
-        // カードにドラッグ機能を追加してリストに登録
+        // カードをリストに登録
         for (int i = 0; i < cardObjects.Length; i++)
         {
             GameObject cardObject = cardObjects[i];
@@ -75,12 +77,24 @@ public class CardsManager : MonoBehaviour
         return idx;
     }
     
+    // public void SwapCardsInList(int indexA, int indexB)
+    // {
+    //     if (indexA < 0 || indexB < 0 || indexA >= myCards.Count || indexB >= myCards.Count) return;
+    //
+    //     // myCardsリスト内の位置をスワップ
+    //     (myCards[indexA], myCards[indexB]) = (myCards[indexB], myCards[indexA]);
+    // }
+    // カードをスワップするメソッドを修正
     public void SwapCardsInList(int indexA, int indexB)
     {
         if (indexA < 0 || indexB < 0 || indexA >= myCards.Count || indexB >= myCards.Count) return;
 
         // myCardsリスト内の位置をスワップ
         (myCards[indexA], myCards[indexB]) = (myCards[indexB], myCards[indexA]);
+
+        // ネットワーク上のカードリストもスワップ
+        if (networkSystem.IsHost)networkSystem.SwapHostCardServerRpc(indexA, indexB);
+        else networkSystem.SwapClientCardServerRpc(indexA, indexB);
     }
 
     // printデバッグ用関数

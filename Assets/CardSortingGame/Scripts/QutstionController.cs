@@ -61,18 +61,6 @@ public class QutstionController : MonoBehaviour
         isAttacking = !isAttacking;
         networkSystem.ToggleAttacked();
     }
-
-    bool CheckAllCardsAscending()
-    {
-        // カードが昇順に並んでいるか判定
-        for(int i = 0;i < cardsManager.myCards.Count-1;i++)
-        {
-            int cardNumber = cardsManager.myCards[i].cardNum;
-            int nextCardNumber = cardsManager.myCards[i+1].cardNum;
-            if (cardNumber > nextCardNumber) return false;
-        }
-        return true;
-    }
     
     // カード選択状態の切り替え関数
     void ToggleCardSelection(GameObject card)
@@ -104,7 +92,6 @@ public class QutstionController : MonoBehaviour
         card.GetComponent<Image>().color = originalColor;  // 元の色に戻す
     }
     
-    // confirmButtonを押したときに起動するメソッド
     void OnConfirmButtonClicked()
     {
         if (isAttacking || selectedCards.Count == 2)
