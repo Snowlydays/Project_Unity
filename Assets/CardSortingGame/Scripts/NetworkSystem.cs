@@ -18,13 +18,21 @@ public class NetworkSystem : NetworkBehaviour
     // プレイヤーのReady状態を管理するNetworkVariables
     private NetworkVariable<bool> netHostReady = new NetworkVariable<bool>(false);
     private NetworkVariable<bool> netClientReady = new NetworkVariable<bool>(false);
+    
+    public NetworkVariable<bool> netIsHostAttacking = new NetworkVariable<bool>(false);
+    public NetworkVariable<bool> netIsClientAttacking = new NetworkVariable<bool>(false);
+    
+    private NetworkVariable<bool> netIsHostAscending = new NetworkVariable<bool>(false);
+    private NetworkVariable<bool> netIsClientAscending = new NetworkVariable<bool>(false);
 
-    public static int cardNum = 7;//盤面上にあるカードの枚数
+    public static int cardNum = 7;// 盤面上にあるカードの枚数
 
-    private NetworkList<int> netHostCard;//カードのnetworklist
+    // カードのNetworkList
+    private NetworkList<int> netHostCard;
     private NetworkList<int> netClientCard;
 
-    private NetworkList<int> netHostItem;//アイテムのnetworklist
+    // アイテムのNetworkList
+    private NetworkList<int> netHostItem;
     private NetworkList<int> netClientItem;
 
     //カードは要素数が変わることがないのでarray、アイテムは常に要素数が変化するのでlist管理
@@ -44,7 +52,7 @@ public class NetworkSystem : NetworkBehaviour
 
     void Awake()
     {
-        //各種networklist初期化
+        //各種NetworkList初期化
         netHostCard = new NetworkList<int>();
         netClientCard = new NetworkList<int>();
         netHostItem = new NetworkList<int>();
@@ -55,7 +63,7 @@ public class NetworkSystem : NetworkBehaviour
 
     public override void OnDestroy()
     {
-        //接続終了時にnetworklistを破棄
+        //接続終了時にNetworkListを破棄
         netHostCard?.Dispose();
         netClientCard?.Dispose();
         netHostItem?.Dispose();
@@ -94,12 +102,27 @@ public class NetworkSystem : NetworkBehaviour
         if(IsHost){
             //カード配列の初期設定(ここでは純粋なランダム入れ替え)
             for(int i=0;i<cardNum;i++){
-                netHostCard.Add(i+1);
-                netClientCard.Add(i+1);
+              netHostCard.Add(i+1);
+              netClientCard.Add(i+1);
             }
             ShuffleCards(netHostCard);
             ShuffleCards(netClientCard);
-
+        }
+        
+        CardsManager cardsManager = FindObjectOfType<CardsManager>();;
+        if (IsHost)
+        {
+            for (int i = 0; i < cardsManager.myCards.Count; i++)
+            {
+                ChangeHostCardList(i, cardsManager.myCards[i].cardNum);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < cardsManager.myCards.Count; i++)
+            {
+                ChangeClientCardList(i, cardsManager.myCards[i].cardNum);
+            }
         }
     }
 
@@ -111,9 +134,9 @@ public class NetworkSystem : NetworkBehaviour
             log+=netHostCard[i].ToString()+",";
         }
 
-        //Debug.Log("Host Card is :"+log.Remove(log.Length-1));
         //このログで現在のホストのカードの状態を見れる
         //ただコンソール画面を埋め尽くすほど大量に出力するので、基本コメントアウト推奨
+        // Debug.Log("Host Card is :"+log.Remove(log.Length-1));
     }
 
     private void OnNetClientCardChanged(NetworkListEvent<int> changeEvent)
@@ -124,10 +147,10 @@ public class NetworkSystem : NetworkBehaviour
             log+=netClientCard[i].ToString()+",";
         }
 
-       //Debug.Log("Client Card is :"+log.Remove(log.Length-1)); 
-       //クライアントのカードログ 以降上記と同様
+        //クライアントのカードログ 以降上記と同様
+        //Debug.Log("Client Card is :"+log.Remove(log.Length-1)); 
     }
-
+    
     private void OnNetHostItemChanged(NetworkListEvent<int> changeEvent)
     {
         string log=" ";
@@ -139,8 +162,8 @@ public class NetworkSystem : NetworkBehaviour
             }
         }
 
-        //Debug.Log("Host Item is :"+log.Remove(log.Length-1)); 
         //ホストのアイテムログ 以降上記と同様
+        //Debug.Log("Host Item is :"+log.Remove(log.Length-1)); 
     }
 
     private void OnNetClientItemChanged(NetworkListEvent<int> changeEvent)
@@ -154,16 +177,41 @@ public class NetworkSystem : NetworkBehaviour
             }
         }
 
-        //Debug.Log("Client Item is :"+log.Remove(log.Length-1)); 
         //クライアントのアイテムログ 以降上記と同様
+        //Debug.Log("Client Item is :"+log.Remove(log.Length-1)); 
     }
 
+    public void ChangeHostCardList(int pos, int value)
+    {
+        if (pos < 0 || pos >= netHostCard.Count) return;
+        
+        netHostCard[pos] = value;
+    }
+
+    public void ChangeClientCardList(int pos, int value)
+    {
+        ChangeClientCardServerRpc(pos, value);
+    }
+    
     public void ChangePhase(int nextPhase)
     {
         if (IsHost)
         {
             netphase.Value = nextPhase;
         }
+    }
+
+    public void ToggleAttacked()
+    {
+        if (IsClient)
+        {
+            ToggleAttackedServerRpc(IsHost);
+        }
+    }
+
+    public void ToggleAttackedReset()
+    {
+        if(IsClient)ResetAttackStatusServerRpc();
     }
     
     // すべてのプレイヤーがReadyかをチェックし、フェーズを進める
@@ -210,11 +258,45 @@ public class NetworkSystem : NetworkBehaviour
         }
     }
 
-    void Start()
+    public void HandleAttackAction(bool hostAttacked, bool clientAttacked)
     {
+        bool hostAsc = netIsHostAscending.Value;
+        bool clientAsc = netIsClientAscending.Value;
+        if(hostAttacked)hostAsc = CheckAscending(hostCard);
+        if(clientAttacked)clientAsc = CheckAscending(clientCard);
 
+        netIsHostAscending.Value = hostAsc;
+        netIsClientAscending.Value = clientAsc;
+
+        if (hostAsc && clientAsc)
+        {
+            Debug.Log("両プレイヤーのカードが昇順: 引き分け");
+            // 引き分けの処理を実装
+        }
+        else if (hostAsc)
+        {
+            Debug.Log("ホストのカードが昇順: ホストの勝利");
+            // ホストの勝利処理を実装
+        }
+        else if (clientAsc)
+        {
+            Debug.Log("クライアントのカードが昇順: クライアントの勝利");
+            // クライアントの勝利処理を実装
+        }
+        else
+        {
+            Debug.Log("どちらのプレイヤーもカードが昇順ではない");
+            // 必要に応じて処理を実装
+        }
     }
 
+    private bool CheckAscending(int[] cards)
+    {
+        for (int i = 0; i < cards.Length - 1; i++)
+            if (cards[i] > cards[i + 1]) return false;
+        return true;
+    }
+    
     void ShuffleCards(NetworkList<int> array)
     {
         for (int i = array.Count - 1; i > 0; i--)
@@ -228,6 +310,18 @@ public class NetworkSystem : NetworkBehaviour
     {
         if (IsHost)
         {
+            if (Input.GetKeyDown(KeyCode.Alpha3))
+            {
+                Debug.Log("alpha3");
+                for (int i = 0; i < netClientCard.Count; i++)
+                {
+                    Debug.Log($"client{i}番目のカードの値: {netClientCard[i]}");
+                }
+                for (int i = 0; i < netHostCard.Count; i++)
+                {
+                    Debug.Log($"host{i}番目のカードの値: {netHostCard[i]}");
+                }
+            }
             if (Input.GetKeyDown(KeyCode.Alpha0))
             {
                 netphase.Value = 0;
@@ -246,6 +340,18 @@ public class NetworkSystem : NetworkBehaviour
         }
         else
         {
+            if (Input.GetKeyDown(KeyCode.Alpha3))
+            {
+                Debug.Log("alpha3");
+                for (int i = 0; i < netClientCard.Count; i++)
+                {
+                    Debug.Log($"client{i}番目のカードの値: {netClientCard[i]}");
+                }
+                for (int i = 0; i < netHostCard.Count; i++)
+                {
+                    Debug.Log($"host{i}番目のカードの値: {netHostCard[i]}");
+                }
+            }
             if (Input.GetKeyDown(KeyCode.Alpha0))
             {
                 ClientPhaseChange(0);
@@ -263,12 +369,30 @@ public class NetworkSystem : NetworkBehaviour
             }
         }
     }
-
+    
     void ClientReadyChange()
     {
         ClientReadyChangeServerRpc();
     }
 
+    
+    [ServerRpc(RequireOwnership = false)]
+    void ToggleAttackedServerRpc(bool isHost)
+    {
+        if (isHost)
+        {
+            netIsHostAttacking.Value = !netIsHostAttacking.Value;
+            if(netIsHostAttacking.Value)Debug.Log("NetworkSystem.ToggleAttackedServerRpc host攻撃: true");
+            else Debug.Log("NetworkSystem.ToggleAttackedServerRpc host攻撃: false");
+        }
+        else
+        { 
+            netIsClientAttacking.Value = !netIsClientAttacking.Value;
+            if(netIsClientAttacking.Value)Debug.Log("NetworkSystem.ToggleAttackedServerRpc client攻撃: true");
+            else Debug.Log("NetworkSystem.ToggleAttackedServerRpc client攻撃: false");
+        }
+
+    }
     [Unity.Netcode.ServerRpc(RequireOwnership = false)]
     void ClientReadyChangeServerRpc()
     {
@@ -284,5 +408,38 @@ public class NetworkSystem : NetworkBehaviour
     void ClientPhaseChangeServerRpc(int num)
     {
         netphase.Value = num;
+    }
+    
+    // カードをスワップするServerRpcメソッド
+    [ServerRpc(RequireOwnership = false)]
+    public void SwapHostCardServerRpc(int indexA, int indexB)
+    {
+        if (indexA >= 0 && indexA < netHostCard.Count && indexB >= 0 && indexB < netHostCard.Count)
+        {
+            (netHostCard[indexA], netHostCard[indexB]) = (netHostCard[indexB], netHostCard[indexA]);
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SwapClientCardServerRpc(int indexA, int indexB)
+    {
+        if (indexA >= 0 && indexA < netClientCard.Count && indexB >= 0 && indexB < netClientCard.Count)
+        {
+            (netClientCard[indexA], netClientCard[indexB]) = (netClientCard[indexB], netClientCard[indexA]);
+        }
+    }
+    
+    [ServerRpc(RequireOwnership = false)]
+    public void ChangeClientCardServerRpc(int pos, int value)
+    {
+        if (pos < 0 || pos >= netClientCard.Count) return;
+        netClientCard[pos] = value;
+    }
+    
+    [ServerRpc(RequireOwnership = false)]
+    public void ResetAttackStatusServerRpc()
+    {
+        netIsHostAttacking.Value = false;
+        netIsClientAttacking.Value = false;
     }
 }
