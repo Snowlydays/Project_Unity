@@ -77,14 +77,6 @@ public class CardsManager : MonoBehaviour
         return idx;
     }
     
-    // public void SwapCardsInList(int indexA, int indexB)
-    // {
-    //     if (indexA < 0 || indexB < 0 || indexA >= myCards.Count || indexB >= myCards.Count) return;
-    //
-    //     // myCardsリスト内の位置をスワップ
-    //     (myCards[indexA], myCards[indexB]) = (myCards[indexB], myCards[indexA]);
-    // }
-    // カードをスワップするメソッドを修正
     public void SwapCardsInList(int indexA, int indexB)
     {
         if (indexA < 0 || indexB < 0 || indexA >= myCards.Count || indexB >= myCards.Count) return;

@@ -208,6 +208,11 @@ public class NetworkSystem : NetworkBehaviour
             ToggleAttackedServerRpc(IsHost);
         }
     }
+
+    public void ToggleAttackedReset()
+    {
+        if(IsClient)ResetAttackStatusServerRpc();
+    }
     
     // すべてのプレイヤーがReadyかをチェックし、フェーズを進める
     public void CheckAllPlayersReady()
@@ -405,7 +410,7 @@ public class NetworkSystem : NetworkBehaviour
         netphase.Value = num;
     }
     
-    // カードをスワップするServerRpcメソッド（必要に応じて）
+    // カードをスワップするServerRpcメソッド
     [ServerRpc(RequireOwnership = false)]
     public void SwapHostCardServerRpc(int indexA, int indexB)
     {
@@ -429,5 +434,12 @@ public class NetworkSystem : NetworkBehaviour
     {
         if (pos < 0 || pos >= netClientCard.Count) return;
         netClientCard[pos] = value;
+    }
+    
+    [ServerRpc(RequireOwnership = false)]
+    public void ResetAttackStatusServerRpc()
+    {
+        netIsHostAttacking.Value = false;
+        netIsClientAttacking.Value = false;
     }
 }

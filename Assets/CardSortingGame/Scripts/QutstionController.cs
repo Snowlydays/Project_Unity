@@ -27,12 +27,16 @@ public class QutstionController : MonoBehaviour
         
         questionBG = GameObject.Find("QuestioningBG");
         questionBG.SetActive(false);// 非表示に
+        
+        // クリックイベント設定
+        confirmButton.GetComponent<Button>().onClick.AddListener(OnConfirmButtonClicked);
+        spellButton.onClick.AddListener(OnSpellButtonClicked);
     }
 
     public void StartQuestionPhase()
     {
         questionBG.SetActive(true);
-            
+        
         // CardsManagerからクローンカードを取得
         GameObject[] clonedCards = cardsManager.CloneMyCardsAsUI();
         if(clonedCards == null)Debug.LogError("clonedCards are null!");
@@ -49,10 +53,6 @@ public class QutstionController : MonoBehaviour
             Button cardButton = card.GetComponent<Button>();
             cardButton.onClick.AddListener(() => ToggleCardSelection(card));
         }
-            
-        // クリックイベント設定
-        confirmButton.GetComponent<Button>().onClick.AddListener(OnConfirmButtonClicked);
-        spellButton.onClick.AddListener(OnSpellButtonClicked);
     }
 
     void OnSpellButtonClicked()
@@ -118,6 +118,9 @@ public class QutstionController : MonoBehaviour
 
             // 背景のパネルを非表示に
             questionBG.SetActive(false);
+            
+            // 攻撃トグルを初期化
+            isAttacking = false;
 
             // 通常フェーズへ戻るためにreadyをトグルする
             networkSystem.ToggleReady();
