@@ -10,11 +10,13 @@ public class PhaseManager : MonoBehaviour
 
     private ItemPhaseManager itemPhaseManager;
     private QutstionController qutstionController;
+    private NetworkSystem networkSystem;
 
     private void Start()
     {
         itemPhaseManager = FindObjectOfType<ItemPhaseManager>();
         qutstionController = FindObjectOfType<QutstionController>();
+        networkSystem = FindObjectOfType<NetworkSystem>();
     }
     
 
@@ -26,6 +28,7 @@ public class PhaseManager : MonoBehaviour
         switch (newPhase)
         {
             case InitialPhase:
+                AttackAction();
                 break;
 
             case ItemPhase:
@@ -35,6 +38,20 @@ public class PhaseManager : MonoBehaviour
             case QuestionPhase:
                 qutstionController.StartQuestionPhase();
                 break;
+        }
+    }
+
+    private void AttackAction()
+    {
+        bool hostAttacked = networkSystem.netIsHostAttacking.Value;
+        bool clientAttacked = networkSystem.netIsClientAttacking.Value;
+
+        if (hostAttacked || clientAttacked)
+        {
+            if (networkSystem.IsHost)
+            {
+                networkSystem.HandleAttackAction(hostAttacked,clientAttacked);
+            }
         }
     }
 }

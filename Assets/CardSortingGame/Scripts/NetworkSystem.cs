@@ -18,13 +18,21 @@ public class NetworkSystem : NetworkBehaviour
     // プレイヤーのReady状態を管理するNetworkVariables
     private NetworkVariable<bool> netHostReady = new NetworkVariable<bool>(false);
     private NetworkVariable<bool> netClientReady = new NetworkVariable<bool>(false);
+    
+    public NetworkVariable<bool> netIsHostAttacking = new NetworkVariable<bool>(false);
+    public NetworkVariable<bool> netIsClientAttacking = new NetworkVariable<bool>(false);
+    
+    private NetworkVariable<bool> netIsHostAscending = new NetworkVariable<bool>(false);
+    private NetworkVariable<bool> netIsClientAscending = new NetworkVariable<bool>(false);
 
-    public static int cardNum = 7;//盤面上にあるカードの枚数
+    public static int cardNum = 7;// 盤面上にあるカードの枚数
 
-    private NetworkList<int> netHostCard;//カードのnetworklist
+    // カードのNetworkList
+    private NetworkList<int> netHostCard;
     private NetworkList<int> netClientCard;
 
-    private NetworkList<int> netHostItem;//アイテムのnetworklist
+    // アイテムのNetworkList
+    private NetworkList<int> netHostItem;
     private NetworkList<int> netClientItem;
 
     //カードは要素数が変わることがないのでarray、アイテムは常に要素数が変化するのでlist管理
@@ -44,7 +52,7 @@ public class NetworkSystem : NetworkBehaviour
 
     void Awake()
     {
-        //各種networklist初期化
+        //各種NetworkList初期化
         netHostCard = new NetworkList<int>();
         netClientCard = new NetworkList<int>();
         netHostItem = new NetworkList<int>();
@@ -55,7 +63,7 @@ public class NetworkSystem : NetworkBehaviour
 
     public override void OnDestroy()
     {
-        //接続終了時にnetworklistを破棄
+        //接続終了時にNetworkListを破棄
         netHostCard?.Dispose();
         netClientCard?.Dispose();
         netHostItem?.Dispose();
@@ -99,7 +107,6 @@ public class NetworkSystem : NetworkBehaviour
             }
             ShuffleCards(netHostCard);
             ShuffleCards(netClientCard);
-
         }
     }
 
@@ -165,6 +172,14 @@ public class NetworkSystem : NetworkBehaviour
             netphase.Value = nextPhase;
         }
     }
+
+    public void ToggleAttacked()
+    {
+        if (IsClient)
+        {
+            ToggleAttackedServerRpc(IsHost);
+        }
+    }
     
     // すべてのプレイヤーがReadyかをチェックし、フェーズを進める
     public void CheckAllPlayersReady()
@@ -210,6 +225,45 @@ public class NetworkSystem : NetworkBehaviour
         }
     }
 
+    public void HandleAttackAction(bool hostAttacked, bool clientAttacked)
+    {
+        bool hostAsc = netIsHostAscending.Value;
+        bool clientAsc = netIsClientAscending.Value;
+        if(hostAttacked)hostAsc = CheckAscending(hostCard);
+        if(clientAttacked)clientAsc = CheckAscending(clientCard);
+
+        netIsHostAscending.Value = hostAsc;
+        netIsClientAscending.Value = clientAsc;
+
+        if (hostAsc && clientAsc)
+        {
+            Debug.Log("両プレイヤーのカードが昇順: 引き分け");
+            // 引き分けの処理を実装
+        }
+        else if (hostAsc)
+        {
+            Debug.Log("ホストのカードが昇順: ホストの勝利");
+            // ホストの勝利処理を実装
+        }
+        else if (clientAsc)
+        {
+            Debug.Log("クライアントのカードが昇順: クライアントの勝利");
+            // クライアントの勝利処理を実装
+        }
+        else
+        {
+            Debug.Log("どちらのプレイヤーもカードが昇順ではない");
+            // 必要に応じて処理を実装
+        }
+    }
+
+    private bool CheckAscending(int[] cards)
+    {
+        for (int i = 0; i < cards.Length - 1; i++)
+            if (cards[i] > cards[i + 1]) return false;
+        return true;
+    }
+    
     void Start()
     {
 
@@ -263,12 +317,30 @@ public class NetworkSystem : NetworkBehaviour
             }
         }
     }
-
+    
     void ClientReadyChange()
     {
         ClientReadyChangeServerRpc();
     }
 
+    
+    [ServerRpc(RequireOwnership = false)]
+    void ToggleAttackedServerRpc(bool isHost)
+    {
+        if (isHost)
+        {
+            netIsHostAttacking.Value = !netIsHostAttacking.Value;
+            if(netIsHostAttacking.Value)Debug.Log("NetworkSystem.ToggleAttackedServerRpc 攻撃: true");
+            else Debug.Log("NetworkSystem.ToggleAttackedServerRpc 攻撃: false");
+        }
+        else
+        { 
+            netIsClientAttacking.Value = !netIsClientAttacking.Value;
+            if(netIsClientAttacking.Value)Debug.Log("NetworkSystem.ToggleAttackedServerRpc 攻撃: true");
+            else Debug.Log("NetworkSystem.ToggleAttackedServerRpc 攻撃: false");
+        }
+
+    }
     [Unity.Netcode.ServerRpc(RequireOwnership = false)]
     void ClientReadyChangeServerRpc()
     {

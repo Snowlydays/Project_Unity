@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -13,6 +14,8 @@ public class QutstionController : MonoBehaviour
     private Color selectedColor = Color.yellow; // 選択されたカードの色
 
     [SerializeField] private Button confirmButton; // 決定ボタン
+    [SerializeField] private Button spellButton; // スペルボタン
+    private bool isAttacking = false;
     
     private CardsManager cardsManager;
     private NetworkSystem networkSystem;
@@ -47,8 +50,28 @@ public class QutstionController : MonoBehaviour
             cardButton.onClick.AddListener(() => ToggleCardSelection(card));
         }
             
-        // 決定ボタンのクリックイベント設定
-        confirmButton.GetComponent<Button>().onClick.AddListener(CompareSelectedCards);
+        // クリックイベント設定
+        confirmButton.GetComponent<Button>().onClick.AddListener(OnConfirmButtonClicked);
+        spellButton.onClick.AddListener(OnSpellButtonClicked);
+    }
+
+    void OnSpellButtonClicked()
+    {
+        Debug.Log("スペルボタン クリック");
+        isAttacking = !isAttacking;
+        networkSystem.ToggleAttacked();
+    }
+
+    bool CheckAllCardsAscending()
+    {
+        // カードが昇順に並んでいるか判定
+        for(int i = 0;i < cardsManager.myCards.Count-1;i++)
+        {
+            int cardNumber = cardsManager.myCards[i].cardNum;
+            int nextCardNumber = cardsManager.myCards[i+1].cardNum;
+            if (cardNumber > nextCardNumber) return false;
+        }
+        return true;
     }
     
     // カード選択状態の切り替え関数
@@ -82,27 +105,33 @@ public class QutstionController : MonoBehaviour
     }
     
     // confirmButtonを押したときに起動するメソッド
-    void CompareSelectedCards()
+    void OnConfirmButtonClicked()
     {
-        int ans = -1;
-        if (selectedCards.Count == 2)
+        if (isAttacking || selectedCards.Count == 2)
         {
-            ans = CompareCards(selectedCards[0], selectedCards[1]);
-            
+            if (isAttacking) Debug.Log("QuestionController: 攻撃します");
+            else
+            {
+                int ans = -1;
+                if (selectedCards.Count == 2)
+                {
+                    ans = CompareCards(selectedCards[0], selectedCards[1]);
+                }
+            }
             // 比較後に選択状態をリセット
             foreach (GameObject card in selectedCards)
             {
-                card.GetComponent<Image>().color = originalColor;  // 色を元に戻す
+                card.GetComponent<Image>().color = originalColor; // 色を元に戻す
             }
             selectedCards.Clear();
-            
+
             // クローンカードのUIを削除
             GameObject[] clonedCards = GameObject.FindGameObjectsWithTag("ClonedCard");
-            foreach (GameObject card in clonedCards)Destroy(card);
-            
+            foreach (GameObject card in clonedCards) Destroy(card);
+
             // 背景のパネルを非表示に
-            questionBG.SetActive(false); 
-            
+            questionBG.SetActive(false);
+
             // 通常フェーズへ戻るためにreadyをトグルする
             networkSystem.ToggleReady();
         }
