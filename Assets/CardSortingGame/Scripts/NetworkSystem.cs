@@ -26,22 +26,20 @@ public class NetworkSystem : NetworkBehaviour
     private NetworkVariable<bool> netIsClientAscending = new NetworkVariable<bool>(false);
 
     public static int cardNum = 7;// 盤面上にあるカードの枚数
+    private int ITEM_NUM = 6; // ゲーム内のアイテム数
 
     // カードのNetworkList
     private NetworkList<int> netHostCard;
     private NetworkList<int> netClientCard;
 
     // アイテムのNetworkList
-    private NetworkList<int> netHostItem;
-    private NetworkList<int> netClientItem;
+    private NetworkList<bool> netHostItems;
+    private NetworkList<bool> netClientItems;
 
     //カードは要素数が変わることがないのでarray、アイテムは常に要素数が変化するのでlist管理
 
     public static int[] hostCard = new int[cardNum];//カード配列取得用変数
     public static int[] clientCard = new int[cardNum];
-
-    public static List<int> hostItem = new List<int>();//アイテム配列取得用変数
-    public static List<int> clientItem = new List<int>();
 
     public static int phase = 0;
     public static bool hostReady = false;
@@ -55,10 +53,14 @@ public class NetworkSystem : NetworkBehaviour
         //各種NetworkList初期化
         netHostCard = new NetworkList<int>();
         netClientCard = new NetworkList<int>();
-        netHostItem = new NetworkList<int>();
-        netClientItem = new NetworkList<int>();
-        
+        netHostItems = new NetworkList<bool>();
+        netClientItems = new NetworkList<bool>();
+    }
+
+    void Start()
+    {
         phaseManager = FindObjectOfType<PhaseManager>();
+        itemPhaseManager = FindObjectOfType<ItemPhaseManager>();
     }
 
     public override void OnDestroy()
@@ -66,8 +68,8 @@ public class NetworkSystem : NetworkBehaviour
         //接続終了時にNetworkListを破棄
         netHostCard?.Dispose();
         netClientCard?.Dispose();
-        netHostItem?.Dispose();
-        netClientItem?.Dispose();
+        netHostItems?.Dispose();
+        netClientItems?.Dispose();
     }
 
     public override void OnNetworkSpawn()
@@ -96,10 +98,11 @@ public class NetworkSystem : NetworkBehaviour
         netHostCard.OnListChanged += OnNetHostCardChanged;
         netClientCard.OnListChanged += OnNetClientCardChanged;
 
-        netHostItem.OnListChanged += OnNetHostItemChanged;
-        netClientItem.OnListChanged += OnNetClientItemChanged;
+        netHostItems.OnListChanged += OnNetHostItemChanged;
+        netClientItems.OnListChanged += OnNetClientItemChanged;
 
-        if(IsHost){
+        // カードの初期化
+        if(IsServer){
             //カード配列の初期設定(ここでは純粋なランダム入れ替え)
             for(int i=0;i<cardNum;i++){
               netHostCard.Add(i+1);
@@ -110,7 +113,7 @@ public class NetworkSystem : NetworkBehaviour
         }
         
         CardsManager cardsManager = FindObjectOfType<CardsManager>();;
-        if (IsHost)
+        if (IsServer)
         {
             for (int i = 0; i < cardsManager.myCards.Count; i++)
             {
@@ -122,6 +125,16 @@ public class NetworkSystem : NetworkBehaviour
             for (int i = 0; i < cardsManager.myCards.Count; i++)
             {
                 ChangeClientCardList(i, cardsManager.myCards[i].cardNum);
+            }
+        }
+
+        if (IsServer)
+        {
+            // アイテムの初期化
+            for (int i = 0; i < ITEM_NUM; i++)
+            {
+                netHostItems.Add(false);
+                netClientItems.Add(false);
             }
         }
     }
@@ -142,7 +155,7 @@ public class NetworkSystem : NetworkBehaviour
     private void OnNetClientCardChanged(NetworkListEvent<int> changeEvent)
     {
         string log=" ";
-        for(int i=0;i<netClientCard.Count;i++){
+        for(int i=0;i < netClientCard.Count;i++){
             clientCard[i]=netClientCard[i];
             log+=netClientCard[i].ToString()+",";
         }
@@ -151,36 +164,34 @@ public class NetworkSystem : NetworkBehaviour
         //Debug.Log("Client Card is :"+log.Remove(log.Length-1)); 
     }
     
-    private void OnNetHostItemChanged(NetworkListEvent<int> changeEvent)
+    private void OnNetHostItemChanged(NetworkListEvent<bool> changeEvent)
     {
-        string log=" ";
-        hostItem = new List<int>();
-        if(netHostItem?.Count>0){
-            for(int i=0;i<netHostItem.Count;i++){
-                hostItem.Add(netHostItem[i]);
-                log+=netHostItem[i].ToString()+",";
-            }
+        int len = Mathf.Min(netHostItems.Count, ITEM_NUM);
+        for (int i = 0; i < len; i++)
+        {
+            if (IsHost) itemPhaseManager.myItems[i] = netHostItems[i]; 
+            else itemPhaseManager.otherItems[i] = netHostItems[i]; 
         }
-
-        //ホストのアイテムログ 以降上記と同様
-        //Debug.Log("Host Item is :"+log.Remove(log.Length-1)); 
+        itemPhaseManager.UpdateInventoryUI();
     }
 
-    private void OnNetClientItemChanged(NetworkListEvent<int> changeEvent)
+    private void OnNetClientItemChanged(NetworkListEvent<bool> changeEvent)
     {
-        string log=" ";
-        clientItem = new List<int>();
-        if(netClientItem?.Count>0){
-            for(int i=0;i<netClientItem.Count;i++){
-                clientItem.Add(netClientItem[i]);
-                log+=netClientItem[i].ToString()+",";
-            }
+        int len = Mathf.Min(netClientItems.Count, ITEM_NUM);
+        for (int i = 0; i < len; i++)
+        {
+            if (IsHost) itemPhaseManager.otherItems[i] = netClientItems[i]; 
+            else itemPhaseManager.myItems[i] = netClientItems[i]; 
         }
-
-        //クライアントのアイテムログ 以降上記と同様
-        //Debug.Log("Client Item is :"+log.Remove(log.Length-1)); 
+        itemPhaseManager.UpdateInventoryUI();
     }
 
+    public void ChangeItems(int pos, bool value)
+    {
+        if (IsHost) netHostItems[pos] = value;
+        else ChangeClientItemServerRpc(pos, value);
+    }
+    
     public void ChangeHostCardList(int pos, int value)
     {
         if (pos < 0 || pos >= netHostCard.Count) return;
@@ -308,6 +319,17 @@ public class NetworkSystem : NetworkBehaviour
 
     void Update()
     {
+        if(Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            string host_log = "host\n",client_log="client\n";
+            for (int i = 0; i < ITEM_NUM; i++)
+            {
+                host_log += netHostItems[i];
+                client_log += netClientItems[i];
+            }
+            Debug.Log(host_log);
+            Debug.Log(client_log);
+        }
         if (IsHost)
         {
             if (Input.GetKeyDown(KeyCode.Alpha3))
@@ -441,5 +463,11 @@ public class NetworkSystem : NetworkBehaviour
     {
         netIsHostAttacking.Value = false;
         netIsClientAttacking.Value = false;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void ChangeClientItemServerRpc(int pos, bool value)
+    { 
+        netClientItems[pos] = value;
     }
 }
