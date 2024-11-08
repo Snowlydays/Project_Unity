@@ -29,6 +29,8 @@ public class ItemPhaseManager : MonoBehaviour
     [SerializeField] private Color toggleOffColor = Color.white; // トグルがオフの時の色
 
     private NetworkSystem networkSystem;
+    private QutstionController qutstionController;
+    private ItemUsingManager itemUsingManager;
     
     void Awake()
     {
@@ -41,6 +43,10 @@ public class ItemPhaseManager : MonoBehaviour
         // 非表示
         itemDisplayPanel.gameObject.SetActive(false);
         confirmButton.gameObject.SetActive(false);
+
+        qutstionController = FindObjectOfType<QutstionController>();
+
+        itemUsingManager = FindObjectOfType<ItemUsingManager>();
 
         // 自分の所有アイテムを初期化
         for (int i = 0; i < ITEM_NUM; i++)
@@ -105,11 +111,12 @@ public class ItemPhaseManager : MonoBehaviour
         Debug.Log("決定ボタンがクリックされた");
         foreach (int itemIdx in selectedItems)
         {
-            Debug.Log($"アイテム{itemIdx} を使用");
-            ApplyItemEffect(itemIdx);
-            // myItems[itemIdx] = false;
             networkSystem.ChangeItems(itemIdx,false);
         }
+
+        //アイテム情報をitemUsingManagerに伝達
+        //3の実装に際しては相手のアイテム情報も伝達する
+        itemUsingManager.myItem = selectedItems.ToArray();
 
         // 使用したアイテムのtoggleを削除
         foreach (GameObject toggleObj in toggleList.ToList())
@@ -126,7 +133,7 @@ public class ItemPhaseManager : MonoBehaviour
         itemDisplayPanel.gameObject.SetActive(false);
         confirmButton.gameObject.SetActive(false);
 
-        // 質問・詠唱フェーズへ進めるために、readyをトグルする
+        // アイテム使用フェーズへ進めるために、readyをトグルする
         networkSystem.ToggleReady();
     }
 
@@ -148,7 +155,6 @@ public class ItemPhaseManager : MonoBehaviour
             // 未所有のアイテムリストからランダムに選び、プレイヤーへ配る
             int randomIdx = UnityEngine.Random.Range(0, unownedItems.Count);
             int distributedItemIdx = unownedItems[randomIdx];
-            // myItems[distributedItemIdx] = true;
             networkSystem.ChangeItems(distributedItemIdx,true);
             Debug.Log($"アイテム{distributedItemIdx+1}:を配布");
 
@@ -235,5 +241,31 @@ public class ItemPhaseManager : MonoBehaviour
     private void ApplyItemEffect(int itemIdx)
     {
         // ここにアイテムの効果を実装
+        switch(itemIdx)
+        {
+            case 0:
+
+            break;
+
+            case 1:
+                qutstionController.isGetDiff=true;
+            break;
+
+            case 2:
+
+            break;
+
+            case 3:
+
+            break;
+
+            case 4:
+
+            break;
+
+            case 5:
+                qutstionController.isThreeSelect=true;
+            break;
+        }
     }
 }

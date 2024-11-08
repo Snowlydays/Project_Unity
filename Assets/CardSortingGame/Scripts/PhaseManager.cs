@@ -7,9 +7,11 @@ public class PhaseManager : MonoBehaviour
     public const int InitialPhase = 0;
     public const int ItemPhase = 1;
     public const int QuestionPhase = 2;
+    public const int ItemUsingPhase = 3;
 
     private ItemPhaseManager itemPhaseManager;
     private QutstionController qutstionController;
+    private ItemUsingManager itemUsingManager;
     private NetworkSystem networkSystem;
 
     private void Start()
@@ -17,6 +19,7 @@ public class PhaseManager : MonoBehaviour
         itemPhaseManager = FindObjectOfType<ItemPhaseManager>();
         qutstionController = FindObjectOfType<QutstionController>();
         networkSystem = FindObjectOfType<NetworkSystem>();
+        itemUsingManager = FindObjectOfType<ItemUsingManager>();
     }
     
 
@@ -37,6 +40,10 @@ public class PhaseManager : MonoBehaviour
 
             case QuestionPhase:
                 qutstionController.StartQuestionPhase();
+                break;
+
+            case ItemUsingPhase:
+                itemUsingManager.StartItemUsePhase();
                 break;
         }
     }
