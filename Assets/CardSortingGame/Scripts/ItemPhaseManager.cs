@@ -4,11 +4,13 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Unity.VisualScripting;
 
 public class ItemPhaseManager : MonoBehaviour
 {
     const int ITEM_NUM = 6; // 「spell of algo」に登場するアイテム数
     public bool[] myItems = new bool[ITEM_NUM]; // 自分が所有しているアイテムをboolで管理
+    public bool[] otherItems = new bool[ITEM_NUM]; // 相手が所有しているアイテムをboolで管理
     private List<int> selectedItems = new List<int>(); // 選択されたアイテムのリスト
 
     [SerializeField] private Transform itemDisplayPanel; // アイテム使用ボタンを表示するパネル
@@ -16,7 +18,8 @@ public class ItemPhaseManager : MonoBehaviour
     [SerializeField] private Button confirmButton; // 決定ボタン
 
     // 所有アイテム表示用の変数
-    [SerializeField] private Transform inventoryPanel; // 所有アイテムを表示するパネル
+    [SerializeField] private Transform myInventoryPanel; // 自分の所有アイテムを表示するパネル
+    [SerializeField] private Transform otherInventoryPanel; // 相手の所有アイテムを表示するパネル
     [SerializeField] private GameObject inventoryItemPrefab; // 所有アイテム表示用のプレハブ
     [SerializeField] private Sprite[] itemIcons; // 各アイテムのアイコン
     
@@ -32,8 +35,8 @@ public class ItemPhaseManager : MonoBehaviour
     void Awake()
     {
         networkSystem = FindObjectOfType<NetworkSystem>();
-        GameObject inventoryPanelObj = GameObject.FindGameObjectWithTag("InventoryPanel");
-        inventoryPanel = inventoryPanelObj.transform;
+        myInventoryPanel = GameObject.Find("MyInventoryPanel").transform;
+        otherInventoryPanel = GameObject.Find("OtherInventoryPanel").transform;
     }
     void Start()
     {
@@ -62,15 +65,19 @@ public class ItemPhaseManager : MonoBehaviour
         SortToggles(); // トグルのボタンをソート
         itemDisplayPanel.gameObject.SetActive(true); // アイテムディスプレイを表示
         confirmButton.gameObject.SetActive(true); // 決定ボタンを表示
-
-        UpdateInventoryUI(); // 所有アイテムの表示を更新
     }
 
+    public void UpdateInventoryUI()
+    {
+        UpdateInventory(myItems,myInventoryPanel); // 自分の所有アイテムの表示を更新
+        UpdateInventory(otherItems, otherInventoryPanel); // 相手の所有アイテムの表示を更新
+    }
+    
     // 表示するアイテムを更新するメソッド
-    private void UpdateInventoryUI()
+    private void UpdateInventory(bool [] items, Transform panel)
     {
         // 既存のアイコンをクリア
-        foreach (Transform child in inventoryPanel)
+        foreach (Transform child in panel)
         {
             Destroy(child.gameObject);
         }
@@ -78,17 +85,17 @@ public class ItemPhaseManager : MonoBehaviour
         // 所有しているアイテムのアイコンを表示
         for(int i = 0;i < ITEM_NUM;i++)
         {
-            if (myItems[i])
+            if (items[i])
             {
-                CreateInventoryItem(i);
+                CreateInventoryItem(i,panel);
             }
         }
     }
 
-    private void CreateInventoryItem(int itemIdx)
+    private void CreateInventoryItem(int itemIdx, Transform panel)
     {
         // プレハブをインスタンス化して、inventoryPanelの子として配置
-        GameObject inventoryItem = Instantiate(inventoryItemPrefab, inventoryPanel);
+        GameObject inventoryItem = Instantiate(inventoryItemPrefab, panel);
 
         // RectTransformを設定
         RectTransform rectTransform = inventoryItem.GetComponent<RectTransform>();
@@ -104,9 +111,7 @@ public class ItemPhaseManager : MonoBehaviour
         Debug.Log("決定ボタンがクリックされた");
         foreach (int itemIdx in selectedItems)
         {
-            //Debug.Log($"アイテム{itemIdx} を使用");
-            //ApplyItemEffect(itemIdx);
-            myItems[itemIdx] = false;
+            networkSystem.ChangeItems(itemIdx,false);
         }
 
         //アイテム情報をitemUsingManagerに伝達
@@ -124,8 +129,6 @@ public class ItemPhaseManager : MonoBehaviour
             }
         }
         
-        UpdateInventoryUI(); // 所有アイテムの表示を更新
-
         selectedItems.Clear(); // 選択していたアイテムをクリア
         itemDisplayPanel.gameObject.SetActive(false);
         confirmButton.gameObject.SetActive(false);
@@ -152,8 +155,7 @@ public class ItemPhaseManager : MonoBehaviour
             // 未所有のアイテムリストからランダムに選び、プレイヤーへ配る
             int randomIdx = UnityEngine.Random.Range(0, unownedItems.Count);
             int distributedItemIdx = unownedItems[randomIdx];
-            distributedItemIdx=5;//アイテムテスト用 特定のアイテムの動きを調べたい場合外す
-            myItems[distributedItemIdx] = true;
+            networkSystem.ChangeItems(distributedItemIdx,true);
             Debug.Log($"アイテム{distributedItemIdx+1}:を配布");
 
             // アイテム選択用トグルを作成
