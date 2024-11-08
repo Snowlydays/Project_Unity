@@ -59,9 +59,6 @@ public class ItemPhaseManager : MonoBehaviour
         SortToggles(); // トグルのボタンをソート
         itemDisplayPanel.gameObject.SetActive(true); // アイテムディスプレイを表示
         confirmButton.gameObject.SetActive(true); // 決定ボタンを表示
-
-        // UpdateInventoryUI(myItems,myInventoryPanel); // 自分の所有アイテムの表示を更新
-        // UpdateInventoryUI(otherItems, otherInventoryPanel); // 相手の所有アイテムの表示を更新
     }
 
     public void UpdateInventoryUI()
@@ -125,9 +122,6 @@ public class ItemPhaseManager : MonoBehaviour
             }
         }
         
-        // UpdateInventoryUI(myItems, myInventoryPanel); // 自分のアイテムの表示を更新
-        // UpdateInventoryUI(otherItems, otherInventoryPanel); // 相手のアイテムの表示を更新
-
         selectedItems.Clear(); // 選択していたアイテムをクリア
         itemDisplayPanel.gameObject.SetActive(false);
         confirmButton.gameObject.SetActive(false);
