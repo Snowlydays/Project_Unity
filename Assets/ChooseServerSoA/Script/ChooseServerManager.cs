@@ -22,12 +22,22 @@ public class ChooseServerManager : NetworkBehaviour
     string joinCode;
 
     async void Awake(){
-        await UnityServices.InitializeAsync();
-
+        InitializationOptions hostOptions = new InitializationOptions().SetProfile("host");
+        InitializationOptions clientOptions = new InitializationOptions().SetProfile("client");
+       
+        await UnityServices.InitializeAsync(hostOptions);
+       
         AuthenticationService.Instance.SignedIn += () =>
         {
-            Debug.Log("Signed In " + AuthenticationService.Instance.PlayerId);
+            Debug.Log("Signed in: " + AuthenticationService.Instance.PlayerId);
         };
+
+        if (AuthenticationService.Instance.IsAuthorized)
+        {
+            Debug.Log("Authorized");
+            AuthenticationService.Instance.SignOut();
+            await UnityServices.InitializeAsync(clientOptions);
+        }
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
 
         inputField = GameObject.Find("InputText").GetComponent<TMP_InputField>();
@@ -48,6 +58,8 @@ public class ChooseServerManager : NetworkBehaviour
         ホストの場合はサーバー内にいるクライアントの数がホスト自身を含め2以上になったら
         移動する
         */
+        Debug.Log("テスト");
+
         if(clientstart){
             SceneManager.LoadScene("CardSortingGame"); 
         }else{

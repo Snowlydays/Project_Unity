@@ -17,7 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/CardSortingGame.unity
     guid: f74c6b8653b1c4076a4c098b861ed144
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/TestOnline.unity
     guid: 0603898a289514f84932fe74b18b8e61
   - enabled: 1

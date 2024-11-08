@@ -11,6 +11,7 @@ public class NetworkSystem : NetworkBehaviour
     const int initialPhase = 0;
     const int itemPhase = 1;
     const int questionPhase = 2;
+    const int itemUsingPhase = 3;
     
     // フェーズを管理するNetWrokVariable
     private NetworkVariable<int> netphase = new NetworkVariable<int>(0);
@@ -226,12 +227,18 @@ public class NetworkSystem : NetworkBehaviour
                     break;
 
                 case itemPhase:
+                    ChangePhase(itemUsingPhase);
+                    break;
+
+                case itemUsingPhase:
                     ChangePhase(questionPhase);
                     break;
 
                 case questionPhase:
                     ChangePhase(initialPhase);
                     break;
+
+                
             }
             ResetReadyStates();
         }
