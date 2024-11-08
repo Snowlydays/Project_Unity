@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Linq;
 
 public class QutstionController : MonoBehaviour
 {
@@ -19,6 +20,9 @@ public class QutstionController : MonoBehaviour
     
     private CardsManager cardsManager;
     private NetworkSystem networkSystem;
+
+    public bool isGetDiff = false;
+    public bool isThreeSelect = false;
     
     void Start()
     {
@@ -72,8 +76,15 @@ public class QutstionController : MonoBehaviour
         }
         else
         {
-            // 2枚を超えた選択は許可しない
-            if(selectedCards.Count < 2)SelectCard(card);
+            //2枚選択か3枚選択かで分ける
+            if(!isThreeSelect)
+            {
+                // 2枚を超えた選択は許可しない
+                if(selectedCards.Count < 2)SelectCard(card);
+            }else{
+                // 3枚を超えた選択は許可しない
+                if(selectedCards.Count < 3)SelectCard(card);
+            }
         }
     }
 
@@ -94,15 +105,26 @@ public class QutstionController : MonoBehaviour
     
     void OnConfirmButtonClicked()
     {
-        if (isAttacking || selectedCards.Count == 2)
+        if (isAttacking || selectedCards.Count >= 2)
         {
             if (isAttacking) Debug.Log("QuestionController: 攻撃します");
-            else
+            else if(!isThreeSelect)
             {
+                //2枚選択の場合
                 int ans = -1;
                 if (selectedCards.Count == 2)
                 {
                     ans = CompareCards(selectedCards[0], selectedCards[1]);
+                }
+            }else{
+                //三枚選択の場合
+                int ans = -1;
+                if (selectedCards.Count == 3)
+                {
+                    ans = CompareThreeCards(selectedCards[0], selectedCards[1], selectedCards[2]);
+                }else{
+                    Debug.Log("Please select exactly three cards to compare.");
+                    return;
                 }
             }
             // 比較後に選択状態をリセット
@@ -121,6 +143,9 @@ public class QutstionController : MonoBehaviour
             
             // 攻撃トグルを初期化
             isAttacking = false;
+
+            // 3枚選択トグルを初期化
+            isThreeSelect=false;
 
             // 通常フェーズへ戻るためにreadyをトグルする
             networkSystem.ToggleReady();
@@ -143,6 +168,70 @@ public class QutstionController : MonoBehaviour
         if(leftName[leftName.Length - 1] < rightName[rightName.Length - 1]) Debug.Log("right card is greater");
         else Debug.Log("left card is greater");
         
+        if(isGetDiff){
+            //アイテム2の処理
+            int Diff=0;
+            Diff=Mathf.Abs(leftName[leftName.Length - 1] - rightName[rightName.Length - 1]);
+
+            Debug.Log("カードの差は"+Diff.ToString()+"です");
+
+            isGetDiff=false;
+        }
+        return 0;
+    }
+
+    int CompareThreeCards(GameObject leftCard, GameObject middleCard, GameObject rightCard)
+    {
+        GameObject[] Cards ={leftCard,middleCard,rightCard};
+
+        Cards.OrderBy(e => e.transform.position.x);//x座標の昇順に並び替え 仮
+        
+        string leftName = Cards[0].name, middleName = Cards[1].name, rightName = Cards[2].name;
+        Debug.Log("left:"+leftName + " middle:"+middleName + " right:"+rightName);
+        
+        int[] array={leftName[leftName.Length - 1],middleName[middleName.Length - 1],rightName[rightName.Length - 1]};
+        
+        string left="",middle="",right="";
+
+        int maxindex=Array.IndexOf(array,array.Max());
+
+        switch(maxindex)
+        {
+            case 0:
+                left="big";
+            break;
+            case 1:
+                middle="big";
+            break;
+            case 2:
+                right="big";
+            break;
+        }
+
+        int minindex=Array.IndexOf(array,array.Min());
+
+        switch(minindex)
+        {
+            case 0:
+                left="small";
+            break;
+            case 1:
+                middle="small";
+            break;
+            case 2:
+                right="small";
+            break;
+        }
+
+        if(left==""){
+            left="middle";
+        }else if(middle==""){
+            middle="middle";
+        }else{
+            right="middle";
+        }
+
+        Debug.Log("Left:"+left+" middle:"+middle+" right:"+right);
         return 0;
     }
 }
