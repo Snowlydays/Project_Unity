@@ -21,23 +21,36 @@ public class ChooseServerManager : NetworkBehaviour
     TMP_InputField inputField;
     string joinCode;
 
-    async void Awake(){
-        InitializationOptions hostOptions = new InitializationOptions().SetProfile("host");
-        InitializationOptions clientOptions = new InitializationOptions().SetProfile("client");
+    private const string PASSWORD_CHARS = 
+        "0123456789abcdefghijklmnopqrstuvwxyz";
+
+    public static string GeneratePassword( int length )
+    {
+        var sb  = new System.Text.StringBuilder( length );
+        var r   = new System.Random();
+
+        for ( int i = 0; i < length; i++ )
+        {
+            int     pos = r.Next( PASSWORD_CHARS.Length );
+            char    c   = PASSWORD_CHARS[ pos ];
+            sb.Append( c );
+        }
+
+        return sb.ToString();
+    }
+
+    async void Start(){
+        //InitializationOptions hostOptions = new InitializationOptions().SetProfile(GeneratePassword(10));
        
-        await UnityServices.InitializeAsync(hostOptions);
+        await UnityServices.InitializeAsync();
+
+        //await UnityServices.InitializeAsync();
        
         AuthenticationService.Instance.SignedIn += () =>
         {
             Debug.Log("Signed in: " + AuthenticationService.Instance.PlayerId);
         };
 
-        if (AuthenticationService.Instance.IsAuthorized)
-        {
-            Debug.Log("Authorized");
-            AuthenticationService.Instance.SignOut();
-            await UnityServices.InitializeAsync(clientOptions);
-        }
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
 
         inputField = GameObject.Find("InputText").GetComponent<TMP_InputField>();
@@ -87,6 +100,13 @@ public class ChooseServerManager : NetworkBehaviour
 
                 RelayServerData relayServerData = new RelayServerData(allocation, "wss");
                 NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
+                /*NetworkManager.Singleton.GetComponent<UnityTransport>().SetHostRelayData(
+                allocation.RelayServer.IpV4,
+                (ushort)allocation.RelayServer.Port,
+                allocation.AllocationIdBytes,
+                allocation.Key,
+                allocation.ConnectionData
+                );*/
 
                 Debug.Log(joinCode);
 
@@ -120,6 +140,16 @@ public class ChooseServerManager : NetworkBehaviour
             }
         }
     }
+
+    /*
+    void Update(){
+        if(IsServer){
+            Debug.Log("テストです");
+            if(NetworkManager.Singleton.ConnectedClients.Count > 1){
+                SceneManager.LoadScene("CardSortingGame"); 
+            }
+        }
+    }*/
 
     //クライアントがホストに接続する際にする事前処理
     private void ApprovalCheck(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
