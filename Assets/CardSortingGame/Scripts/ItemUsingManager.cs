@@ -30,7 +30,6 @@ public class ItemUsingManager : MonoBehaviour
             ApplyItemEffect(item);
         }*/
 
-
     }
 
     private void ApplyItemEffect(int itemIdx)
