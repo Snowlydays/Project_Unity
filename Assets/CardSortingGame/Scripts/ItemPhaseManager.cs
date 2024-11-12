@@ -116,7 +116,8 @@ public class ItemPhaseManager : MonoBehaviour
 
         //アイテム情報をitemUsingManagerに伝達
         //3の実装に際しては相手のアイテム情報も伝達する
-        itemUsingManager.myItem = selectedItems.ToArray();
+        // ここがNullReferenceExceptionを起こしている
+        // itemUsingManager.myItem = selectedItems.ToArray();
 
         // 使用したアイテムのtoggleを削除
         foreach (GameObject toggleObj in toggleList.ToList())

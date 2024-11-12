@@ -42,8 +42,9 @@ public class PhaseManager : MonoBehaviour
                 qutstionController.StartQuestionPhase();
                 break;
 
+            // ここもNullReferenceExceptionの原因になるので一旦コメントアウト
             case ItemUsingPhase:
-                itemUsingManager.StartItemUsePhase();
+                // itemUsingManager.StartItemUsePhase();
                 break;
         }
     }
