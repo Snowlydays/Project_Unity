@@ -29,8 +29,6 @@ public class MainSystemScript : MonoBehaviour
     }
 
     void Awake(){
-        SceneManager.LoadScene("Scenes/SoAPhaseScenes/ItemPhase",LoadSceneMode.Additive);
-        SceneManager.LoadScene("Scenes/SoAPhaseScenes/QuestionPhase",LoadSceneMode.Additive);
         networkSystem = FindObjectOfType<NetworkSystem>();
     }
 

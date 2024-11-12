@@ -8,7 +8,7 @@ using Unity.VisualScripting;
 
 public class ItemPhaseManager : MonoBehaviour
 {
-    const int ITEM_NUM = 6; // 「spell of algo」に登場するアイテム数
+    private const int ITEM_NUM = 6; // 「spell of algo」に登場するアイテム数
     public bool[] myItems = new bool[ITEM_NUM]; // 自分が所有しているアイテムをboolで管理
     public bool[] otherItems = new bool[ITEM_NUM]; // 相手が所有しているアイテムをboolで管理
     private List<int> selectedItems = new List<int>(); // 選択されたアイテムのリスト
@@ -29,8 +29,6 @@ public class ItemPhaseManager : MonoBehaviour
     [SerializeField] private Color toggleOffColor = Color.white; // トグルがオフの時の色
 
     private NetworkSystem networkSystem;
-    private QutstionController qutstionController;
-    private ItemUsingManager itemUsingManager;
     
     void Awake()
     {
@@ -43,10 +41,6 @@ public class ItemPhaseManager : MonoBehaviour
         // 非表示
         itemDisplayPanel.gameObject.SetActive(false);
         confirmButton.gameObject.SetActive(false);
-
-        qutstionController = FindObjectOfType<QutstionController>();
-
-        itemUsingManager = FindObjectOfType<ItemUsingManager>();
 
         // 自分の所有アイテムを初期化
         for (int i = 0; i < ITEM_NUM; i++)
@@ -116,7 +110,7 @@ public class ItemPhaseManager : MonoBehaviour
 
         //アイテム情報をitemUsingManagerに伝達
         //3の実装に際しては相手のアイテム情報も伝達する
-        itemUsingManager.myItem = selectedItems.ToArray();
+        networkSystem.itemUsingManager.myItem = selectedItems.ToArray();
 
         // 使用したアイテムのtoggleを削除
         foreach (GameObject toggleObj in toggleList.ToList())
@@ -248,7 +242,7 @@ public class ItemPhaseManager : MonoBehaviour
             break;
 
             case 1:
-                qutstionController.isGetDiff=true;
+                networkSystem.qutstionController.isGetDiff=true;
             break;
 
             case 2:
@@ -264,7 +258,7 @@ public class ItemPhaseManager : MonoBehaviour
             break;
 
             case 5:
-                qutstionController.isThreeSelect=true;
+                networkSystem.qutstionController.isThreeSelect=true;
             break;
         }
     }
