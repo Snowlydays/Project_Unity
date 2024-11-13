@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
-using Unity.Collections;
 using UnityEditor;
 using Random = UnityEngine.Random;
 using UnityEngine.SceneManagement;
@@ -40,9 +39,6 @@ public class NetworkSystem : NetworkBehaviour
     private NetworkList<bool> netHostItems;
     private NetworkList<bool> netClientItems;
 
-    // ログのNetworkList
-    private NetworkList<FixedString64Bytes> logDataList;
-
     //カードは要素数が変わることがないのでarray、アイテムは常に要素数が変化するのでlist管理
 
     public static int[] hostCard = new int[cardNum];//カード配列取得用変数
@@ -53,7 +49,9 @@ public class NetworkSystem : NetworkBehaviour
     public static bool clientReady = false;
     
     private PhaseManager phaseManager;
-    private LogMenuController logMenuController;
+    public ItemPhaseManager itemPhaseManager;
+    public QutstionController qutstionController;
+    public ItemUsingManager itemUsingManager;
 
     void Awake()
     {
@@ -62,13 +60,6 @@ public class NetworkSystem : NetworkBehaviour
         netClientCard = new NetworkList<int>();
         netHostItems = new NetworkList<bool>();
         netClientItems = new NetworkList<bool>();
-        logDataList = new NetworkList<FixedString64Bytes>();
-    }
-
-    void Start()
-    {
-        phaseManager = FindObjectOfType<PhaseManager>();
-        logMenuController = FindObjectOfType<LogMenuController>();
     }
     
     public override void OnDestroy()
@@ -130,7 +121,7 @@ public class NetworkSystem : NetworkBehaviour
 
         netHostItems.OnListChanged += OnNetHostItemChanged;
         netClientItems.OnListChanged += OnNetClientItemChanged;
-        logDataList.OnListChanged += OnNetLogChanged;
+        
         // カードの初期化
         if(IsServer){
             //カード配列の初期設定(ここでは純粋なランダム入れ替え)
@@ -215,29 +206,6 @@ public class NetworkSystem : NetworkBehaviour
             else itemPhaseManager.myItems[i] = netClientItems[i]; 
         }
         itemPhaseManager.UpdateInventoryUI();
-    }
-
-    public void OnNetLogChanged(NetworkListEvent<FixedString64Bytes> changeEvent)
-    {
-        logMenuController.myLogs.Clear();
-        logMenuController.opponentLogs.Clear();
-        logMenuController.allLogs.Clear();
-        foreach(var txt in logDataList)
-        {
-            string dat = txt.ToString();
-            string id = dat.Substring(txt.Length - 2);
-            dat = dat.Remove(txt.Length - 2);
-            if((IsHost && id == "/h") || (!IsHost && id == "/c"))
-            {
-                logMenuController.myLogs.Add(dat);
-                logMenuController.allLogs.Add("you: " + dat);
-            }
-            else
-            {
-                logMenuController.allLogs.Add("opponent: " + dat);
-                logMenuController.opponentLogs.Add(dat);
-            }
-        }
     }
 
     public void ChangeItems(int pos, bool value)
@@ -527,30 +495,5 @@ public class NetworkSystem : NetworkBehaviour
     public void ChangeClientItemServerRpc(int pos, bool value)
     { 
         netClientItems[pos] = value;
-    }
-
-    public void Log(string str)
-    {
-        if(IsHost)
-        {
-            LogHost(str);
-        }
-        else
-        {
-            LogClientServerRpc(str);
-        }
-    }
-
-    [Unity.Netcode.ServerRpc(RequireOwnership = false)]
-    public void LogClientServerRpc(string str)
-    {
-        FixedString64Bytes fstr = new FixedString64Bytes(str + "/c");
-        logDataList.Add(fstr);
-    }
-
-    public void LogHost(string str)
-    {
-        FixedString64Bytes fstr = new FixedString64Bytes(str + "/h");
-        logDataList.Add(fstr);
     }
 }
