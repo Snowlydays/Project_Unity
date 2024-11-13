@@ -355,9 +355,10 @@ public class NetworkSystem : NetworkBehaviour
 
     public void ToggleReady()
     {
+        //実行するたびに切り替わるのではなく強制的にreadyの状態をtrueにする処理に変更
         if (IsHost)
         {
-            netHostReady.Value = !netHostReady.Value;
+            netHostReady.Value = true;
         }
         else
         {
@@ -514,7 +515,7 @@ public class NetworkSystem : NetworkBehaviour
     [Unity.Netcode.ServerRpc(RequireOwnership = false)]
     void ClientReadyChangeServerRpc()
     {
-        netClientReady.Value = !netClientReady.Value;
+        netClientReady.Value = true;
     }
 
     void ClientPhaseChange(int num)
@@ -595,14 +596,10 @@ public class NetworkSystem : NetworkBehaviour
     //netItemSelectsの中身を変更するメソッド群(引数にarrayを入れることでそのarrayの中身通りに変更する)
     public void ChangeItemSelects(int[] array)
     {
+        Debug.Log("アイテム同期中");
         if (IsHost){
             ChangeHostItemSelects(array);
         }else{
-            //ホストに変更要求をする際に処理がかかるので
-            //その直後にClientSetsClientItemを実行しても
-            //処理の途中なのでnetClientItemSelectsの中身がない状態で処理される
-            //なので、ServerRPCやClientRPCで操作要求をした後、その中でtogglereadyをして
-            //相手の準備状態を完了させるようにする
             ChangeClientItemSelectsServerRPC(array);
         }
     }
@@ -611,10 +608,11 @@ public class NetworkSystem : NetworkBehaviour
     {
         netHostItemSelects.Clear();
         int len = array.Length;
-        if(len<=0)return;
-        for(int i=0;i<len;i++)
-        {
-            netHostItemSelects.Add(array[i]);
+        if(len>0){
+            for(int i=0;i<len;i++)
+            {
+                netHostItemSelects.Add(array[i]);
+            }
         }
         ClientSetsHostItemClientRpc();
         Debug.Log("ホスト適応完了");
@@ -626,17 +624,17 @@ public class NetworkSystem : NetworkBehaviour
     { 
         netClientItemSelects.Clear();
         int len = array.Length;
-        Debug.Log(len);
-        if(len<=0)return;
-        for(int i=0;i<len;i++)
-        {
-            netClientItemSelects.Add(array[i]);
+        if(len>0){
+            for(int i=0;i<len;i++)
+            {
+                netClientItemSelects.Add(array[i]);
+            }
         }
         ClientSetsClientItemClientRpc();
         Debug.Log("クライアント適応完了");
     }
 
-    //onListChangedメソッドはホスト側にしかトリガーされない問題があるため
+    //onListChangedメソッドはホスト側にしかトリガーされない問題があるらしく
     //その対策としてホストがonListChanged内で変更を適応させた後
     //クライアントに同じ操作を要求させるために以下のメソッドを使う
     [Unity.Netcode.ClientRpc(RequireOwnership = false)]
@@ -645,12 +643,14 @@ public class NetworkSystem : NetworkBehaviour
         int len = Mathf.Min(netHostItemSelects.Count, ITEM_NUM);
         if (IsHost) itemUsingManager.myItems = new int[len];
         else itemUsingManager.otherItems = new int[len];
-        if(len<=0)return;
-        for (int i = 0; i < len; i++)
-        {
-            if (IsHost) itemUsingManager.myItems[i] = netHostItemSelects[i];
-            else itemUsingManager.otherItems[i] = netHostItemSelects[i];
+        if(len>0){
+            for (int i = 0; i < len; i++)
+            {
+                if (IsHost) itemUsingManager.myItems[i] = netHostItemSelects[i];
+                else itemUsingManager.otherItems[i] = netHostItemSelects[i];
+            }
         }
+        //ここでhostのreadyをトグルしたい 模索中
     }
 
     [Unity.Netcode.ClientRpc(RequireOwnership = false)]
@@ -660,23 +660,26 @@ public class NetworkSystem : NetworkBehaviour
         Debug.Log(len);
         if (IsHost) itemUsingManager.otherItems = new int[len];
         else itemUsingManager.myItems = new int[len];
-        if(len<=0)return;
-        for (int i = 0; i < len; i++)
-        {
-            if (IsHost) itemUsingManager.otherItems[i] = netClientItemSelects[i];
-            else itemUsingManager.myItems[i] = netClientItemSelects[i];
+        if(len>0){
+            for (int i = 0; i < len; i++)
+            {
+                if (IsHost) itemUsingManager.otherItems[i] = netClientItemSelects[i];
+                else itemUsingManager.myItems[i] = netClientItemSelects[i];
+            }
         }
+        //クライアントのreadyをtrueにする
         ClientSetReadyClientRpc();
     }
 
     //同期ずれ対策のためのもの
     //クライアントが実行しようがホストが実行しようが
-    //「クライアントの」readyをtrueにする(クライアントも然り)
+    //「クライアントの」readyをtrueにする
     //というメソッドが欲しかったため増設
-    //ホストはクライアントでもあるため、ホストもClientRpcを実行しようとすることに留意
-    //逆にクライアントはサーバーになり得ないので、ServerRpcを実行する心配はない
-
-    [ClientRpc]
+    //ホスト側でもどちらが実行してもreadyをtrueにするメソッドが欲しかったが
+    //なんか上手くいかなかったので一時保留でアイテム製作に取り掛かった。
+    //このため、ホストより先にクライアントがアイテム選択をconfirmすると
+    //選択したアイテムの同期が上手くいかない(同期が完了する前にitemUsingPhaseに移行するため)
+    [Unity.Netcode.ClientRpc(RequireOwnership = false)]
     public void ClientSetReadyClientRpc()
     { 
         if (IsServer) return;//クライアントをreadyしたいので、ホストが実行しようとしたら飛ばす

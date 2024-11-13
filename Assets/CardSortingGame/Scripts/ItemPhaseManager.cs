@@ -55,7 +55,8 @@ public class ItemPhaseManager : MonoBehaviour
     public void StartItemPhase()
     {
         Debug.Log("アイテムフェーズ開始");
-        for(int i=0;i<ITEM_NUM;i++)DistributeItem();
+        //DistributeItem();
+        TestGetAllItem();//アイテムテスト用
         SortToggles(); // トグルのボタンをソート
         itemDisplayPanel.gameObject.SetActive(true); // アイテムディスプレイを表示
         confirmButton.gameObject.SetActive(true); // 決定ボタンを表示
@@ -108,12 +109,6 @@ public class ItemPhaseManager : MonoBehaviour
             networkSystem.ChangeItems(itemIdx,false);
         }
 
-        //アイテム情報をitemUsingManagerに伝達
-        //3の実装に際しては相手のアイテム情報も伝達する
-        foreach(int item in selectedItems)
-        {
-            Debug.Log(item);
-        }
         networkSystem.ChangeItemSelects(selectedItems.ToArray());
 
         // 使用したアイテムのtoggleを削除
@@ -230,6 +225,19 @@ public class ItemPhaseManager : MonoBehaviour
                 Debug.Log($"アイテム{itemIdx} の選択を解除");
                 selectedItems.Remove(itemIdx);
             }
+        }
+    }
+
+    //テスト用
+    private void TestGetAllItem()
+    {
+        for (int i = 0; i < ITEM_NUM; i++)
+        {
+            networkSystem.ChangeItems(i,true);
+            Debug.Log($"アイテム{i+1}:を配布");
+
+            // アイテム選択用トグルを作成
+            CreateToggle(i);
         }
     }
 
