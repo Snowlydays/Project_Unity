@@ -81,9 +81,10 @@ public class MainSystemScript : MonoBehaviour
 
     void OnReadyButtonClicked()
     {
-        //演出中等で押すと勝手に次のフェーズに移行する問題があるので、制御できるようにした方が良さげか
+        //phaseが0以外の時は機能しないように制限
+        //演出中とかに押されると勝手に次のフェーズにいかれる恐れがあるため
         Debug.Log("readyButton clicked");
-        networkSystem.ToggleReady();
+        if(NetworkSystem.phase==0)networkSystem.ToggleReady();
     }
 
     void Update()
