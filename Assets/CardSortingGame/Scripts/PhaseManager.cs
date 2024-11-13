@@ -36,7 +36,6 @@ public class PhaseManager : MonoBehaviour
                 networkSystem.qutstionController.StartQuestionPhase();
                 break;
 
-            // ここもNullReferenceExceptionの原因になるので一旦コメントアウト
             case ItemUsingPhase:
                 networkSystem.itemUsingManager.StartItemUsePhase();
                 break;
