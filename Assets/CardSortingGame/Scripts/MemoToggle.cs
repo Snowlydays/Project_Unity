@@ -19,11 +19,11 @@ public class MemoToggle : MonoBehaviour
         memoBG.SetActive(!memoBG.activeSelf);
         if(memoBG.activeSelf)
         {
-            buttonText.text = "x";
+            // buttonText.text = "x";
         }
         else
         {
-            buttonText.text = "memo";
+            // buttonText.text = "memo";
         }
     }
 

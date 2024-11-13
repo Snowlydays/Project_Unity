@@ -74,14 +74,14 @@ public class ChooseServerManager : NetworkBehaviour
         Debug.Log("テスト");
 
         if(clientstart){
-            SceneManager.LoadScene("CardSortingGame"); 
+            NetworkManager.Singleton.SceneManager.LoadScene("CardSortingGame", LoadSceneMode.Single);
         }else{
             if(NetworkManager.Singleton.ConnectedClients.Count > 1){
-                SceneManager.LoadScene("CardSortingGame"); 
+                NetworkManager.Singleton.SceneManager.LoadScene("CardSortingGame", LoadSceneMode.Single);
             }
         }
     }
-
+    
     public void InputName()
     {
         joinCode = inputField.text;//テキストフィールドに文字が入れられるたびにその文字がcodeに代入される

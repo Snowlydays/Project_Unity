@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class CardSlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler
 {
     private Image slotImage;
+    public bool isMySlot = false; // 自分のスロットかどうかを示すフラグ
     
     void Awake()
     {
@@ -14,6 +15,8 @@ public class CardSlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
     // ドロップ時の処理
     public void OnDrop(PointerEventData eventData)
     {
+        if (!isMySlot) return;
+        
         // ドラッグされたオブジェクトからDraggableCardスクリプトを取得
         DraggableCard droppedCard = eventData.pointerDrag.GetComponent<DraggableCard>();
         if (droppedCard != null && droppedCard.isDraggable)

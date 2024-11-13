@@ -16,6 +16,7 @@ public class MainSystemScript : MonoBehaviour
     private GameObject[] mycard = new GameObject[CARD_NUM];//自分の手札
     private GameObject[] othercard = new GameObject[CARD_NUM];//相手の手札
     private GameObject[] mySlots = new GameObject[CARD_NUM]; // スロットを保持する配列
+    private GameObject[] otherSlots = new GameObject[CARD_NUM]; // スロットを保持する配列
     
     [SerializeField] public Button readyButton; // 準備完了ボタン
     [SerializeField] private Transform myCardPanel; // 自分のカードを配置するパネル
@@ -29,8 +30,6 @@ public class MainSystemScript : MonoBehaviour
     }
 
     void Awake(){
-        SceneManager.LoadScene("Scenes/SoAPhaseScenes/ItemPhase",LoadSceneMode.Additive);
-        SceneManager.LoadScene("Scenes/SoAPhaseScenes/QuestionPhase",LoadSceneMode.Additive);
         networkSystem = FindObjectOfType<NetworkSystem>();
     }
 
@@ -43,6 +42,8 @@ public class MainSystemScript : MonoBehaviour
         {
             // スロット生成
             mySlots[i] = Instantiate(SlotPrefab, myCardPanel);
+            CardSlot myCardSlot = mySlots[i].GetComponent<CardSlot>();
+            myCardSlot.isMySlot = true;
 
             // スロット内にカードを配置
             mycard[i] = Instantiate(CardPrefab, mySlots[i].transform);
@@ -60,8 +61,13 @@ public class MainSystemScript : MonoBehaviour
         // 自分のカード生成(スロットは不要)
         for (int i = 0; i < CARD_NUM; i++)
         {
+            // スロット生成
+            otherSlots[i] = Instantiate(SlotPrefab, otherCardPanel);
+            CardSlot otherCardSlot = otherSlots[i].GetComponent<CardSlot>();
+            otherCardSlot.isMySlot = false;
+            
             // カードを配置
-            othercard[i] = Instantiate(CardPrefab, otherCardPanel);
+            othercard[i] = Instantiate(CardPrefab, otherSlots[i].transform);
             othercard[i].GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
             othercard[i].GetComponent<Image>().color = new Color(1f, 0f, 0f);
 
