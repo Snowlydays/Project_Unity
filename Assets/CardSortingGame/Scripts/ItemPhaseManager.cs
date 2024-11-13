@@ -55,7 +55,7 @@ public class ItemPhaseManager : MonoBehaviour
     public void StartItemPhase()
     {
         Debug.Log("アイテムフェーズ開始");
-        DistributeItem();
+        for(int i=0;i<ITEM_NUM;i++)DistributeItem();
         SortToggles(); // トグルのボタンをソート
         itemDisplayPanel.gameObject.SetActive(true); // アイテムディスプレイを表示
         confirmButton.gameObject.SetActive(true); // 決定ボタンを表示
@@ -110,7 +110,11 @@ public class ItemPhaseManager : MonoBehaviour
 
         //アイテム情報をitemUsingManagerに伝達
         //3の実装に際しては相手のアイテム情報も伝達する
-        networkSystem.itemUsingManager.myItem = selectedItems.ToArray();
+        foreach(int item in selectedItems)
+        {
+            Debug.Log(item);
+        }
+        networkSystem.ChangeItemSelects(selectedItems.ToArray());
 
         // 使用したアイテムのtoggleを削除
         foreach (GameObject toggleObj in toggleList.ToList())
@@ -126,9 +130,6 @@ public class ItemPhaseManager : MonoBehaviour
         selectedItems.Clear(); // 選択していたアイテムをクリア
         itemDisplayPanel.gameObject.SetActive(false);
         confirmButton.gameObject.SetActive(false);
-
-        // アイテム使用フェーズへ進めるために、readyをトグルする
-        networkSystem.ToggleReady();
     }
 
     // プレイヤーにアイテムを配布するメソッド

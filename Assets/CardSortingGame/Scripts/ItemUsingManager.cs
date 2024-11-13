@@ -11,8 +11,11 @@ public class ItemUsingManager : MonoBehaviour
 
     private NetworkSystem networkSystem;
 
-    public int[] myItem;//自分の使用するアイテム
-    public int[] otherItem;//相手の使用するアイテム
+    public int[] myItems;//自分の使用するアイテム
+    public int[] otherItems;//相手の使用するアイテム
+
+    List<int> mylist;
+    List<int> otherlist;
 
 
     void Start()
@@ -22,12 +25,34 @@ public class ItemUsingManager : MonoBehaviour
 
     public void StartItemUsePhase()
     {
+        if(myItems.Length<=0){
+            //自分がアイテムを選択していなかったら強制終了
+            Debug.Log("アイテムを選択していなかったので終了します");
+            //networkSystem.ToggleReady();
+            //return;
+        }
+        
+        mylist = new List<int>(myItems);
+        otherlist = new List<int>(otherItems);
+
+        Debug.Log("自分のアイテム");
+        foreach(int item in mylist)
+        {
+            Debug.Log(item);
+        }
+        Debug.Log("相手のアイテム");
+        foreach(int item in otherlist)
+        {
+            Debug.Log(item);
+        }
         //アイテム処理
         /*foreach(item in myitem){
             Debug.Log($"アイテム{item+1}を使用しました")
             ApplyItemEffect(item);
         }*/
 
+
+        //networkSystem.ToggleReady();
     }
 
     private void ApplyItemEffect(int itemIdx)

@@ -42,6 +42,10 @@ public class NetworkSystem : NetworkBehaviour
 
     // ログのNetworkList
     private NetworkList<FixedString64Bytes> logDataList;
+    
+    // アイテムのNetworkList(使用順などもわかるもの)
+    private NetworkList<int> netHostItemSelects;
+    private NetworkList<int> netClientItemSelects;
 
     //カードは要素数が変わることがないのでarray、アイテムは常に要素数が変化するのでlist管理
 
@@ -66,6 +70,8 @@ public class NetworkSystem : NetworkBehaviour
         netHostItems = new NetworkList<bool>();
         netClientItems = new NetworkList<bool>();
         logDataList = new NetworkList<FixedString64Bytes>();
+        netHostItemSelects = new NetworkList<int>();
+        netClientItemSelects = new NetworkList<int>();
     }
     
     public override void OnDestroy()
@@ -76,6 +82,8 @@ public class NetworkSystem : NetworkBehaviour
         netHostItems?.Dispose();
         netClientItems?.Dispose();
         logDataList?.Dispose();
+        netHostItemSelects?.Dispose();
+        netClientItemSelects?.Dispose();
     }
 
     public override void OnNetworkSpawn()
@@ -131,6 +139,9 @@ public class NetworkSystem : NetworkBehaviour
         netClientItems.OnListChanged += OnNetClientItemChanged;
 
         logDataList.OnListChanged += OnNetLogChanged;
+        
+        netHostItemSelects.OnListChanged += netHostItemSelectsChanged;
+        netClientItemSelects.OnListChanged += netClientItemSelectsChanged;
         
         // カードの初期化
         if(IsServer){
@@ -238,6 +249,32 @@ public class NetworkSystem : NetworkBehaviour
                 logMenuController.allLogs.Add("opponent: " + dat);
                 logMenuController.opponentLogs.Add(dat);
             }
+        }
+    }
+    
+    private void netHostItemSelectsChanged(NetworkListEvent<int> changeEvent)
+    {
+        int len = Mathf.Min(netHostItemSelects.Count, ITEM_NUM);
+        if (IsHost) itemUsingManager.myItems = new int[len];
+        else itemUsingManager.otherItems = new int[len];
+        if(len<=0)return;
+        for (int i = 0; i < len; i++)
+        {
+            if (IsHost) itemUsingManager.myItems[i] = netHostItemSelects[i];
+            else itemUsingManager.otherItems[i] = netHostItemSelects[i];
+        }
+    }
+
+    private void netClientItemSelectsChanged(NetworkListEvent<int> changeEvent)
+    {
+        int len = Mathf.Min(netClientItemSelects.Count, ITEM_NUM);
+        if (IsHost) itemUsingManager.otherItems = new int[len];
+        else itemUsingManager.myItems = new int[len];
+        if(len<=0)return;
+        for (int i = 0; i < len; i++)
+        {
+            if (IsHost) itemUsingManager.otherItems[i] = netClientItemSelects[i];
+            else itemUsingManager.myItems[i] = netClientItemSelects[i];
         }
     }
 
@@ -553,5 +590,97 @@ public class NetworkSystem : NetworkBehaviour
     {
         FixedString64Bytes fstr = new FixedString64Bytes(str + "/h");
         logDataList.Add(fstr);
+    }
+    
+    //netItemSelectsの中身を変更するメソッド群(引数にarrayを入れることでそのarrayの中身通りに変更する)
+    public void ChangeItemSelects(int[] array)
+    {
+        if (IsHost){
+            ChangeHostItemSelects(array);
+        }else{
+            //ホストに変更要求をする際に処理がかかるので
+            //その直後にClientSetsClientItemを実行しても
+            //処理の途中なのでnetClientItemSelectsの中身がない状態で処理される
+            //なので、ServerRPCやClientRPCで操作要求をした後、その中でtogglereadyをして
+            //相手の準備状態を完了させるようにする
+            ChangeClientItemSelectsServerRPC(array);
+        }
+    }
+
+    public void ChangeHostItemSelects(int[] array)
+    {
+        netHostItemSelects.Clear();
+        int len = array.Length;
+        if(len<=0)return;
+        for(int i=0;i<len;i++)
+        {
+            netHostItemSelects.Add(array[i]);
+        }
+        ClientSetsHostItemClientRpc();
+        Debug.Log("ホスト適応完了");
+        ToggleReady();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void ChangeClientItemSelectsServerRPC(int[] array)
+    { 
+        netClientItemSelects.Clear();
+        int len = array.Length;
+        Debug.Log(len);
+        if(len<=0)return;
+        for(int i=0;i<len;i++)
+        {
+            netClientItemSelects.Add(array[i]);
+        }
+        ClientSetsClientItemClientRpc();
+        Debug.Log("クライアント適応完了");
+    }
+
+    //onListChangedメソッドはホスト側にしかトリガーされない問題があるため
+    //その対策としてホストがonListChanged内で変更を適応させた後
+    //クライアントに同じ操作を要求させるために以下のメソッドを使う
+    [Unity.Netcode.ClientRpc(RequireOwnership = false)]
+    public void ClientSetsHostItemClientRpc(){
+        if (IsOwner) return;
+        int len = Mathf.Min(netHostItemSelects.Count, ITEM_NUM);
+        if (IsHost) itemUsingManager.myItems = new int[len];
+        else itemUsingManager.otherItems = new int[len];
+        if(len<=0)return;
+        for (int i = 0; i < len; i++)
+        {
+            if (IsHost) itemUsingManager.myItems[i] = netHostItemSelects[i];
+            else itemUsingManager.otherItems[i] = netHostItemSelects[i];
+        }
+    }
+
+    [Unity.Netcode.ClientRpc(RequireOwnership = false)]
+    public void ClientSetsClientItemClientRpc(){
+        Debug.Log("テスト");
+        int len = Mathf.Min(netClientItemSelects.Count, ITEM_NUM);
+        Debug.Log(len);
+        if (IsHost) itemUsingManager.otherItems = new int[len];
+        else itemUsingManager.myItems = new int[len];
+        if(len<=0)return;
+        for (int i = 0; i < len; i++)
+        {
+            if (IsHost) itemUsingManager.otherItems[i] = netClientItemSelects[i];
+            else itemUsingManager.myItems[i] = netClientItemSelects[i];
+        }
+        ClientSetReadyClientRpc();
+    }
+
+    //同期ずれ対策のためのもの
+    //クライアントが実行しようがホストが実行しようが
+    //「クライアントの」readyをtrueにする(クライアントも然り)
+    //というメソッドが欲しかったため増設
+    //ホストはクライアントでもあるため、ホストもClientRpcを実行しようとすることに留意
+    //逆にクライアントはサーバーになり得ないので、ServerRpcを実行する心配はない
+
+    [ClientRpc]
+    public void ClientSetReadyClientRpc()
+    { 
+        if (IsServer) return;//クライアントをreadyしたいので、ホストが実行しようとしたら飛ばす
+        Debug.Log("クライアントのreadyを強制trueしました");
+        ToggleReady();
     }
 }
