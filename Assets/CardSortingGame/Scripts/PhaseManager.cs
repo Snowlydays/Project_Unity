@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PhaseManager : MonoBehaviour
 {
@@ -9,20 +10,13 @@ public class PhaseManager : MonoBehaviour
     public const int QuestionPhase = 2;
     public const int ItemUsingPhase = 3;
 
-    private ItemPhaseManager itemPhaseManager;
-    private QutstionController qutstionController;
-    private ItemUsingManager itemUsingManager;
     private NetworkSystem networkSystem;
 
     private void Start()
     {
-        itemPhaseManager = FindObjectOfType<ItemPhaseManager>();
-        qutstionController = FindObjectOfType<QutstionController>();
         networkSystem = FindObjectOfType<NetworkSystem>();
-        itemUsingManager = FindObjectOfType<ItemUsingManager>();
     }
     
-
     // フェーズ変更時の処理
     public void HandlePhaseChange(int newPhase)
     {
@@ -35,16 +29,16 @@ public class PhaseManager : MonoBehaviour
                 break;
 
             case ItemPhase:
-                itemPhaseManager.StartItemPhase();
+                networkSystem.itemPhaseManager.StartItemPhase();
                 break;
 
             case QuestionPhase:
-                qutstionController.StartQuestionPhase();
+                networkSystem.qutstionController.StartQuestionPhase();
                 break;
 
             // ここもNullReferenceExceptionの原因になるので一旦コメントアウト
             case ItemUsingPhase:
-                // itemUsingManager.StartItemUsePhase();
+                networkSystem.itemUsingManager.StartItemUsePhase();
                 break;
         }
     }

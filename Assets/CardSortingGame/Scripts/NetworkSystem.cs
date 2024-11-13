@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using Unity.Collections;
+using UnityEditor;
 using Random = UnityEngine.Random;
+using UnityEngine.SceneManagement;
 
 public class NetworkSystem : NetworkBehaviour
 {
@@ -51,7 +53,6 @@ public class NetworkSystem : NetworkBehaviour
     public static bool clientReady = false;
     
     private PhaseManager phaseManager;
-    private ItemPhaseManager itemPhaseManager;
     private LogMenuController logMenuController;
 
     void Awake()
@@ -67,10 +68,9 @@ public class NetworkSystem : NetworkBehaviour
     void Start()
     {
         phaseManager = FindObjectOfType<PhaseManager>();
-        itemPhaseManager = FindObjectOfType<ItemPhaseManager>();
         logMenuController = FindObjectOfType<LogMenuController>();
     }
-
+    
     public override void OnDestroy()
     {
         //接続終了時にNetworkListを破棄
@@ -82,6 +82,28 @@ public class NetworkSystem : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        StartCoroutine(InitializeNetworkSystem());
+    }
+
+    IEnumerator InitializeNetworkSystem()
+    {
+        // シーンを追加読み込み (非同期)
+        AsyncOperation loadItemPhase = SceneManager.LoadSceneAsync("Scenes/SoAPhaseScenes/ItemPhase", LoadSceneMode.Additive);
+        AsyncOperation loadQuestionPhase = SceneManager.LoadSceneAsync("Scenes/SoAPhaseScenes/QuestionPhase", LoadSceneMode.Additive);
+        AsyncOperation loadItemUsingPhase = SceneManager.LoadSceneAsync("Scenes/SoAPhaseScenes/ItemUsingPhase", LoadSceneMode.Additive);
+
+        // ロードが完了するまで待機
+        yield return loadItemPhase;
+        yield return loadQuestionPhase;
+        yield return loadItemUsingPhase;
+        
+        phaseManager = FindObjectOfType<PhaseManager>();
+        itemPhaseManager = FindObjectOfType<ItemPhaseManager>();
+        qutstionController = FindObjectOfType<QutstionController>();
+        itemUsingManager = FindObjectOfType<ItemUsingManager>();
+        
+        // イベント追加
+        Debug.Log("NetworkSystem.OnNetworkSpawn");
         netphase.OnValueChanged += (int oldParam, int newParam) =>
         {
             phase = newParam;
@@ -108,21 +130,19 @@ public class NetworkSystem : NetworkBehaviour
 
         netHostItems.OnListChanged += OnNetHostItemChanged;
         netClientItems.OnListChanged += OnNetClientItemChanged;
-
         logDataList.OnListChanged += OnNetLogChanged;
-
         // カードの初期化
         if(IsServer){
             //カード配列の初期設定(ここでは純粋なランダム入れ替え)
             for(int i=0;i<cardNum;i++){
-              netHostCard.Add(i+1);
-              netClientCard.Add(i+1);
+                netHostCard.Add(i+1);
+                netClientCard.Add(i+1);
             }
             ShuffleCards(netHostCard);
             ShuffleCards(netClientCard);
         }
         
-        CardsManager cardsManager = FindObjectOfType<CardsManager>();;
+        CardsManager cardsManager = FindObjectOfType<CardsManager>();
         if (IsServer)
         {
             for (int i = 0; i < cardsManager.myCards.Count; i++)
@@ -138,15 +158,16 @@ public class NetworkSystem : NetworkBehaviour
             }
         }
 
+        // アイテムの初期化
         if (IsServer)
         {
-            // アイテムの初期化
             for (int i = 0; i < ITEM_NUM; i++)
             {
                 netHostItems.Add(false);
                 netClientItems.Add(false);
             }
         }
+        Debug.Log("NetworkSystemの初期化完了");
     }
 
     private void OnNetHostCardChanged(NetworkListEvent<int> changeEvent)
@@ -179,8 +200,8 @@ public class NetworkSystem : NetworkBehaviour
         int len = Mathf.Min(netHostItems.Count, ITEM_NUM);
         for (int i = 0; i < len; i++)
         {
-            if (IsHost) itemPhaseManager.myItems[i] = netHostItems[i]; 
-            else itemPhaseManager.otherItems[i] = netHostItems[i]; 
+            if (IsHost) itemPhaseManager.myItems[i] = netHostItems[i];
+            else itemPhaseManager.otherItems[i] = netHostItems[i];
         }
         itemPhaseManager.UpdateInventoryUI();
     }
@@ -280,8 +301,6 @@ public class NetworkSystem : NetworkBehaviour
                 case questionPhase:
                     ChangePhase(initialPhase);
                     break;
-
-                
             }
             ResetReadyStates();
         }

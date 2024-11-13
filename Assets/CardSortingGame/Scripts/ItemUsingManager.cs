@@ -10,7 +10,6 @@ public class ItemUsingManager : MonoBehaviour
     //3の強奪系、1,5の即時発動系などをItemUsingPhase内で順序立てて処理できるように設計
 
     private NetworkSystem networkSystem;
-    private QutstionController qutstionController;
 
     public int[] myItem;//自分の使用するアイテム
     public int[] otherItem;//相手の使用するアイテム
@@ -19,7 +18,6 @@ public class ItemUsingManager : MonoBehaviour
     void Start()
     {
         networkSystem = FindObjectOfType<NetworkSystem>();
-        qutstionController = FindObjectOfType<QutstionController>();
     }
 
     public void StartItemUsePhase()
@@ -29,7 +27,6 @@ public class ItemUsingManager : MonoBehaviour
             Debug.Log($"アイテム{item+1}を使用しました")
             ApplyItemEffect(item);
         }*/
-
 
     }
 
@@ -43,7 +40,7 @@ public class ItemUsingManager : MonoBehaviour
             break;
 
             case 1:
-                qutstionController.isGetDiff=true;
+                networkSystem.qutstionController.isGetDiff=true;
             break;
 
             case 2:
@@ -59,7 +56,7 @@ public class ItemUsingManager : MonoBehaviour
             break;
 
             case 5:
-                qutstionController.isThreeSelect=true;
+                networkSystem.qutstionController.isThreeSelect=true;
             break;
         }
     }
