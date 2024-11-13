@@ -110,6 +110,7 @@ public class ItemPhaseManager : MonoBehaviour
 
         //アイテム情報をitemUsingManagerに伝達
         //3の実装に際しては相手のアイテム情報も伝達する
+        
         networkSystem.itemUsingManager.myItem = selectedItems.ToArray();
 
         // 使用したアイテムのtoggleを削除

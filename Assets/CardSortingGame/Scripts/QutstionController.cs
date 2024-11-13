@@ -165,6 +165,7 @@ public class QutstionController : MonoBehaviour
         
         string leftName = leftCard.name, rightName = rightCard.name;
         Debug.Log("left:"+leftName + " right:"+rightName);
+        networkSystem.Log("Compared "+leftName + " and " + rightName + ".");
         if(leftName[leftName.Length - 1] < rightName[rightName.Length - 1]) Debug.Log("right card is greater");
         else Debug.Log("left card is greater");
         
