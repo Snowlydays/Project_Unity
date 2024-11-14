@@ -319,7 +319,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98c96cec0e82b47ae8132f8aa16aa6f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  confirmButton: {fileID: 8917476115376455248}
+  confirmButton: {fileID: 7247115122187469910}
+  spellButton: {fileID: 0}
+  isGetDiff: 0
+  isThreeSelect: 0
+  isNotQuestion: 0
 --- !u!1 &8917476115376455248
 GameObject:
   m_ObjectHideFlags: 0
