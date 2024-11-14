@@ -29,6 +29,11 @@ public class MainSystemScript : MonoBehaviour
         return mycard;
     }
 
+    public GameObject[] GetmySlots()
+    {
+        return mySlots;
+    }
+
     void Awake(){
         networkSystem = FindObjectOfType<NetworkSystem>();
     }

@@ -23,6 +23,7 @@ public class QutstionController : MonoBehaviour
 
     public bool isGetDiff = false;
     public bool isThreeSelect = false;
+    public bool isNotQuestion = false;
     
     void Start()
     {
@@ -39,23 +40,39 @@ public class QutstionController : MonoBehaviour
 
     public void StartQuestionPhase()
     {
-        questionBG.SetActive(true);
-        
-        // CardsManagerからクローンカードを取得
-        GameObject[] clonedCards = cardsManager.CloneMyCardsAsUI();
-        if(clonedCards == null)Debug.LogError("clonedCards are null!");
-
-        // キャンバスを探す
-        Canvas canvas = GameObject.Find("QuestionCanvas").GetComponent<Canvas>();
+        if(!isNotQuestion){
+            questionBG.SetActive(true);
             
-        foreach(GameObject card in clonedCards)
-        {
-            // キャンバスにカードを追加
-            card.transform.SetParent(canvas.transform);
+            // CardsManagerからクローンカードを取得
+            GameObject[] clonedCards = cardsManager.CloneMyCardsAsUI();
+            if(clonedCards == null)Debug.LogError("clonedCards are null!");
 
-            // カードをボタンとして設定
-            Button cardButton = card.GetComponent<Button>();
-            cardButton.onClick.AddListener(() => ToggleCardSelection(card));
+            // キャンバスを探す
+            Canvas canvas = GameObject.Find("QuestionCanvas").GetComponent<Canvas>();
+                
+            foreach(GameObject card in clonedCards)
+            {
+                // キャンバスにカードを追加
+                card.transform.SetParent(canvas.transform);
+
+                // カードをボタンとして設定
+                Button cardButton = card.GetComponent<Button>();
+                cardButton.onClick.AddListener(() => ToggleCardSelection(card));
+            }
+        }else{
+            //質問ができない場合はアイテム効果系bool変数を無効化してToggleReadyする。
+            Debug.Log("相手のアイテム4の効果で質問ができない");
+            // 攻撃トグルを初期化
+            isAttacking = false;
+
+            // 3枚選択トグルを初期化
+            isThreeSelect=false;
+
+            // 質問不可能トグルを初期化
+            isNotQuestion=false;
+
+            // 通常フェーズへ戻るためにreadyをトグルする
+            networkSystem.ToggleReady();
         }
     }
 
@@ -166,6 +183,10 @@ public class QutstionController : MonoBehaviour
         string leftName = leftCard.name, rightName = rightCard.name;
         Debug.Log("left:"+leftName + " right:"+rightName);
         networkSystem.Log("left:"+leftName + " right:"+rightName);
+
+        //ここの処理の補足
+        //これで得られるのは数値ではなく、厳密には「先頭文字を文字コードで表したときの数値」
+        //文字コード表では基本的に1から9の順に文字コードの数値も大きくなるので、一応これでも成立する
         if(leftName[leftName.Length - 1] < rightName[rightName.Length - 1]) Debug.Log("right card is greater");
         else Debug.Log("left card is greater");
         

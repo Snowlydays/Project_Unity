@@ -125,6 +125,7 @@ public class ItemPhaseManager : MonoBehaviour
         selectedItems.Clear(); // 選択していたアイテムをクリア
         itemDisplayPanel.gameObject.SetActive(false);
         confirmButton.gameObject.SetActive(false);
+        //networkSystem.ToggleReady();
     }
 
     // プレイヤーにアイテムを配布するメソッド
@@ -226,6 +227,7 @@ public class ItemPhaseManager : MonoBehaviour
                 selectedItems.Remove(itemIdx);
             }
         }
+        //networkSystem.ChangeItemSelects(selectedItems.ToArray());
     }
 
     //テスト用

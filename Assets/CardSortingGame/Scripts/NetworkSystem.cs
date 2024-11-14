@@ -616,7 +616,6 @@ public class NetworkSystem : NetworkBehaviour
         }
         ClientSetsHostItemClientRpc();
         Debug.Log("ホスト適応完了");
-        ToggleReady();
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -650,12 +649,12 @@ public class NetworkSystem : NetworkBehaviour
                 else itemUsingManager.otherItems[i] = netHostItemSelects[i];
             }
         }
-        //ここでhostのreadyをトグルしたい 模索中
+        //ホストのreadyをtrueにする。
+        HostSetReadyServerRpc();
     }
 
     [Unity.Netcode.ClientRpc(RequireOwnership = false)]
     public void ClientSetsClientItemClientRpc(){
-        Debug.Log("テスト");
         int len = Mathf.Min(netClientItemSelects.Count, ITEM_NUM);
         Debug.Log(len);
         if (IsHost) itemUsingManager.otherItems = new int[len];
@@ -673,17 +672,18 @@ public class NetworkSystem : NetworkBehaviour
 
     //同期ずれ対策のためのもの
     //クライアントが実行しようがホストが実行しようが
-    //「クライアントの」readyをtrueにする
+    //「クライアントの」readyをtrueにする(ホストも同様)
     //というメソッドが欲しかったため増設
-    //ホスト側でもどちらが実行してもreadyをtrueにするメソッドが欲しかったが
-    //なんか上手くいかなかったので一時保留でアイテム製作に取り掛かった。
-    //このため、ホストより先にクライアントがアイテム選択をconfirmすると
-    //選択したアイテムの同期が上手くいかない(同期が完了する前にitemUsingPhaseに移行するため)
     [Unity.Netcode.ClientRpc(RequireOwnership = false)]
     public void ClientSetReadyClientRpc()
     { 
         if (IsServer) return;//クライアントをreadyしたいので、ホストが実行しようとしたら飛ばす
-        Debug.Log("クライアントのreadyを強制trueしました");
+        ToggleReady();
+    }
+
+    [Unity.Netcode.ServerRpc(RequireOwnership = false)]
+    public void HostSetReadyServerRpc()
+    { 
         ToggleReady();
     }
 }

@@ -1,6 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+using System.Threading;
+using System.Threading.Tasks;
 
 public class ItemUsingManager : MonoBehaviour
 {
@@ -10,6 +14,8 @@ public class ItemUsingManager : MonoBehaviour
     //3の強奪系、1,5の即時発動系などをItemUsingPhase内で順序立てて処理できるように設計
 
     private NetworkSystem networkSystem;
+    private CardsManager cardsManager;
+    private MainSystemScript mainSystemScript;
 
     public int[] myItems;//自分の使用するアイテム
     public int[] otherItems;//相手の使用するアイテム
@@ -17,28 +23,75 @@ public class ItemUsingManager : MonoBehaviour
     List<int> mylist;
     List<int> otherlist;
 
+    GameObject ItemSixBG;
+    GameObject ItemOneBG;
+    GameObject selectCard;
+
+    GameObject smallerButton;
+    GameObject largerButton;
+
+    GameObject[] clonedCards;
+
+    public int nowUsingItem=-1;//どのアイテムを使っているか(-1で何も使っていない状態)
+
+    bool confirmchecked=false;//confirmされたかどうか
+
+    bool allUsedItem=false;//アイテムを全て使い切ったかどうか
+
+    TMP_InputField inputField;
+
+    int chooseNumber=-1;
+
+    int chooseCompareTo=0;//アイテム1で大小どちらへ比較するか、1で大、-1で小、0で無選択
 
     void Start()
     {
+        cardsManager = FindObjectOfType<CardsManager>();
         networkSystem = FindObjectOfType<NetworkSystem>();
+
+        //各種UI初期化
+        ItemSixBG = GameObject.Find("ItemSixBG");
+        ItemOneBG = GameObject.Find("ItemOneBG");
+
+        GameObject.Find("ConfirmButton").GetComponent<Button>().onClick.AddListener(OnConfirmButtonClicked);
+
+        smallerButton=GameObject.Find("SmallerButton");
+        smallerButton.GetComponent<Button>().onClick.AddListener(OnSmallerButtonClicked);
+        largerButton=GameObject.Find("LargerButton");
+        largerButton.GetComponent<Button>().onClick.AddListener(OnLargerButtonClicked);
+
+
+        inputField = GameObject.Find("InputText").GetComponent<TMP_InputField>();
+
+        ItemSixBG.SetActive(false);
+        ItemOneBG.SetActive(false);
     }
 
-    public void StartItemUsePhase()
+    public void InputNumber()
     {
-        if(myItems.Length<=0){
-            //自分がアイテムを選択していなかったら強制終了
-            Debug.Log("アイテムを選択していなかったので終了します");
-            networkSystem.ToggleReady();
-            return;
+        //入力されている文字が数値ならその数値を、ぞれ以外なら-1とする
+        if (!int.TryParse(inputField.text,out chooseNumber)){
+            chooseNumber=-1;
         }
-        
+    }
+
+    public void StartItemUsePhase(){
+        StartCoroutine(StartItemUsePhaseIEnumerator());
+    }
+
+    IEnumerator StartItemUsePhaseIEnumerator()
+    {
         mylist = new List<int>(myItems);
         otherlist = new List<int>(otherItems);
 
         Debug.Log("自分のアイテム");
-        foreach(int item in mylist)
-        {
-            Debug.Log($"アイテム{item+1}");
+        if(mylist.Count>0){
+            foreach(int item in mylist)
+            {
+                Debug.Log($"アイテム{item+1}");
+            }
+        }else{
+            Debug.Log("自分はアイテムを選択していません");
         }
         Debug.Log("相手のアイテム");
         if(otherlist.Count>0){
@@ -54,9 +107,13 @@ public class ItemUsingManager : MonoBehaviour
 
         Debug.Log("アイテム3処理後");
         Debug.Log("自分のアイテム");
-        foreach(int item in mylist)
-        {
-            Debug.Log($"アイテム{item+1}");
+        if(mylist.Count>0){
+            foreach(int item in mylist)
+            {
+                Debug.Log($"アイテム{item+1}");
+            }
+        }else{
+            Debug.Log("自分はアイテムを選択していません");
         }
         Debug.Log("相手のアイテム");
         if(otherlist.Count>0){
@@ -68,13 +125,41 @@ public class ItemUsingManager : MonoBehaviour
             Debug.Log("相手はアイテムを選択していません");
         }
 
-        foreach(int item in mylist){
+        ItemFourCheckAndUse();//相手がアイテム4を使っているかどうかと実行処理
+
+        allUsedItem=false;
+
+        StartCoroutine(ItemUseAwaiting());
+
+        yield return new WaitUntil(() => allUsedItem==true);
+
+        /*foreach(int item in mylist){
             Debug.Log($"アイテム{item+1}を使用しました");
             ApplyItemEffect(item);
-        }
+        }*/
 
-        networkSystem.ToggleReady();//ここでreadyをtrueにしているはずなのにtrueにならないことがある(なので質問フェーズに移行せずフリーズする)
-        //原因わかる人がいたら教えて欲しい
+        Debug.Log("アイテムを全て使い切りました");
+
+        allUsedItem=false;
+        networkSystem.ToggleReady();
+    }
+
+    private void ItemFourCheckAndUse(){
+        if(otherlist.Contains(3)){
+            //もし相手がアイテム4を持っていたら、質問不可能bool値をtrueにする。
+            networkSystem.qutstionController.isNotQuestion=true;
+        }
+    }
+
+    IEnumerator ItemUseAwaiting(){
+        foreach(int item in mylist){
+            nowUsingItem=item;
+            Debug.Log($"アイテム{item+1}を使用しました");
+            ApplyItemEffect(item);
+            //アイテム処理が終わったらnowUsingItem=-1;にして次のアイテム処理に移行させる。
+            yield return new WaitUntil(() => nowUsingItem==-1);
+        }
+        allUsedItem=true;
     }
 
     private void ItemThreeCheckAndUse(){
@@ -121,7 +206,6 @@ public class ItemUsingManager : MonoBehaviour
         if(mygetitem!=-1){
             //取得したアイテムが3でなければ、3があった場所に奪ったアイテムを入れ替える
             //その後奪った相手のアイテムをremove
-
             if(mygetitem!=2)mylist[mylist.IndexOf(2)]=mygetitem;
             otherlist.Remove(mygetitem);
         }
@@ -142,7 +226,7 @@ public class ItemUsingManager : MonoBehaviour
             mylist[tempind-1]=temp;
             tempind--;
         }
-        Debug.Log("並び替え完了");
+        //Debug.Log("並び替え完了");
     }
 
     private void OtherMoveToIndex(int index){
@@ -153,7 +237,7 @@ public class ItemUsingManager : MonoBehaviour
             otherlist[tempind-1]=temp;
             tempind--;
         }
-        Debug.Log("並び替え完了");
+       //Debug.Log("並び替え完了");
     }
 
     private void ApplyItemEffect(int itemIdx)
@@ -162,28 +246,226 @@ public class ItemUsingManager : MonoBehaviour
         switch(itemIdx)
         {
             case 0:
-
+                StartCoroutine(ItemUseOne());
             break;
 
             case 1:
                 networkSystem.qutstionController.isGetDiff=true;
+                nowUsingItem=-1;
             break;
 
-            case 2:
-                //アイテム3の効果はItemThreeCheckAndUseにて行うのでここには何も入れない
-            break;
-
-            case 3:
-
-            break;
+            //2,3は外部処理のためここには記述なし
 
             case 4:
-
+                networkSystem.qutstionController.isThreeSelect=true;
+                nowUsingItem=-1;
             break;
 
             case 5:
-                networkSystem.qutstionController.isThreeSelect=true;
+                StartCoroutine(ItemUseSix());
+            break;
+
+            default:
+                nowUsingItem=-1;
             break;
         }
+    }
+
+    IEnumerator ItemUseOne()
+    {
+        //各種UIの起動
+        ItemOneBG.SetActive(true);//起動
+        clonedCards = cardsManager.CloneMyCardsAsUI();
+        if(clonedCards == null)Debug.LogError("clonedCards are null!");
+
+        // キャンバスを探す
+        Canvas canvas = GameObject.Find("ItemCanvas").GetComponent<Canvas>();
+            
+        foreach(GameObject card in clonedCards)
+        {
+            // キャンバスにカードを追加
+            card.transform.SetParent(canvas.transform);
+
+            // カードをボタンとして設定
+            Button cardButton = card.GetComponent<Button>();
+            cardButton.onClick.AddListener(() => ToggleCardSelection(card));
+        }
+
+        Debug.Log("カードと大小を選択してください");
+
+        while(!confirmchecked){
+            yield return null;
+        }
+
+        //結果とUIの停止
+        string cardname=selectCard.name;
+        Debug.Log(cardname);
+        
+        int cardNum=int.Parse(cardname[cardname.Length-1].ToString());//カード番号を取得
+
+        //そのカード番号が書かれているカードのindexを取得する。
+        int startIndex=GetCardIndexInList(cardNum);
+
+        Debug.Log(cardNum);
+
+        if(startIndex==-1)Debug.LogError("カードが見つかりませんでした");
+
+        if(chooseCompareTo==1){
+            //大選択
+            while(startIndex<NetworkSystem.cardNum-1){
+                if(cardsManager.myCards[startIndex].cardNum>cardsManager.myCards[startIndex+1].cardNum)
+                {
+                    SwapCardAndList(startIndex,startIndex+1);
+                    startIndex++;
+                }else{
+                    break;
+                }
+            }
+        }
+        if(chooseCompareTo==-1){
+            //小選択
+            while(startIndex>0){
+                if(cardsManager.myCards[startIndex].cardNum<cardsManager.myCards[startIndex-1].cardNum)
+                {
+                    SwapCardAndList(startIndex,startIndex-1);
+                    startIndex--;
+                }else{
+                    break;
+                }
+            }
+        }
+
+        foreach (GameObject card in clonedCards) Destroy(card);
+
+        chooseCompareTo=0;
+        selectCard=null;
+        nowUsingItem=-1;
+        ItemOneBG.SetActive(false);
+    }
+
+    // 番号からカードのインデックスを取得
+    private int GetCardIndexInList(int number)
+    {
+        for (int i = 0; i < cardsManager.myCards.Count; i++){
+            if (cardsManager.myCards[i].cardNum == number){
+                Debug.Log("見つけました");
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private void SwapCardAndList(int toIndex,int fromIndex)
+    {
+        Transform toSlot = cardsManager.myCards[toIndex].cardObject.transform.parent;
+        Transform fromSlot = cardsManager.myCards[fromIndex].cardObject.transform.parent;
+
+        //位置の並び替え
+        cardsManager.myCards[toIndex].cardObject.transform.SetParent(fromSlot, false);
+        cardsManager.myCards[toIndex].cardObject.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+        cardsManager.myCards[toIndex].cardObject.transform.SetParent(toSlot, false);
+        cardsManager.myCards[toIndex].cardObject.transform.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+
+        //配列の並び替え
+        cardsManager.SwapCardsInList(toIndex, fromIndex);
+    }
+
+    IEnumerator ItemUseSix()
+    {
+        //各種UIの起動
+        ItemSixBG.SetActive(true);//起動
+        clonedCards = cardsManager.CloneMyCardsAsUI();
+        if(clonedCards == null)Debug.LogError("clonedCards are null!");
+
+        // キャンバスを探す
+        Canvas canvas = GameObject.Find("ItemCanvas").GetComponent<Canvas>();
+            
+        foreach(GameObject card in clonedCards)
+        {
+            // キャンバスにカードを追加
+            card.transform.SetParent(canvas.transform);
+
+            // カードをボタンとして設定
+            Button cardButton = card.GetComponent<Button>();
+            cardButton.onClick.AddListener(() => ToggleCardSelection(card));
+        }
+
+        Debug.Log("カードと数字を入力してください");
+
+        while(!confirmchecked){
+            yield return null;
+        }
+
+        //結果出力とUIの停止
+        string cardname=selectCard.name;
+
+        Debug.Log(cardname);
+        int cardNumber=int.Parse(cardname[cardname.Length - 1].ToString());
+
+        if(cardNumber>chooseNumber){
+            //カードの値より入力した値が大きかった時
+            Debug.Log($"カードの数値は{chooseNumber}より大きいです");
+        }else{
+            //入力した値がカードの値以下だった時
+            Debug.Log($"カードの数値は{chooseNumber}以下です");
+        }
+
+        foreach (GameObject card in clonedCards) Destroy(card);
+
+        selectCard=null;
+        inputField.text="";
+        nowUsingItem=-1;
+        ItemSixBG.SetActive(false);//非表示
+    }
+
+    void ToggleCardSelection(GameObject card){
+        if(selectCard==card){
+            selectCard=null;
+            card.GetComponent<Image>().color = Color.white;
+        }else{
+            selectCard=card;
+            foreach (GameObject othercard in clonedCards)othercard.GetComponent<Image>().color = Color.white;
+            card.GetComponent<Image>().color = Color.red;
+        }
+    }
+
+    void OnConfirmButtonClicked()
+    {
+        if(nowUsingItem==0){
+            if(selectCard!=null && chooseCompareTo!=0){
+                confirmchecked=true;
+            }
+            if(selectCard==null){
+                Debug.Log("カードを選択してください");
+            }
+            if(chooseCompareTo==0){
+                Debug.Log("大小どちらかを選択してください");
+            }
+        }
+        if(nowUsingItem==5){
+            if(selectCard!=null && (chooseNumber>=1 && chooseNumber<=NetworkSystem.cardNum)){
+                confirmchecked=true;
+            }
+            if(selectCard==null){
+                Debug.Log("カードを選択してください");
+            }
+            if(chooseNumber<0 || chooseNumber>NetworkSystem.cardNum){
+                Debug.Log($"1から{NetworkSystem.cardNum}までの数字を入力してください。");
+            }
+        }
+    }
+
+    void OnSmallerButtonClicked()
+    {
+        chooseCompareTo=-1;
+        smallerButton.GetComponent<Image>().color=Color.green;
+        largerButton.GetComponent<Image>().color=Color.white;
+    }
+
+    void OnLargerButtonClicked()
+    {
+        chooseCompareTo=1;
+        smallerButton.GetComponent<Image>().color=Color.white;
+        largerButton.GetComponent<Image>().color=Color.green;
     }
 }
