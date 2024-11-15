@@ -237,16 +237,16 @@ public class NetworkSystem : NetworkBehaviour
         foreach(var txt in logDataList)
         {
             string dat = txt.ToString();
-            string id = dat.Substring(txt.Length - 2);
-            dat = dat.Remove(txt.Length - 2);
+            string id = dat.Substring(dat.Length - 2);
+            dat = dat.Remove(dat.Length - 2);
             if((IsHost && id == "/h") || (!IsHost && id == "/c"))
             {
                 logMenuController.myLogs.Add(dat);
-                logMenuController.allLogs.Add("you: " + dat);
+                logMenuController.allLogs.Add("あなた: " + dat);
             }
             else
             {
-                logMenuController.allLogs.Add("opponent: " + dat);
+                logMenuController.allLogs.Add("相手: " + dat);
                 logMenuController.opponentLogs.Add(dat);
             }
         }

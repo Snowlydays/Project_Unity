@@ -155,6 +155,7 @@ public class ItemUsingManager : MonoBehaviour
         foreach(int item in mylist){
             nowUsingItem=item;
             Debug.Log($"アイテム{item+1}を使用しました");
+            networkSystem.Log($"アイテム{item+1}を使用しました");
             ApplyItemEffect(item);
             //アイテム処理が終わったらnowUsingItem=-1;にして次のアイテム処理に移行させる。
             yield return new WaitUntil(() => nowUsingItem==-1);
@@ -405,9 +406,11 @@ public class ItemUsingManager : MonoBehaviour
         if(cardNumber>chooseNumber){
             //カードの値より入力した値が大きかった時
             Debug.Log($"カードの数値は{chooseNumber}より大きいです");
+            networkSystem.Log($"カードの数値は{chooseNumber}より大きいです");
         }else{
             //入力した値がカードの値以下だった時
             Debug.Log($"カードの数値は{chooseNumber}以下です");
+            networkSystem.Log($"カードの数値は{chooseNumber}以下です");
         }
 
         foreach (GameObject card in clonedCards) Destroy(card);
