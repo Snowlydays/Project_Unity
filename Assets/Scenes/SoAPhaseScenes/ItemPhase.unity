@@ -625,6 +625,13 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c7ffb6d92cdf84c4f9052539be71564a, type: 3}
   - {fileID: 21300000, guid: c61c289c9286945a78007da1e4baab6d, type: 3}
   - {fileID: 21300000, guid: 041d4b51aa909415bb39f8e28320ebb0, type: 3}
+  itemDescriptions:
+  - {fileID: 21300000, guid: f0c993483d17d4631860af7dc8235102, type: 3}
+  - {fileID: 21300000, guid: 1206820e60e464075b9b729ebaca16d5, type: 3}
+  - {fileID: 21300000, guid: 41cdffa0016f64d1ba715e0e6e53f8d4, type: 3}
+  - {fileID: 21300000, guid: a4220d4a9304b4fb0b34d726f9fa7bd2, type: 3}
+  - {fileID: 21300000, guid: 6edd5fa0ca3124e458ee6ea31a16b21d, type: 3}
+  - {fileID: 21300000, guid: c47ca51c5358641c089a2d27f8223723, type: 3}
   toggleOnColor: {r: 0, g: 1, b: 0, a: 1}
   toggleOffColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!4 &1774143079
