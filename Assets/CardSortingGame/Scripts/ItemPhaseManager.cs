@@ -16,12 +16,14 @@ public class ItemPhaseManager : MonoBehaviour
     [SerializeField] private Transform itemDisplayPanel; // アイテム使用ボタンを表示するパネル
     [SerializeField] private GameObject itemTogglePrefab; // アイテム選択用トグルのプレハブ
     [SerializeField] private Button confirmButton; // 決定ボタン
+    [SerializeField] private GameObject itemDescriptionPanel; // アイテム説明を表示するパネル
 
     // 所有アイテム表示用の変数
     [SerializeField] private Transform myInventoryPanel; // 自分の所有アイテムを表示するパネル
     [SerializeField] private Transform otherInventoryPanel; // 相手の所有アイテムを表示するパネル
     [SerializeField] private GameObject inventoryItemPrefab; // 所有アイテム表示用のプレハブ
     [SerializeField] private Sprite[] itemIcons; // 各アイテムのアイコン
+    [SerializeField] private Sprite[] itemDescriptions; // 各アイテムの説明
     
     // Toggleオブジェクトを管理するリスト
     private List<GameObject> toggleList = new List<GameObject>();
@@ -35,12 +37,14 @@ public class ItemPhaseManager : MonoBehaviour
         networkSystem = FindObjectOfType<NetworkSystem>();
         myInventoryPanel = GameObject.Find("MyInventoryPanel").transform;
         otherInventoryPanel = GameObject.Find("OtherInventoryPanel").transform;
+        itemDescriptionPanel = GameObject.Find("ItemDescription");
     }
     void Start()
     {
         // 非表示
         itemDisplayPanel.gameObject.SetActive(false);
         confirmButton.gameObject.SetActive(false);
+        itemDescriptionPanel.GetComponent<Image>().color = new Color(0f, 0f, 0f, 0f);
 
         // 自分の所有アイテムを初期化
         for (int i = 0; i < ITEM_NUM; i++)
@@ -99,6 +103,25 @@ public class ItemPhaseManager : MonoBehaviour
         // Imageコンポーネントにアイコンを設定
         Image itemImage = inventoryItem.GetComponent<Image>();
         itemImage.sprite = itemIcons[itemIdx];
+
+        inventoryItem.AddComponent<Button>();
+        Button itemButton = inventoryItem.GetComponent<Button>();
+        itemButton.onClick.AddListener(() => ShowItemDescription(inventoryItem, itemIdx)); 
+    }
+
+    private void ShowItemDescription(GameObject item, int itemIdx)
+    {
+        Image itemDescription = itemDescriptionPanel.GetComponent<Image>();
+        if(itemDescription.sprite == itemDescriptions[itemIdx])
+        {
+            itemDescription.sprite = null;
+            itemDescription.color = new Color(0f, 0f, 0f, 0f);
+        }
+        else
+        {
+            itemDescription.sprite = itemDescriptions[itemIdx];
+            itemDescription.color = new Color(1f, 1f, 1f, 1f);
+        }
     }
 
     private void OnConfirmButtonClicked()
