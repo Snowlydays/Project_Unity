@@ -1,0 +1,24 @@
+version: "3.8"
+
+services:
+  https-portal:
+    image: steveltn/https-portal:1
+    ports:
+      - '443:443'  # HTTPSアクセス
+      - '80:80'    # HTTPからHTTPSへのリダイレクト
+    environment:
+      STAGE: production
+      DOMAINS: 'www.andoproject.games -> http://nginx:80'
+      FORCE_RENEW: "true"
+    depends_on:
+      - nginx
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8080:80"  # ローカルデバッグ用（オプション）
+    volumes:
+      - /Project_Unity/VPSBuild/webgl:/usr/share/nginx/html:ro  # Unity WebGL成果物
+      - /Project_Unity/VPSBuild/nginx.conf:/etc/nginx/nginx.conf:ro  # Nginx設定
+    expose:
+      - "80"  # 他のサービスからアクセス可能
