@@ -182,7 +182,7 @@ public class QutstionController : MonoBehaviour
         
         string leftName = leftCard.name, rightName = rightCard.name;
         Debug.Log("left:"+leftName + " right:"+rightName);
-        networkSystem.Log("left:"+leftName + " right:"+rightName);
+        networkSystem.Log(leftName + "と"+rightName + "を比較しました");
 
         //ここの処理の補足
         //これで得られるのは数値ではなく、厳密には「先頭文字を文字コードで表したときの数値」
@@ -196,6 +196,7 @@ public class QutstionController : MonoBehaviour
             Diff=Mathf.Abs(leftName[leftName.Length - 1] - rightName[rightName.Length - 1]);
 
             Debug.Log("カードの差は"+Diff.ToString()+"です");
+            networkSystem.Log("カードの差は"+Diff.ToString()+"です");
 
             isGetDiff=false;
         }
@@ -254,6 +255,7 @@ public class QutstionController : MonoBehaviour
         }
 
         Debug.Log("Left:"+left+" middle:"+middle+" right:"+right);
+        networkSystem.Log("左:"+left+" 中:"+middle+" 右:"+right);
         return 0;
     }
 }
