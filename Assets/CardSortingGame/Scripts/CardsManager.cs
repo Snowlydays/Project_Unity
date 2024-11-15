@@ -49,8 +49,8 @@ public class CardsManager : MonoBehaviour
             
             // RectTransformを設定してUI要素にする
             RectTransform rectTransform = clonedCard.AddComponent<RectTransform>();
-            rectTransform.sizeDelta = new Vector2(100, 150); // カードのサイズを指定
-            rectTransform.anchoredPosition = new Vector2(570 + 130f * i, 540); // カードの位置を指定
+            rectTransform.sizeDelta = new Vector2(100*(Screen.width / 1920f), 150*(Screen.height / 1080f)); // カードのサイズを指定
+            rectTransform.anchoredPosition = new Vector2((570 + 130f * i)*(Screen.width / 1920f), 540*(Screen.height / 1080f)); // カードの位置を指定
     
             // Imageコンポーネントを追加してUI画像として表示
             Image image = clonedCard.AddComponent<Image>();

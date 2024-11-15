@@ -340,7 +340,7 @@ public class NetworkSystem : NetworkBehaviour
                     ChangePhase(initialPhase);
                     break;
             }
-            ResetReadyStates();
+            if(IsHost)ResetReadyStates();
         }
     }
 
@@ -416,7 +416,7 @@ public class NetworkSystem : NetworkBehaviour
 
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Alpha4))
+        /*if(Input.GetKeyDown(KeyCode.Alpha4))
         {
             string host_log = "host\n",client_log="client\n";
             for (int i = 0; i < ITEM_NUM; i++)
@@ -486,7 +486,7 @@ public class NetworkSystem : NetworkBehaviour
                 ClientPhaseChange(2);
                 Debug.Log("client changed phase 2");
             }
-        }
+        }*/
     }
     
     void ClientReadyChange()

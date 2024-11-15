@@ -53,7 +53,8 @@ public class ItemUsingManager : MonoBehaviour
         ItemSixBG = GameObject.Find("ItemSixBG");
         ItemOneBG = GameObject.Find("ItemOneBG");
 
-        GameObject.Find("ConfirmButton").GetComponent<Button>().onClick.AddListener(OnConfirmButtonClicked);
+        GameObject.Find("ConfirmButtonOne").GetComponent<Button>().onClick.AddListener(OnConfirmButtonClickedOne);
+        GameObject.Find("ConfirmButtonSix").GetComponent<Button>().onClick.AddListener(OnConfirmButtonClickedSix);
 
         smallerButton=GameObject.Find("SmallerButton");
         smallerButton.GetComponent<Button>().onClick.AddListener(OnSmallerButtonClicked);
@@ -72,6 +73,11 @@ public class ItemUsingManager : MonoBehaviour
         //入力されている文字が数値ならその数値を、ぞれ以外なら-1とする
         if (!int.TryParse(inputField.text,out chooseNumber)){
             chooseNumber=-1;
+            inputField.text="";
+        }
+        if(chooseNumber<1 || chooseNumber>NetworkSystem.cardNum){
+            chooseNumber=-1;
+            inputField.text="";
         }
     }
 
@@ -84,7 +90,7 @@ public class ItemUsingManager : MonoBehaviour
         mylist = new List<int>(myItems);
         otherlist = new List<int>(otherItems);
 
-        Debug.Log("自分のアイテム");
+        /*Debug.Log("自分のアイテム");
         if(mylist.Count>0){
             foreach(int item in mylist)
             {
@@ -101,11 +107,11 @@ public class ItemUsingManager : MonoBehaviour
             }
         }else{
             Debug.Log("相手はアイテムを選択していません");
-        }
+        }*/
 
         ItemThreeCheckAndUse();//アイテム3効果を処理する部分
 
-        Debug.Log("アイテム3処理後");
+        /*Debug.Log("アイテム3処理後");
         Debug.Log("自分のアイテム");
         if(mylist.Count>0){
             foreach(int item in mylist)
@@ -123,7 +129,7 @@ public class ItemUsingManager : MonoBehaviour
             }
         }else{
             Debug.Log("相手はアイテムを選択していません");
-        }
+        }*/
 
         ItemFourCheckAndUse();//相手がアイテム4を使っているかどうかと実行処理
 
@@ -132,11 +138,6 @@ public class ItemUsingManager : MonoBehaviour
         StartCoroutine(ItemUseAwaiting());
 
         yield return new WaitUntil(() => allUsedItem==true);
-
-        /*foreach(int item in mylist){
-            Debug.Log($"アイテム{item+1}を使用しました");
-            ApplyItemEffect(item);
-        }*/
 
         Debug.Log("アイテムを全て使い切りました");
 
@@ -340,6 +341,7 @@ public class ItemUsingManager : MonoBehaviour
         chooseCompareTo=0;
         selectCard=null;
         nowUsingItem=-1;
+        confirmchecked=false;
         ItemOneBG.SetActive(false);
     }
 
@@ -415,6 +417,7 @@ public class ItemUsingManager : MonoBehaviour
         selectCard=null;
         inputField.text="";
         nowUsingItem=-1;
+        confirmchecked=false;
         ItemSixBG.SetActive(false);//非表示
     }
 
@@ -429,29 +432,29 @@ public class ItemUsingManager : MonoBehaviour
         }
     }
 
-    void OnConfirmButtonClicked()
+    void OnConfirmButtonClickedOne()
     {
-        if(nowUsingItem==0){
-            if(selectCard!=null && chooseCompareTo!=0){
-                confirmchecked=true;
-            }
-            if(selectCard==null){
-                Debug.Log("カードを選択してください");
-            }
-            if(chooseCompareTo==0){
-                Debug.Log("大小どちらかを選択してください");
-            }
+        if(selectCard!=null && chooseCompareTo!=0){
+            confirmchecked=true;
         }
-        if(nowUsingItem==5){
-            if(selectCard!=null && (chooseNumber>=1 && chooseNumber<=NetworkSystem.cardNum)){
-                confirmchecked=true;
-            }
-            if(selectCard==null){
-                Debug.Log("カードを選択してください");
-            }
-            if(chooseNumber<0 || chooseNumber>NetworkSystem.cardNum){
-                Debug.Log($"1から{NetworkSystem.cardNum}までの数字を入力してください。");
-            }
+        if(selectCard==null){
+            Debug.Log("カードを選択してください");
+        }
+        if(chooseCompareTo==0){
+            Debug.Log("大小どちらかを選択してください");
+        }
+    }
+
+    void OnConfirmButtonClickedSix()
+    {
+        if(selectCard!=null && (chooseNumber>=1 && chooseNumber<=NetworkSystem.cardNum)){
+            confirmchecked=true;
+        }
+        if(selectCard==null){
+            Debug.Log("カードを選択してください");
+        }
+        if(chooseNumber<1 || chooseNumber>NetworkSystem.cardNum){
+            Debug.Log($"1から{NetworkSystem.cardNum}までの数字を入力してください。");
         }
     }
 
