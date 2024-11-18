@@ -44,7 +44,7 @@ public class PhaseManager : MonoBehaviour
 
     private void AttackAction()
     {
-        bool hostAttacked = networkSystem.netIsHostAttacking.Value;
+       bool hostAttacked = networkSystem.netIsHostAttacking.Value;
         bool clientAttacked = networkSystem.netIsClientAttacking.Value;
 
         if (hostAttacked || clientAttacked)

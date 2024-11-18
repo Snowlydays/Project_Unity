@@ -84,6 +84,14 @@ public class NetworkSystem : NetworkBehaviour
         logDataList?.Dispose();
         netHostItemSelects?.Dispose();
         netClientItemSelects?.Dispose();
+
+        netphase?.Dispose();
+        netHostReady?.Dispose();
+        netClientReady?.Dispose();
+        netIsHostAttacking?.Dispose();
+        netIsClientAttacking?.Dispose();
+        netIsHostAscending?.Dispose();
+        netIsClientAscending?.Dispose();
     }
 
     public override void OnNetworkSpawn()
@@ -366,6 +374,15 @@ public class NetworkSystem : NetworkBehaviour
         }
     }
 
+    public void DisconnectServer(){
+        //サーバー切断用メソッド
+        //NetworkManager.Singleton.Shutdown();
+        /*if (NetworkManager.Singleton != null)
+        {
+            Destroy(NetworkManager.Singleton);
+        }*/
+    }
+
     public void HandleAttackAction(bool hostAttacked, bool clientAttacked)
     {
         bool hostAsc = netIsHostAscending.Value;
@@ -380,22 +397,38 @@ public class NetworkSystem : NetworkBehaviour
         {
             Debug.Log("両プレイヤーのカードが昇順: 引き分け");
             // 引き分けの処理を実装
+            ToMoveSceneClientRpc("Scenes/ResultsScenes/DrawScene");
+            DisconnectServer();
+            SceneManager.LoadScene("Scenes/ResultsScenes/DrawScene");
         }
         else if (hostAsc)
         {
             Debug.Log("ホストのカードが昇順: ホストの勝利");
             // ホストの勝利処理を実装
+            ToMoveSceneClientRpc("Scenes/ResultsScenes/LoseScene");
+            DisconnectServer();
+            SceneManager.LoadScene("Scenes/ResultsScenes/WinScene");
         }
         else if (clientAsc)
         {
             Debug.Log("クライアントのカードが昇順: クライアントの勝利");
             // クライアントの勝利処理を実装
+            ToMoveSceneClientRpc("Scenes/ResultsScenes/WinScene");
+            DisconnectServer();
+            SceneManager.LoadScene("Scenes/ResultsScenes/LoseScene");
         }
         else
         {
             Debug.Log("どちらのプレイヤーもカードが昇順ではない");
             // 必要に応じて処理を実装
         }
+    }
+
+    [Unity.Netcode.ClientRpc(RequireOwnership = false)]
+    public void ToMoveSceneClientRpc(string scenename)
+    { 
+        SceneManager.LoadScene(scenename);
+        DisconnectServer();
     }
 
     private bool CheckAscending(int[] cards)

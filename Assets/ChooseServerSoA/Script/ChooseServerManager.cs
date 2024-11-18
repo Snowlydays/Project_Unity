@@ -20,6 +20,7 @@ public class ChooseServerManager : NetworkBehaviour
     bool clientstart=false;
     TMP_InputField inputField;
     string joinCode;
+    private TextMeshProUGUI codeText;
 
     private const string PASSWORD_CHARS = 
         "0123456789abcdefghijklmnopqrstuvwxyz";
@@ -62,6 +63,10 @@ public class ChooseServerManager : NetworkBehaviour
         //基本的に自分がホストかクライアントかを識別したい場合は
         //IsServerを使うといいかも
         NetworkManager.Singleton.OnClientConnectedCallback += ClientConnected;
+
+        GameObject codeTextObject = GameObject.Find("JoinCodeText");//sceneからjoincodeを表示するテキストを取得
+            if (codeTextObject != null)
+                codeText = codeTextObject.GetComponent<TextMeshProUGUI>();
     }
 
     private void ClientConnected(ulong clientId)
@@ -108,7 +113,9 @@ public class ChooseServerManager : NetworkBehaviour
                 allocation.ConnectionData
                 );*/
 
-                Debug.Log(joinCode);
+                //Debug.Log(joinCode);
+
+                codeText.text=$"JoinCode: {joinCode} 対戦相手と共有してください";
 
                 NetworkManager.Singleton.StartHost();
             }
@@ -116,6 +123,7 @@ public class ChooseServerManager : NetworkBehaviour
             {
                 Debug.Log(e);
                 hoststart=false;
+                codeText.text="ホストとして部屋を建てられませんでした";
             }
         }
     }
@@ -132,11 +140,14 @@ public class ChooseServerManager : NetworkBehaviour
                 NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
 
                 NetworkManager.Singleton.StartClient();
+
+                codeText.text="接続中です...";
             }
             catch (RelayServiceException e) {
                 Debug.LogException(e);
                 Debug.Log("接続に失敗しました!");
                 clientstart=false;
+                codeText.text="入室に失敗しました";
             }
         }
     }
