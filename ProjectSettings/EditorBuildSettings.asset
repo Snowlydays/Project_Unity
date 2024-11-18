@@ -32,4 +32,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/ChooseServerSoA.unity
     guid: 4829099cdf9d045e6b6004ef1e463db8
+  - enabled: 1
+    path: Assets/Scenes/ResultsScenes/DrawScene.unity
+    guid: b92aaf9714de64a00be5b421958e4058
+  - enabled: 1
+    path: Assets/Scenes/ResultsScenes/LoseScene.unity
+    guid: 8fb28809eb0554929909a47e71e5f505
+  - enabled: 1
+    path: Assets/Scenes/ResultsScenes/WinScene.unity
+    guid: 7997ed5c0536d4f88b48246ba0a3df5f
   m_configObjects: {}

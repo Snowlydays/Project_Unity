@@ -92,8 +92,8 @@ public class CardsManager : MonoBehaviour
     // printデバッグ用関数
     public void printMyCards()
     {
-        GameObject txtObj = GameObject.Find("OderOfCards(Debug)");
-        TextMeshProUGUI txt = txtObj.GetComponent<TextMeshProUGUI>();
+        //GameObject txtObj = GameObject.Find("OderOfCards(Debug)");
+        //TextMeshProUGUI txt = txtObj.GetComponent<TextMeshProUGUI>();
         Debug.Log("All card numbers:");
         string output = "";
         foreach (var card in myCards)
@@ -101,7 +101,7 @@ public class CardsManager : MonoBehaviour
             output += card.cardNum.ToString() + ", ";
         }
         
-        txt.text = output;
+        //txt.text = output;
         Debug.Log(output);
     }
 }
