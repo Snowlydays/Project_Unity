@@ -2285,13 +2285,14 @@ GameObject:
   - component: {fileID: 1824762444}
   - component: {fileID: 1824762446}
   - component: {fileID: 1824762445}
+  - component: {fileID: 1824762447}
   m_Layer: 5
-  m_Name: OderOfCards(Debug)
+  m_Name: InformationText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1824762444
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2308,8 +2309,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -212.88393, y: -311.5049}
-  m_SizeDelta: {x: 814.2322, y: 65.5699}
+  m_AnchoredPosition: {x: -360, y: -220}
+  m_SizeDelta: {x: 500, y: 65.5699}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1824762445
 MonoBehaviour:
@@ -2331,10 +2332,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: The order of cards will be shown here.(debug)
+  m_text: "\u3053\u3053\u306B\u6848\u5185\u30C6\u30AD\u30B9\u30C8\u8868\u793A\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\n"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 3f9508a64a5d04eb7aab767b58288ae5, type: 2}
+  m_sharedMaterial: {fileID: 8491621916487589897, guid: 3f9508a64a5d04eb7aab767b58288ae5, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2364,9 +2365,9 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 3
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -2408,6 +2409,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1824762443}
   m_CullTransparentMesh: 1
+--- !u!114 &1824762447
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1824762443}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bcf6b525cc2d14b49ac4158de8d2e19f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  informationText: {fileID: 0}
 --- !u!1 &1887740583
 GameObject:
   m_ObjectHideFlags: 0
@@ -3466,7 +3480,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 6594981405130016033}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.984496
+  m_Size: 0.9999965
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -4069,7 +4083,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.00048158018}
+  m_AnchoredPosition: {x: 0, y: 0.00007226683}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &4166075175769255442

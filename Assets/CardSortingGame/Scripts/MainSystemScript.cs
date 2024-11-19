@@ -19,7 +19,7 @@ public class MainSystemScript : MonoBehaviour
     private GameObject[] otherSlots = new GameObject[CARD_NUM]; // スロットを保持する配列
     
     [SerializeField] public Button readyButton; // 準備完了ボタン
-    [SerializeField] private Transform myCardPanel; // 自分のカードを配置するパネル
+    [SerializeField] public Transform myCardPanel; // 自分のカードを配置するパネル
     [SerializeField] private Transform otherCardPanel; // 相手のカードを配置するパネル
     [SerializeField] public GameObject CardPrefab; // カードのプレハブ
     [SerializeField] public GameObject SlotPrefab; // スロットのプレハブ

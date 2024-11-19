@@ -185,7 +185,7 @@ public class ItemPhaseManager : MonoBehaviour
     private void CreateToggle(int itemIdx)
     {
         // プレハブをインスタンス化して、itemDisplayPanelの子として配置
-        GameObject toggleObj = Instantiate(itemTogglePrefab, itemDisplayPanel);
+        GameObject toggleObj = Instantiate(itemTogglePrefab, itemDisplayPanel.Find("LayoutGroup"));
 
         // Layout Groupを機能させるために、RectTransformをリセット
         RectTransform rectTransform = toggleObj.GetComponent<RectTransform>();
@@ -276,7 +276,7 @@ public class ItemPhaseManager : MonoBehaviour
             break;
 
             case 1:
-                networkSystem.qutstionController.isGetDiff=true;
+                networkSystem.questionController.isGetDiff=true;
             break;
 
             case 2:
@@ -292,7 +292,7 @@ public class ItemPhaseManager : MonoBehaviour
             break;
 
             case 5:
-                networkSystem.qutstionController.isThreeSelect=true;
+                networkSystem.questionController.isThreeSelect=true;
             break;
         }
     }

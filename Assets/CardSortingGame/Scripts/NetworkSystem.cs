@@ -58,9 +58,10 @@ public class NetworkSystem : NetworkBehaviour
     
     private PhaseManager phaseManager;
     public ItemPhaseManager itemPhaseManager;
-    public QutstionController qutstionController;
+    public QutstionController questionController;
     public ItemUsingManager itemUsingManager;
     private LogMenuController logMenuController;
+    private InformationManager informationManager;
 
     void Awake()
     {
@@ -113,9 +114,10 @@ public class NetworkSystem : NetworkBehaviour
         
         phaseManager = FindObjectOfType<PhaseManager>();
         itemPhaseManager = FindObjectOfType<ItemPhaseManager>();
-        qutstionController = FindObjectOfType<QutstionController>();
+        questionController = FindObjectOfType<QutstionController>();
         itemUsingManager = FindObjectOfType<ItemUsingManager>();
         logMenuController = FindObjectOfType<LogMenuController>();
+        informationManager = FindObjectOfType<InformationManager>();
         
         // イベント追加
         Debug.Log("NetworkSystem.OnNetworkSpawn");
@@ -349,6 +351,16 @@ public class NetworkSystem : NetworkBehaviour
                     break;
             }
             if(IsHost)ResetReadyStates();
+            informationManager.ClearInformationText();
+        }
+        else if(IsHost && !clientReady || !IsHost && !hostReady)
+        {
+            // 相手の行動を待っている時、その情報を表示
+            string txt = "";
+            if(phase == itemPhase)txt = "相手のアイテム選択を待っています...";
+            else if(phase == questionPhase)txt = "相手の質問を待っています...";
+            else if(phase == itemUsingPhase)txt = "相手のアイテム使用を待っています...";
+            informationManager.SetInformationText(txt);
         }
     }
 

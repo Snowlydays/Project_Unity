@@ -33,7 +33,7 @@ public class PhaseManager : MonoBehaviour
                 break;
 
             case QuestionPhase:
-                networkSystem.qutstionController.StartQuestionPhase();
+                networkSystem.questionController.StartQuestionPhase();
                 break;
 
             case ItemUsingPhase:
