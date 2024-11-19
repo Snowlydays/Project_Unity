@@ -61,7 +61,7 @@ public class NetworkSystem : NetworkBehaviour
     public QutstionController questionController;
     public ItemUsingManager itemUsingManager;
     private LogMenuController logMenuController;
-    private InformationManager informationManager;
+    public InformationManager informationManager;
 
     void Awake()
     {
@@ -132,14 +132,14 @@ public class NetworkSystem : NetworkBehaviour
         {
             hostReady = newParam;
             Debug.Log($"hostのReady状態が {newParam} になりました。");
-            CheckAllPlayersReady();
+            RequestCheckAllPlayersReadyServerRpc();
         };
 
         netClientReady.OnValueChanged += (bool oldParam, bool newParam) =>
         {
             clientReady = newParam;
             Debug.Log($"clientのReady状態が {newParam} になりました。");
-            CheckAllPlayersReady();
+            RequestCheckAllPlayersReadyServerRpc();
         };
 
         netHostCard.OnListChanged += OnNetHostCardChanged;
@@ -327,8 +327,15 @@ public class NetworkSystem : NetworkBehaviour
         if(IsClient)ResetAttackStatusServerRpc();
     }
     
+    [ServerRpc(RequireOwnership = false)]
+    private void RequestCheckAllPlayersReadyServerRpc()
+    {
+        Debug.Log("サーバがCheckAllPlayersReady()を実行");
+        CheckAllPlayersReady();
+    }
+    
     // すべてのプレイヤーがReadyかをチェックし、フェーズを進める
-    public void CheckAllPlayersReady()
+    private void CheckAllPlayersReady()
     {
         if (hostReady && clientReady)
         {
@@ -351,18 +358,19 @@ public class NetworkSystem : NetworkBehaviour
                     break;
             }
             if(IsHost)ResetReadyStates();
-            informationManager.ClearInformationText();
         }
-        else if(IsHost && !clientReady || !IsHost && !hostReady)
+        else if(hostReady || clientReady)
         {
             // 相手の行動を待っている時、その情報を表示
-            string txt = "";
-            if(phase == itemPhase)txt = "相手のアイテム選択を待っています...";
-            else if(phase == questionPhase)txt = "相手の質問を待っています...";
-            else if(phase == itemUsingPhase)txt = "相手のアイテム使用を待っています...";
-            informationManager.SetInformationText(txt);
+            if (phase != initialPhase)
+            {
+                Dictionary<int, string> infoDict = new Dictionary<int, string> { { itemPhase, "相手のアイテム選択を待っています..." }, { questionPhase, "相手の質問を待っています..." }, { itemUsingPhase, "相手のアイテム使用を待っています..." } };
+                if (hostReady) informationManager.SetInformationText(infoDict[phase]);
+                else SetInformationTextClientRpc(infoDict[phase]);
+            }
         }
     }
+
 
     // プレイヤーのReadyフラグを初期化
     private void ResetReadyStates()
@@ -432,9 +440,25 @@ public class NetworkSystem : NetworkBehaviour
         else
         {
             Debug.Log("どちらのプレイヤーもカードが昇順ではない");
-            // 必要に応じて処理を実装
+            if (hostAttacked)
+            {
+                Debug.Log("攻撃失敗！");
+                informationManager.SetInformationText("攻撃失敗！");
+            }
+            if (clientAttacked) SetInformationTextClientRpc("攻撃失敗！");
         }
     }
+    
+    [ClientRpc]
+    private void SetInformationTextClientRpc(string message)
+    {
+        if (!IsHost)
+        {
+            Debug.Log($"SetInformationTextClientRpc: {message}");
+            informationManager.SetInformationText(message);
+        }
+    }
+    
 
     [Unity.Netcode.ClientRpc(RequireOwnership = false)]
     public void ToMoveSceneClientRpc(string scenename)
