@@ -29,6 +29,9 @@ public class NetworkSystem : NetworkBehaviour
     private NetworkVariable<bool> netIsHostAscending = new NetworkVariable<bool>(false);
     private NetworkVariable<bool> netIsClientAscending = new NetworkVariable<bool>(false);
 
+    private NetworkVariable<int> netIsHostWaiting = new NetworkVariable<int>(0);
+    private NetworkVariable<int> netIsClientWaiting = new NetworkVariable<int>(0);
+
     public static int cardNum = 7;// 盤面上にあるカードの枚数
     private int ITEM_NUM = 6; // ゲーム内のアイテム数
 
@@ -55,6 +58,9 @@ public class NetworkSystem : NetworkBehaviour
     public static int phase = 0;
     public static bool hostReady = false;
     public static bool clientReady = false;
+
+    public int hostWaiting = 0;
+    public int clientWaiting = 0;
     
     private PhaseManager phaseManager;
     public ItemPhaseManager itemPhaseManager;
@@ -93,6 +99,8 @@ public class NetworkSystem : NetworkBehaviour
         netIsClientAttacking?.Dispose();
         netIsHostAscending?.Dispose();
         netIsClientAscending?.Dispose();
+        netIsHostWaiting?.Dispose();
+        netIsClientWaiting?.Dispose();
     }
 
     public override void OnNetworkSpawn()
@@ -140,6 +148,16 @@ public class NetworkSystem : NetworkBehaviour
             clientReady = newParam;
             Debug.Log($"clientのReady状態が {newParam} になりました。");
             RequestCheckAllPlayersReadyServerRpc();
+        };
+
+        netIsHostWaiting.OnValueChanged +=  (int oldParam, int newParam) =>
+        {
+            hostWaiting=newParam;
+        };
+
+        netIsClientWaiting.OnValueChanged +=  (int oldParam, int newParam) =>
+        {
+            clientWaiting=newParam;
         };
 
         netHostCard.OnListChanged += OnNetHostCardChanged;
@@ -365,8 +383,11 @@ public class NetworkSystem : NetworkBehaviour
             if (phase != initialPhase)
             {
                 Dictionary<int, string> infoDict = new Dictionary<int, string> { { itemPhase, "相手のアイテム選択を待っています..." }, { questionPhase, "相手の質問を待っています..." }, { itemUsingPhase, "相手のアイテム使用を待っています..." } };
-                if (hostReady) informationManager.SetInformationText(infoDict[phase]);
-                else SetInformationTextClientRpc(infoDict[phase]);
+                if (hostReady) {
+                    informationManager.SetInformationText(infoDict[phase]);
+                }else{
+                    SetInformationTextClientRpc(infoDict[phase]);  
+                } 
             }
         }
     }
@@ -387,10 +408,12 @@ public class NetworkSystem : NetworkBehaviour
         if (IsHost)
         {
             netHostReady.Value = true;
+            ChangeHostWaitingServerRPC(0);
         }
         else
         {
             ClientReadyChange();
+            ChangeClientWaitingServerRPC(0);
         }
     }
 
@@ -445,10 +468,10 @@ public class NetworkSystem : NetworkBehaviour
                 Debug.Log("攻撃失敗！");
                 informationManager.SetInformationText("攻撃失敗！");
             }
-            if (clientAttacked) SetInformationTextClientRpc("攻撃失敗！");
+            if (clientAttacked)SetInformationTextClientRpc("攻撃失敗！");
         }
     }
-    
+
     [ClientRpc]
     private void SetInformationTextClientRpc(string message)
     {
@@ -754,5 +777,17 @@ public class NetworkSystem : NetworkBehaviour
     public void HostSetReadyServerRpc()
     { 
         ToggleReady();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void ChangeHostWaitingServerRPC(int num)
+    {
+        netIsHostWaiting.Value=num;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void ChangeClientWaitingServerRPC(int num)
+    { 
+        netIsClientWaiting.Value=num;
     }
 }

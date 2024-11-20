@@ -14,6 +14,7 @@ public class InformationManager : MonoBehaviour
     public void SetInformationText(string str)
     {
         informationText.text = str;
+
     }
 
     public void ClearInformationText()

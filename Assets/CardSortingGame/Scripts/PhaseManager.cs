@@ -1,6 +1,10 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Threading;
+using System.Threading.Tasks;
 
 public class PhaseManager : MonoBehaviour
 {
@@ -16,13 +20,32 @@ public class PhaseManager : MonoBehaviour
     {
         networkSystem = FindObjectOfType<NetworkSystem>();
     }
-    
+
     // フェーズ変更時の処理
-    public void HandlePhaseChange(int newPhase)
+
+    public void HandlePhaseChange(int newPhase){
+        StartCoroutine(HandlePhaseChangeIEnumerator(newPhase));
+    }
+    
+    IEnumerator HandlePhaseChangeIEnumerator(int newPhase)
     {
         Debug.Log($"PhaseManager.HandlePhaseChangeが実行されました");
-        
+
         networkSystem.informationManager.ClearInformationText();
+
+        //ここで足なみを揃える
+        while(networkSystem.hostWaiting!=0 || networkSystem.clientWaiting!=0){
+            yield return new WaitForSeconds(0.33f);
+        }
+
+        while(networkSystem.hostWaiting!=1 || networkSystem.clientWaiting!=1){
+            networkSystem.ChangeHostWaitingServerRPC(1);
+            networkSystem.ChangeClientWaitingServerRPC(1);
+            yield return new WaitForSeconds(0.33f);
+        }
+
+        networkSystem.ChangeHostWaitingServerRPC(0);
+        networkSystem.ChangeClientWaitingServerRPC(0);
 
         switch (newPhase)
         {
