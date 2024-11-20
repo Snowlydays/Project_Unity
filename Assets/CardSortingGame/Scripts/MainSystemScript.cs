@@ -55,8 +55,8 @@ public class MainSystemScript : MonoBehaviour
             mycard[i].GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
             
             // カードの色をわかりやすいように変更
-            float hue = i / (float)CARD_NUM;
-            mycard[i].GetComponent<Image>().color = Color.HSVToRGB(hue, 0.8f, 0.9f);
+            // float hue = i / (float)CARD_NUM;
+            // mycard[i].GetComponent<Image>().color = Color.HSVToRGB(hue, 0.8f, 0.9f);
 
             // DraggableCard スクリプトを取得してドラッグ"可能"に設定
             DraggableCard draggable = mycard[i].GetComponent<DraggableCard>();
