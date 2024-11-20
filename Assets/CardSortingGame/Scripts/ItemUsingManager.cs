@@ -148,7 +148,7 @@ public class ItemUsingManager : MonoBehaviour
     private void ItemFourCheckAndUse(){
         if(otherlist.Contains(3)){
             //もし相手がアイテム4を持っていたら、質問不可能bool値をtrueにする。
-            networkSystem.qutstionController.isNotQuestion=true;
+            networkSystem.questionController.isNotQuestion=true;
         }
     }
 
@@ -252,14 +252,14 @@ public class ItemUsingManager : MonoBehaviour
             break;
 
             case 1:
-                networkSystem.qutstionController.isGetDiff=true;
+                networkSystem.questionController.isGetDiff=true;
                 nowUsingItem=-1;
             break;
 
             //2,3は外部処理のためここには記述なし
 
             case 4:
-                networkSystem.qutstionController.isThreeSelect=true;
+                networkSystem.questionController.isThreeSelect=true;
                 nowUsingItem=-1;
             break;
 

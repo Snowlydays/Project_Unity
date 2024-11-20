@@ -6,10 +6,15 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Linq;
+using Unity.VisualScripting;
 
 public class QutstionController : MonoBehaviour
 {
     GameObject questionBG;
+    private Transform cardPanel; // UIカードを配置するパネル
+    private Color originalBGColor;
+    private Color attackingBGColor = Color.red; // 攻撃時の色を指定
+    
     private List<GameObject> selectedCards = new List<GameObject>();  // 選択されたカードのリスト
     private Color originalColor = Color.white;  // デフォルトのカードの色
     private Color selectedColor = Color.yellow; // 選択されたカードの色
@@ -31,7 +36,9 @@ public class QutstionController : MonoBehaviour
         networkSystem = FindObjectOfType<NetworkSystem>();
         
         questionBG = GameObject.Find("QuestioningBG");
-        questionBG.SetActive(false);// 非表示に
+        cardPanel = GameObject.Find("CardPanel").transform;
+        questionBG.SetActive(false);// 非表示
+        originalBGColor = questionBG.GetComponent<Image>().color;
         
         // クリックイベント設定
         confirmButton.GetComponent<Button>().onClick.AddListener(OnConfirmButtonClicked);
@@ -42,23 +49,25 @@ public class QutstionController : MonoBehaviour
     {
         if(!isNotQuestion){
             questionBG.SetActive(true);
-            
+            cardPanel.GameObject().SetActive(true);
             // CardsManagerからクローンカードを取得
-            GameObject[] clonedCards = cardsManager.CloneMyCardsAsUI();
-            if(clonedCards == null)Debug.LogError("clonedCards are null!");
+            // GameObject[] clonedCards = cardsManager.CloneMyCardsAsUI();
+            // if(clonedCards == null)Debug.LogError("clonedCards are null!");
 
             // キャンバスを探す
-            Canvas canvas = GameObject.Find("QuestionCanvas").GetComponent<Canvas>();
-                
-            foreach(GameObject card in clonedCards)
-            {
-                // キャンバスにカードを追加
-                card.transform.SetParent(canvas.transform);
+            // Canvas canvas = GameObject.Find("QuestionCanvas").GetComponent<Canvas>();
+            
+            cardsManager.PlaceCardsOnPanel(cardPanel,ToggleCardSelection);
+            
+            // foreach(GameObject card in clonedCards)
+            // {
+            // キャンバスにカードを追加
+            // card.transform.SetParent(canvas.transform);
 
-                // カードをボタンとして設定
-                Button cardButton = card.GetComponent<Button>();
-                cardButton.onClick.AddListener(() => ToggleCardSelection(card));
-            }
+            // カードをボタンとして設定
+            // Button cardButton = card.GetComponent<Button>();
+            // cardButton.onClick.AddListener(() => ToggleCardSelection(card));
+            // }
         }else{
             //質問ができない場合はアイテム効果系bool変数を無効化してToggleReadyする。
             Debug.Log("相手のアイテム4の効果で質問ができない");
@@ -81,6 +90,9 @@ public class QutstionController : MonoBehaviour
         Debug.Log("スペルボタン クリック");
         isAttacking = !isAttacking;
         networkSystem.ToggleAttacked();
+
+        // 背面色の変更
+        questionBG.GetComponent<Image>().color = isAttacking ? attackingBGColor : originalBGColor;
     }
     
     // カード選択状態の切り替え関数
@@ -157,6 +169,7 @@ public class QutstionController : MonoBehaviour
 
             // 背景のパネルを非表示に
             questionBG.SetActive(false);
+            cardPanel.GameObject().SetActive(false);
             
             // 攻撃トグルを初期化
             isAttacking = false;

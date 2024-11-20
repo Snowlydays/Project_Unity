@@ -21,6 +21,8 @@ public class PhaseManager : MonoBehaviour
     public void HandlePhaseChange(int newPhase)
     {
         Debug.Log($"PhaseManager.HandlePhaseChangeが実行されました");
+        
+        networkSystem.informationManager.ClearInformationText();
 
         switch (newPhase)
         {
@@ -33,7 +35,7 @@ public class PhaseManager : MonoBehaviour
                 break;
 
             case QuestionPhase:
-                networkSystem.qutstionController.StartQuestionPhase();
+                networkSystem.questionController.StartQuestionPhase();
                 break;
 
             case ItemUsingPhase:
@@ -44,7 +46,7 @@ public class PhaseManager : MonoBehaviour
 
     private void AttackAction()
     {
-       bool hostAttacked = networkSystem.netIsHostAttacking.Value;
+        bool hostAttacked = networkSystem.netIsHostAttacking.Value;
         bool clientAttacked = networkSystem.netIsClientAttacking.Value;
 
         if (hostAttacked || clientAttacked)
