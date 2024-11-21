@@ -1,15 +1,18 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using System.Collections;
 
 public class CardSlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler
 {
+    private Canvas canvas;
     private Image slotImage;
     public bool isMySlot = false; // 自分のスロットかどうかを示すフラグ
     
     void Awake()
     {
         slotImage = GetComponent<Image>();
+        canvas = FindObjectOfType<Canvas>();
     }
 
     // ドロップ時の処理
@@ -35,15 +38,13 @@ public class CardSlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
                 Transform currentCard = dropSlot.GetChild(0);
                 if (currentCard != droppedCard.transform)
                 {
-                    // 既存のカードを元のスロットに戻す
-                    currentCard.SetParent(initialSlot, false); // 元のスロットに戻す
-                    currentCard.GetComponent<RectTransform>().anchoredPosition = Vector2.zero; // スロットの中心に配置
+                    // 既存のカードを元のスロットにアニメーションで移動
+                    StartCoroutine(MoveCardToSlot(currentCard, initialSlot));
                 }
             }
 
-            // ドロップされたカードを新しいスロットに移動
-            droppedCard.transform.SetParent(dropSlot, false); // スロットの子に設定（ローカル座標を維持）
-            droppedCard.GetComponent<RectTransform>().anchoredPosition = Vector2.zero; // スロットの中心に配置
+            // ドロップされたカードを新しいスロットにアニメーションで移動
+            StartCoroutine(MoveCardToSlot(droppedCard.transform, dropSlot));
             
             // myCardsリスト内の順序を同期
             if (initialIndex >= 0 && dropIndex >= 0)
@@ -54,6 +55,35 @@ public class CardSlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
             // プリントデバッグ
             cardsManager.printMyCards();
         }
+    }
+
+    // カードをスロットにスムーズに移動させるコルーチン
+    private IEnumerator MoveCardToSlot(Transform card, Transform slot)
+    {
+        // カードの親をCanvasに設定
+        card.SetParent(canvas.transform, true);
+
+        // 開始位置と終了位置
+        Vector3 startPos = card.position;
+        Vector3 endPos = slot.position;
+
+        float animationTime = 0.2f; // アニメーションの長さ
+        float currentTime = 0f; // 経過時間
+
+        while (currentTime < animationTime)
+        {
+            float progress = currentTime / animationTime;
+            // progress = Mathf.SmoothStep(0f, 1f, progress);
+            card.position = Vector3.Lerp(startPos, endPos, progress);
+            currentTime += Time.deltaTime;
+            yield return null;
+        }
+        
+        card.position = endPos; // 最終位置を設定
+
+        // カードの親をスロットに設定し、位置をリセット
+        card.SetParent(slot, false);
+        card.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
     }
 
     // ドロップされたカードのインデックスを取得

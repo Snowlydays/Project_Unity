@@ -23,7 +23,11 @@ public class MainSystemScript : MonoBehaviour
     [SerializeField] private Transform otherCardPanel; // 相手のカードを配置するパネル
     [SerializeField] public GameObject CardPrefab; // カードのプレハブ
     [SerializeField] public GameObject SlotPrefab; // スロットのプレハブ
-    
+
+    private Image buttonImage;                         // ボタンのImageコンポーネント
+    [SerializeField] private Sprite readySprite;        // 準備完了時のスプライト
+    [SerializeField] private Sprite notReadySprite;     // 未準備時のスプライト
+
     public GameObject[] GetMyCards()
     {
         return mycard;
@@ -41,6 +45,12 @@ public class MainSystemScript : MonoBehaviour
     void Start()
     {
         Debug.Log("ゲームスタート");
+        // ボタンのImageコンポーネントを取得
+        buttonImage = readyButton.GetComponent<Image>();
+    
+        // 初期状態の画像を設定（未準備状態）
+        UpdateButtonImage(false);
+        if(networkSystem != null)networkSystem.OnLocalReadyStateChanged += UpdateButtonImage;
         
         // 自分のスロット、カード生成
         for (int i = 0; i < CARD_NUM; i++)
@@ -83,13 +93,20 @@ public class MainSystemScript : MonoBehaviour
         
         readyButton.onClick.AddListener(OnReadyButtonClicked); // readyボタンにリスナーを追加
     }
-
+    
     void OnReadyButtonClicked()
     {
         //phaseが0以外の時は機能しないように制限
         //演出中とかに押されると勝手に次のフェーズにいかれる恐れがあるため
         Debug.Log("readyButton clicked");
         if(NetworkSystem.phase==0)networkSystem.ToggleReady();
+    }
+    
+    // 準備状態に基づいてボタンの画像を更新
+    private void UpdateButtonImage(bool isReady)
+    {
+        if (buttonImage != null)
+            buttonImage.sprite = isReady ? readySprite : notReadySprite;
     }
 
     void Update()

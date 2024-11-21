@@ -179,8 +179,8 @@ MonoBehaviour:
   m_ChildAlignment: 4
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 150, y: 100}
-  m_Spacing: {x: 10, y: 0}
+  m_CellSize: {x: 150, y: 150}
+  m_Spacing: {x: 25, y: 0}
   m_Constraint: 0
   m_ConstraintCount: 2
 --- !u!1 &576212846
@@ -791,12 +791,12 @@ MonoBehaviour:
   otherInventoryPanel: {fileID: 0}
   inventoryItemPrefab: {fileID: 7083425294987572048, guid: 05e718d2ca6654d1d855c4d8500e994b, type: 3}
   itemIcons:
-  - {fileID: 21300000, guid: 1bac38a90817b41c8a50d07079830bc0, type: 3}
-  - {fileID: 21300000, guid: c0c6b64a1200c4f61a1d7972e57a2436, type: 3}
-  - {fileID: 21300000, guid: 79ed22cf431af4165a68b18c8bdbe652, type: 3}
-  - {fileID: 21300000, guid: c7ffb6d92cdf84c4f9052539be71564a, type: 3}
-  - {fileID: 21300000, guid: c61c289c9286945a78007da1e4baab6d, type: 3}
-  - {fileID: 21300000, guid: 041d4b51aa909415bb39f8e28320ebb0, type: 3}
+  - {fileID: 21300000, guid: 0f71a93c03e904defa36b9d83f9e2e90, type: 3}
+  - {fileID: 21300000, guid: 5f11ada96fac844b098ac43bdf28cf4c, type: 3}
+  - {fileID: 21300000, guid: fa5da8bf3cb3641f09c27c3e158b2a3e, type: 3}
+  - {fileID: 21300000, guid: 628cc613cee13428685b8e6159de58c4, type: 3}
+  - {fileID: 21300000, guid: c31f15253c593455095fb680b8909900, type: 3}
+  - {fileID: 21300000, guid: 9042e0fe3c6e74df0ae853721141e5ef, type: 3}
   itemDescriptions:
   - {fileID: 21300000, guid: f0c993483d17d4631860af7dc8235102, type: 3}
   - {fileID: 21300000, guid: 1206820e60e464075b9b729ebaca16d5, type: 3}
