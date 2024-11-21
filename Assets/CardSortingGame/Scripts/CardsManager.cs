@@ -77,7 +77,7 @@ public class CardsManager : MonoBehaviour
         
             // スロット内にカードを作成
             GameObject card = cards[i];
-            card.transform.SetParent(panel, false);
+            card.transform.SetParent(panel,false);
             // card.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
             
             // ボタンコンポーネントを追加

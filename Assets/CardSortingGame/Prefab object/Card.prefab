@@ -147,5 +147,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a9a3b6fe46649bda0ab5bc08ad595db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  originalParent: {fileID: 0}
+  startSlot: {fileID: 0}
   isDraggable: 1
