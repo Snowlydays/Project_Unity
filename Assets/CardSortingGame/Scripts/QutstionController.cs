@@ -36,7 +36,7 @@ public class QutstionController : MonoBehaviour
         networkSystem = FindObjectOfType<NetworkSystem>();
         
         questionBG = GameObject.Find("QuestioningBG");
-        cardPanel = GameObject.Find("CardPanel").transform;
+        cardPanel = GameObject.Find("QuestionCardPanel").transform;
         questionBG.SetActive(false);// 非表示
         originalBGColor = questionBG.GetComponent<Image>().color;
         
@@ -49,6 +49,7 @@ public class QutstionController : MonoBehaviour
     {
         if(!isNotQuestion){
             questionBG.SetActive(true);
+            questionBG.GetComponent<Image>().color = originalBGColor; // 背面色の変更
             cardPanel.GameObject().SetActive(true);
             // CardsManagerからクローンカードを取得
             // GameObject[] clonedCards = cardsManager.CloneMyCardsAsUI();
