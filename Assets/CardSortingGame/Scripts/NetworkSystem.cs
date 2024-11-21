@@ -69,6 +69,9 @@ public class NetworkSystem : NetworkBehaviour
     private LogMenuController logMenuController;
     public InformationManager informationManager;
 
+    // ローカルプレイヤーの準備状態が変わった時に発火するイベント
+    public event Action<bool> OnLocalReadyStateChanged;
+    
     void Awake()
     {
         //各種NetworkList初期化
@@ -141,6 +144,7 @@ public class NetworkSystem : NetworkBehaviour
             hostReady = newParam;
             Debug.Log($"hostのReady状態が {newParam} になりました。");
             RequestCheckAllPlayersReadyServerRpc();
+            if(IsHost)OnLocalReadyStateChanged?.Invoke(newParam);
         };
 
         netClientReady.OnValueChanged += (bool oldParam, bool newParam) =>
@@ -148,6 +152,7 @@ public class NetworkSystem : NetworkBehaviour
             clientReady = newParam;
             Debug.Log($"clientのReady状態が {newParam} になりました。");
             RequestCheckAllPlayersReadyServerRpc();
+            if (!IsHost)OnLocalReadyStateChanged?.Invoke(newParam);
         };
 
         netIsHostWaiting.OnValueChanged +=  (int oldParam, int newParam) =>
