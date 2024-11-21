@@ -189,7 +189,14 @@ public class ItemUsingManager : MonoBehaviour
             mylist.Remove(2);
             return;
         }
-        //自分が使わない場合はそもそもこのメソッドが実行されないので省略
+        
+        if(mynum<=0 && otherusethree==true){
+            //相手がアイテム3を使おうとしているのに自分がそもそもアイテムを使わない場合
+            //リストからアイテム3をremoveして終了
+            otherusethree=false;
+            otherlist.Remove(2);
+            return;
+        }
 
         if(mythreeindex+1>othernum && myusethree==true){
             //アイテム3が相手のアイテム数より大きいindexを奪おうとした場合

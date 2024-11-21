@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Threading;
 using System.Threading.Tasks;
+using UnityEngine.UI;
 
 public class PhaseManager : MonoBehaviour
 {
@@ -16,9 +17,15 @@ public class PhaseManager : MonoBehaviour
 
     private NetworkSystem networkSystem;
 
+    public GameObject phaseAnimObject;
+    public Sprite questionSprite;
+
+    GameObject canvas;
+
     private void Start()
     {
         networkSystem = FindObjectOfType<NetworkSystem>();
+        canvas = GameObject.Find("Canvas");
     }
 
     // フェーズ変更時の処理
@@ -47,6 +54,7 @@ public class PhaseManager : MonoBehaviour
         networkSystem.ChangeHostWaitingServerRPC(0);
         networkSystem.ChangeClientWaitingServerRPC(0);
 
+        GameObject animobj;
         switch (newPhase)
         {
             case InitialPhase:
@@ -56,10 +64,15 @@ public class PhaseManager : MonoBehaviour
 
             case ItemPhase:
                 networkSystem.itemPhaseManager.StartItemPhase();
+                //animobj=Instantiate(phaseAnimObject,new Vector3(0f,0f,0f),Quaternion.identity);
+                //animobj.transform.SetParent(canvas.transform);
                 break;
 
             case QuestionPhase:
                 networkSystem.questionController.StartQuestionPhase();
+                //animobj=Instantiate(phaseAnimObject,new Vector3(0f,0f,0f),Quaternion.identity);
+                //animobj.transform.SetParent(canvas.transform);
+                //animobj.transform.GetComponent<Image>().sprite=questionSprite;
                 break;
 
             case ItemUsingPhase:
