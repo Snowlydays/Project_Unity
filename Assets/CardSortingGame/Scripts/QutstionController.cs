@@ -49,6 +49,7 @@ public class QutstionController : MonoBehaviour
     {
         if(!isNotQuestion){
             questionBG.SetActive(true);
+            questionBG.GetComponent<Image>().color = originalBGColor; // 背面色の変更
             cardPanel.GameObject().SetActive(true);
             // CardsManagerからクローンカードを取得
             // GameObject[] clonedCards = cardsManager.CloneMyCardsAsUI();
