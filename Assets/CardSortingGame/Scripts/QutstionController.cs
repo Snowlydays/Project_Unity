@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Linq;
 using Unity.VisualScripting;
+using TMPro;
 
 public class QutstionController : MonoBehaviour
 {
@@ -30,6 +31,8 @@ public class QutstionController : MonoBehaviour
     public bool isThreeSelect = false;
     public bool isNotQuestion = false;
     
+    private TextMeshProUGUI instruction;
+
     void Start()
     {
         cardsManager = FindObjectOfType<CardsManager>();
@@ -37,6 +40,7 @@ public class QutstionController : MonoBehaviour
         
         questionBG = GameObject.Find("QuestioningBG");
         cardPanel = GameObject.Find("QuestionCardPanel").transform;
+        instruction = GameObject.Find("Text").GetComponent<TextMeshProUGUI>(); // 案内テキストを取得
         questionBG.SetActive(false);// 非表示
         originalBGColor = questionBG.GetComponent<Image>().color;
         
@@ -47,6 +51,7 @@ public class QutstionController : MonoBehaviour
 
     public void StartQuestionPhase()
     {
+        instruction.text = isThreeSelect ? "カードを3枚選んでください" : "カードを2枚選んでください"; // 案内テキストの中身を変更
         if(!isNotQuestion){
             questionBG.SetActive(true);
             questionBG.GetComponent<Image>().color = originalBGColor; // 背面色の変更
@@ -196,13 +201,13 @@ public class QutstionController : MonoBehaviour
         
         string leftName = leftCard.name, rightName = rightCard.name;
         Debug.Log("left:"+leftName + " right:"+rightName);
-        networkSystem.Log(leftName + "と"+rightName + "を比較しました");
 
         //ここの処理の補足
         //これで得られるのは数値ではなく、厳密には「先頭文字を文字コードで表したときの数値」
         //文字コード表では基本的に1から9の順に文字コードの数値も大きくなるので、一応これでも成立する
-        if(leftName[leftName.Length - 1] < rightName[rightName.Length - 1]) Debug.Log("right card is greater");
-        else Debug.Log("left card is greater");
+        string informationText = "";
+        if(leftName[leftName.Length - 1] < rightName[rightName.Length - 1]) informationText = "右のカードの方が大きい\n";
+        else informationText = "左のカードの方が大きい\n";
         
         if(isGetDiff){
             //アイテム2の処理
@@ -211,9 +216,12 @@ public class QutstionController : MonoBehaviour
 
             Debug.Log("カードの差は"+Diff.ToString()+"です");
             networkSystem.Log("カードの差は"+Diff.ToString()+"です");
+            informationText = informationText + "カードの差は" + Diff.ToString() + "です";
 
             isGetDiff=false;
         }
+        networkSystem.informationManager.questionResult = informationText;
+        networkSystem.Log(informationText);
         return 0;
     }
 
@@ -270,6 +278,7 @@ public class QutstionController : MonoBehaviour
 
         Debug.Log("Left:"+left+" middle:"+middle+" right:"+right);
         networkSystem.Log("左:"+left+" 中:"+middle+" 右:"+right);
+        networkSystem.informationManager.questionResult = "左:"+left+" 中:"+middle+" 右:"+right;
         return 0;
     }
 }

@@ -466,6 +466,7 @@ public class NetworkSystem : NetworkBehaviour
             if (hostAttacked)
             {
                 Debug.Log("攻撃失敗！");
+                Log("攻撃失敗！");
                 informationManager.SetInformationText("攻撃失敗！");
             }
             if (clientAttacked)SetInformationTextClientRpc("攻撃失敗！");

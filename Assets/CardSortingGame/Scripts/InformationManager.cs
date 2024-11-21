@@ -5,6 +5,7 @@ using TMPro;
 public class InformationManager : MonoBehaviour
 {
     public TextMeshProUGUI informationText;
+    public string questionResult = "";
     void Start()
     {
         informationText = this.GetComponent<TextMeshProUGUI>();
@@ -14,11 +15,15 @@ public class InformationManager : MonoBehaviour
     public void SetInformationText(string str)
     {
         informationText.text = str;
-
     }
 
     public void ClearInformationText()
     {
         informationText.text = "";
+    }
+
+    public void ShowQuestionResult()
+    {
+        SetInformationText(questionResult);
     }
 }
