@@ -22,4 +22,13 @@ public class MobileKeyboardFix : MonoBehaviour
             keyboard = TouchScreenKeyboard.Open(inputField.text, TouchScreenKeyboardType.Default);
         }
     }
+
+    void Update()
+    {
+        // キーボードの入力があれば、それをInputFieldに反映
+        if (keyboard != null && keyboard.status == TouchScreenKeyboard.Status.Visible)
+        {
+            inputField.text = keyboard.text;
+        }
+    }
 }
