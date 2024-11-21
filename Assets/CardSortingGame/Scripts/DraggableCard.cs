@@ -31,6 +31,8 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         transform.SetParent(canvas.transform, false); // 親をCanvasに変更（ローカル座標を維持）
         canvasGroup.alpha = 0.6f; // 透明度を下げる
         canvasGroup.blocksRaycasts = false; // レイキャストをブロックしないように変更
+        
+        transform.localScale *= 1.1f; // スケールを10%拡大
     }
 
     // ドラッグ中の処理
@@ -55,7 +57,10 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         canvasGroup.alpha = 1f; // 透明度を元に戻す
         canvasGroup.blocksRaycasts = true; // レイキャストを有効にする
 
-        // 有効なスロットにドロップされなかった場合、元のスロットに戻す
+        // カードのスケールを元に戻す
+        transform.localScale = Vector3.one;
+
+        // 有効なスロットにドロップされなかった場合、元の位置に戻す
         if (transform.parent == canvas.transform)
         {
             transform.SetParent(startSlot, false); // 元の親に戻す
