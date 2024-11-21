@@ -36,7 +36,7 @@ public class QutstionController : MonoBehaviour
         networkSystem = FindObjectOfType<NetworkSystem>();
         
         questionBG = GameObject.Find("QuestioningBG");
-        cardPanel = GameObject.Find("CardPanel").transform;
+        cardPanel = GameObject.Find("QuestionCardPanel").transform;
         questionBG.SetActive(false);// 非表示
         originalBGColor = questionBG.GetComponent<Image>().color;
         

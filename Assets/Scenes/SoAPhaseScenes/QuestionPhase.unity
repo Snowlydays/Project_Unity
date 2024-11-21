@@ -359,7 +359,7 @@ GameObject:
   - component: {fileID: 495022156}
   - component: {fileID: 495022158}
   m_Layer: 5
-  m_Name: CardPanel
+  m_Name: QuestionCardPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -381,7 +381,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 36.6, y: 0}
+  m_AnchoredPosition: {x: 36.599976, y: 0}
   m_SizeDelta: {x: 1260, y: 355}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &495022156
@@ -439,14 +439,14 @@ MonoBehaviour:
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
-  m_ChildAlignment: 3
+  m_ChildAlignment: 4
   m_Spacing: 10
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 1
   m_ChildControlHeight: 1
-  m_ChildScaleWidth: 1
-  m_ChildScaleHeight: 1
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
 --- !u!1001 &807345373
 PrefabInstance:

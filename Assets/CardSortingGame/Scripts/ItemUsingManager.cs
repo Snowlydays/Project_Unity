@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Threading;
 using System.Threading.Tasks;
+using Unity.VisualScripting;
 
 public class ItemUsingManager : MonoBehaviour
 {
@@ -26,6 +27,7 @@ public class ItemUsingManager : MonoBehaviour
     GameObject ItemSixBG;
     GameObject ItemOneBG;
     GameObject selectCard;
+    private Transform cardPanel;
 
     GameObject smallerButton;
     GameObject largerButton;
@@ -52,6 +54,7 @@ public class ItemUsingManager : MonoBehaviour
         //各種UI初期化
         ItemSixBG = GameObject.Find("ItemSixBG");
         ItemOneBG = GameObject.Find("ItemOneBG");
+        cardPanel = GameObject.Find("ItemUsingCardPanel").transform;
 
         GameObject.Find("ConfirmButtonOne").GetComponent<Button>().onClick.AddListener(OnConfirmButtonClickedOne);
         GameObject.Find("ConfirmButtonSix").GetComponent<Button>().onClick.AddListener(OnConfirmButtonClickedSix);
@@ -66,6 +69,7 @@ public class ItemUsingManager : MonoBehaviour
 
         ItemSixBG.SetActive(false);
         ItemOneBG.SetActive(false);
+        cardPanel.GameObject().SetActive(false);
     }
 
     public void InputNumber()
@@ -277,21 +281,24 @@ public class ItemUsingManager : MonoBehaviour
     {
         //各種UIの起動
         ItemOneBG.SetActive(true);//起動
-        clonedCards = cardsManager.CloneMyCardsAsUI();
-        if(clonedCards == null)Debug.LogError("clonedCards are null!");
+        cardPanel.GameObject().SetActive(true);
+        clonedCards = cardsManager.PlaceCardsOnPanel(cardPanel,ToggleCardSelection);
+        
+        // clonedCards = cardsManager.CloneMyCardsAsUI();
+        // if(clonedCards == null)Debug.LogError("clonedCards are null!");
 
         // キャンバスを探す
-        Canvas canvas = GameObject.Find("ItemCanvas").GetComponent<Canvas>();
+        // Canvas canvas = GameObject.Find("ItemCanvas").GetComponent<Canvas>();
             
-        foreach(GameObject card in clonedCards)
-        {
-            // キャンバスにカードを追加
-            card.transform.SetParent(canvas.transform);
-
-            // カードをボタンとして設定
-            Button cardButton = card.GetComponent<Button>();
-            cardButton.onClick.AddListener(() => ToggleCardSelection(card));
-        }
+        // foreach(GameObject card in clonedCards)
+        // {
+        //     // キャンバスにカードを追加
+        //     card.transform.SetParent(canvas.transform);
+        //
+        //     // カードをボタンとして設定
+        //     Button cardButton = card.GetComponent<Button>();
+        //     cardButton.onClick.AddListener(() => ToggleCardSelection(card));
+        // }
 
         Debug.Log("カードと大小を選択してください");
 
@@ -344,6 +351,7 @@ public class ItemUsingManager : MonoBehaviour
         nowUsingItem=-1;
         confirmchecked=false;
         ItemOneBG.SetActive(false);
+        cardPanel.GameObject().SetActive(false);
     }
 
     // 番号からカードのインデックスを取得
@@ -377,21 +385,23 @@ public class ItemUsingManager : MonoBehaviour
     {
         //各種UIの起動
         ItemSixBG.SetActive(true);//起動
-        clonedCards = cardsManager.CloneMyCardsAsUI();
-        if(clonedCards == null)Debug.LogError("clonedCards are null!");
+        cardPanel.GameObject().SetActive(true);
+        clonedCards = cardsManager.PlaceCardsOnPanel(cardPanel,ToggleCardSelection);
+        // clonedCards = cardsManager.CloneMyCardsAsUI();
+        // if(clonedCards == null)Debug.LogError("clonedCards are null!");
 
-        // キャンバスを探す
-        Canvas canvas = GameObject.Find("ItemCanvas").GetComponent<Canvas>();
-            
-        foreach(GameObject card in clonedCards)
-        {
-            // キャンバスにカードを追加
-            card.transform.SetParent(canvas.transform);
-
-            // カードをボタンとして設定
-            Button cardButton = card.GetComponent<Button>();
-            cardButton.onClick.AddListener(() => ToggleCardSelection(card));
-        }
+        // // キャンバスを探す
+        // Canvas canvas = GameObject.Find("ItemCanvas").GetComponent<Canvas>();
+        //     
+        // foreach(GameObject card in clonedCards)
+        // {
+        //     // キャンバスにカードを追加
+        //     card.transform.SetParent(canvas.transform);
+        //
+        //     // カードをボタンとして設定
+        //     Button cardButton = card.GetComponent<Button>();
+        //     cardButton.onClick.AddListener(() => ToggleCardSelection(card));
+        // }
 
         Debug.Log("カードと数字を入力してください");
 
@@ -422,6 +432,7 @@ public class ItemUsingManager : MonoBehaviour
         nowUsingItem=-1;
         confirmchecked=false;
         ItemSixBG.SetActive(false);//非表示
+        cardPanel.GameObject().SetActive(false);
     }
 
     void ToggleCardSelection(GameObject card){

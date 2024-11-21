@@ -35,7 +35,7 @@ public class CardsManager : MonoBehaviour
 
     
     // myCardsのカードをクローンしてUI用のオブジェクトを生成
-    public GameObject[] CloneMyCardsAsUI()
+    private GameObject[] CloneMyCardsAsUI()
     {
         List<GameObject> clonedCards = new List<GameObject>();
         
@@ -66,7 +66,7 @@ public class CardsManager : MonoBehaviour
     }
     
     // カードをパネルに配置するようのメソッド
-    public void PlaceCardsOnPanel(Transform panel, Action<GameObject> onClickAction = null, bool isMySlot = false)
+    public GameObject[] PlaceCardsOnPanel(Transform panel, Action<GameObject> onClickAction = null, bool isMySlot = false)
     {
         GameObject[] cards = CloneMyCardsAsUI();
         for (int i = 0; i < cards.Length; i++)
@@ -87,6 +87,8 @@ public class CardsManager : MonoBehaviour
                 button.onClick.AddListener(() => onClickAction(card));
             }
         }
+
+        return cards;
     }
     
     
