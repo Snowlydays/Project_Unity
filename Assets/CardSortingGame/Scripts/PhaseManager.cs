@@ -50,6 +50,7 @@ public class PhaseManager : MonoBehaviour
         switch (newPhase)
         {
             case InitialPhase:
+                networkSystem.informationManager.ShowQuestionResult();
                 AttackAction();
                 break;
 
