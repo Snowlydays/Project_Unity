@@ -153,7 +153,7 @@ public class ItemUsingManager : MonoBehaviour
         if(otherlist.Contains(3)){
             //もし相手がアイテム4を持っていたら、質問不可能bool値をtrueにする。
             networkSystem.questionController.isNotQuestion=true;
-            networkSystem.informationManager.SetInformationText("相手のアイテム効果により質問できません!");
+            networkSystem.informationManager.AddInformationText("相手のアイテム効果により質問できません!");
         }
     }
 

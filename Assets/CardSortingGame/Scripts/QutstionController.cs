@@ -206,8 +206,8 @@ public class QutstionController : MonoBehaviour
         //これで得られるのは数値ではなく、厳密には「先頭文字を文字コードで表したときの数値」
         //文字コード表では基本的に1から9の順に文字コードの数値も大きくなるので、一応これでも成立する
         string informationText = "";
-        if(leftName[leftName.Length - 1] < rightName[rightName.Length - 1]) informationText = "右のカードの方が大きい\n";
-        else informationText = "左のカードの方が大きい\n";
+        if(leftName[leftName.Length - 1] < rightName[rightName.Length - 1]) informationText = "右のカードの方が大きい";
+        else informationText = "左のカードの方が大きい";
         
         if(isGetDiff){
             //アイテム2の処理
@@ -216,7 +216,7 @@ public class QutstionController : MonoBehaviour
 
             Debug.Log("カードの差は"+Diff.ToString()+"です");
             networkSystem.Log("カードの差は"+Diff.ToString()+"です");
-            informationText = informationText + "カードの差は" + Diff.ToString() + "です";
+            informationText = informationText + "\nカードの差は" + Diff.ToString() + "です";
 
             isGetDiff=false;
         }
