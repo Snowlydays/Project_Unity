@@ -196,12 +196,18 @@ public class ItemPhaseManager : MonoBehaviour
         // Toggleコンポーネントとテキストの設定
         Toggle toggle = toggleObj.GetComponent<Toggle>();
         TextMeshProUGUI toggleText = toggleObj.GetComponentInChildren<TextMeshProUGUI>();
-        toggleText.text = $"{itemIdx+1}";
+        toggleText.text = $"{itemIdx+1}"; // ソート時に使用するため設定
+        Color transparentColor = toggleText.color;
+        transparentColor.a = 0f; // アルファ値を0にして透明にする
+        toggleText.color = transparentColor;
 
         // Toggleの背景Imageを取得
         Image backgroundImage = toggleObj.GetComponentInChildren<Image>();
-        // 初期色を設定
         backgroundImage.color = toggle.isOn ? toggleOnColor : toggleOffColor;
+        
+        // Imageコンポーネントにアイコンを設定
+        Image itemImage = toggleObj.GetComponent<Image>();
+        itemImage.sprite = itemIcons[itemIdx];
 
         // Toggleのリスナーを追加し、色を変更
         toggle.onValueChanged.AddListener((isOn) =>
