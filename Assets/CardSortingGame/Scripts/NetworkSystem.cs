@@ -380,15 +380,18 @@ public class NetworkSystem : NetworkBehaviour
         else if(hostReady || clientReady)
         {
             // 相手の行動を待っている時、その情報を表示
-            if (phase != initialPhase)
-            {
-                Dictionary<int, string> infoDict = new Dictionary<int, string> { { itemPhase, "相手のアイテム選択を待っています..." }, { questionPhase, "相手の質問を待っています..." }, { itemUsingPhase, "相手のアイテム使用を待っています..." } };
-                if (hostReady) {
-                    informationManager.SetInformationText(infoDict[phase]);
-                }else{
-                    SetInformationTextClientRpc(infoDict[phase]);  
-                } 
-            }
+            Dictionary<int, string> infoDict = new Dictionary<int, string> {
+                { initialPhase, "相手の準備を待っています..." },
+                { itemPhase, "相手のアイテム選択を待っています..." },
+                { questionPhase, "相手の質問を待っています..." },
+                { itemUsingPhase, "相手のアイテム使用を待っています..." }
+            };
+            if (hostReady) {
+                informationManager.AddInformationText(infoDict[phase]);
+                informationManager.isTextAdded = true;
+            }else{
+                AddInformationTextClientRpc(infoDict[phase]);  
+            } 
         }
     }
 
@@ -467,19 +470,21 @@ public class NetworkSystem : NetworkBehaviour
             {
                 Debug.Log("攻撃失敗！");
                 Log("攻撃失敗！");
-                informationManager.SetInformationText("攻撃失敗！");
+                informationManager.AddInformationText("攻撃失敗！");
+                AddInformationTextClientRpc("相手が攻撃に失敗しました");
             }
-            if (clientAttacked)SetInformationTextClientRpc("攻撃失敗！");
+            if (clientAttacked)AddInformationTextClientRpc("攻撃失敗！");
         }
     }
 
     [ClientRpc]
-    private void SetInformationTextClientRpc(string message)
+    private void AddInformationTextClientRpc(string message)
     {
         if (!IsHost)
         {
-            Debug.Log($"SetInformationTextClientRpc: {message}");
-            informationManager.SetInformationText(message);
+            Debug.Log($"AddInformationTextClientRpc: {message}");
+            informationManager.AddInformationText(message);
+            informationManager.isTextAdded = true;
         }
     }
     
