@@ -566,6 +566,7 @@ GameObject:
   - component: {fileID: 1310864690}
   - component: {fileID: 1310864689}
   - component: {fileID: 1310864688}
+  - component: {fileID: 1310864691}
   m_Layer: 5
   m_Name: ItemConfirmButton
   m_TagString: Untagged
@@ -675,6 +676,27 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1310864686}
   m_CullTransparentMesh: 1
+--- !u!95 &1310864691
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1310864686}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: ac3877941ccf74542817cd086e05308f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1353334398
 GameObject:
   m_ObjectHideFlags: 0

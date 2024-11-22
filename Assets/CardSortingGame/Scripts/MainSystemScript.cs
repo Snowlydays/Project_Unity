@@ -99,7 +99,10 @@ public class MainSystemScript : MonoBehaviour
         //phaseが0以外の時は機能しないように制限
         //演出中とかに押されると勝手に次のフェーズにいかれる恐れがあるため
         Debug.Log("readyButton clicked");
-        if(NetworkSystem.phase==0)networkSystem.ToggleReady();
+        if(NetworkSystem.phase==0){
+            networkSystem.ToggleReady();
+            readyButton.gameObject.GetComponent<Animator>().SetBool("blStarted", true);
+        }
     }
     
     // 準備状態に基づいてボタンの画像を更新

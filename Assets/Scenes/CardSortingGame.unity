@@ -461,6 +461,7 @@ GameObject:
   - component: {fileID: 195278634}
   - component: {fileID: 195278633}
   - component: {fileID: 195278635}
+  - component: {fileID: 195278636}
   m_Layer: 5
   m_Name: ReadyButton
   m_TagString: Untagged
@@ -569,6 +570,27 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!95 &195278636
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 195278631}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 4d5672ea2bb0f4549ae80dea751e6d55, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &209083559
 GameObject:
   m_ObjectHideFlags: 0
@@ -1072,6 +1094,7 @@ MonoBehaviour:
   itemUsingManager: {fileID: 0}
   informationManager: {fileID: 0}
   animationController: {fileID: 0}
+  mainSystemScript: {fileID: 0}
   attackSprite: {fileID: 21300000, guid: 004f8546e22094cc19e0cacf8669bfce, type: 3}
 --- !u!114 &534725847
 MonoBehaviour:
@@ -1873,7 +1896,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1397842340
 RectTransform:
   m_ObjectHideFlags: 0
