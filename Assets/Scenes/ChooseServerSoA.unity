@@ -553,10 +553,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Client Start
+  m_text: "\u90E8\u5C4B\u306B\u53C2\u52A0\u3059\u308B"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 3f9508a64a5d04eb7aab767b58288ae5, type: 2}
+  m_sharedMaterial: {fileID: 8491621916487589897, guid: 3f9508a64a5d04eb7aab767b58288ae5, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -944,12 +944,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Host Start
-
-'
+  m_text: "\u90E8\u5C4B\u3092\u4F5C\u6210\u3059\u308B\n"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 3f9508a64a5d04eb7aab767b58288ae5, type: 2}
+  m_sharedMaterial: {fileID: 8491621916487589897, guid: 3f9508a64a5d04eb7aab767b58288ae5, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
