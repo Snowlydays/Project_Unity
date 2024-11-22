@@ -17,7 +17,7 @@ public class PhaseManager : MonoBehaviour
 
     private NetworkSystem networkSystem;
 
-    public GameObject phaseAnimObject;
+    public Sprite itemSprite;
     public Sprite questionSprite;
 
     GameObject canvas;
@@ -64,15 +64,12 @@ public class PhaseManager : MonoBehaviour
 
             case ItemPhase:
                 networkSystem.itemPhaseManager.StartItemPhase();
-                //animobj=Instantiate(phaseAnimObject,new Vector3(0f,0f,0f),Quaternion.identity);
-                //animobj.transform.SetParent(canvas.transform);
+                networkSystem.animationController.CreatePhaseLogo(itemSprite);
                 break;
 
             case QuestionPhase:
                 networkSystem.questionController.StartQuestionPhase();
-                //animobj=Instantiate(phaseAnimObject,new Vector3(0f,0f,0f),Quaternion.identity);
-                //animobj.transform.SetParent(canvas.transform);
-                //animobj.transform.GetComponent<Image>().sprite=questionSprite;
+                networkSystem.animationController.CreatePhaseLogo(questionSprite);
                 break;
 
             case ItemUsingPhase:
@@ -90,7 +87,7 @@ public class PhaseManager : MonoBehaviour
         {
             if (networkSystem.IsHost)
             {
-                networkSystem.HandleAttackAction(hostAttacked,clientAttacked);
+            networkSystem.HandleAttackAction(hostAttacked,clientAttacked);
             }
             
             // 攻撃トグルのリセット

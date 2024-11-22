@@ -3,7 +3,8 @@ guid: 5c60dbc171b414651b73dbe9839d2917
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - phaseAnimObject: {fileID: 129355552834074673, guid: 884399d0f58514f469b7e1c06a1cf949, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

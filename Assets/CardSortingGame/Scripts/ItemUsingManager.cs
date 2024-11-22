@@ -46,6 +46,8 @@ public class ItemUsingManager : MonoBehaviour
 
     int chooseCompareTo=0;//アイテム1で大小どちらへ比較するか、1で大、-1で小、0で無選択
 
+    public GameObject itemUseCanvas;
+
     void Start()
     {
         cardsManager = FindObjectOfType<CardsManager>();
@@ -64,8 +66,9 @@ public class ItemUsingManager : MonoBehaviour
         largerButton=GameObject.Find("LargerButton");
         largerButton.GetComponent<Button>().onClick.AddListener(OnLargerButtonClicked);
 
-
         inputField = GameObject.Find("InputText").GetComponent<TMP_InputField>();
+
+        itemUseCanvas = GameObject.Find("ItemCanvas");
 
         ItemSixBG.SetActive(false);
         ItemOneBG.SetActive(false);

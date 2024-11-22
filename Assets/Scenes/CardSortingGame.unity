@@ -955,6 +955,7 @@ GameObject:
   - component: {fileID: 534725847}
   - component: {fileID: 534725849}
   - component: {fileID: 534725850}
+  - component: {fileID: 534725851}
   m_Layer: 0
   m_Name: Main System
   m_TagString: Untagged
@@ -1070,6 +1071,8 @@ MonoBehaviour:
   questionController: {fileID: 0}
   itemUsingManager: {fileID: 0}
   informationManager: {fileID: 0}
+  animationController: {fileID: 0}
+  attackSprite: {fileID: 21300000, guid: 004f8546e22094cc19e0cacf8669bfce, type: 3}
 --- !u!114 &534725847
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1117,8 +1120,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b50a1a50f3c445cc97608ef4f975cc4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  phaseAnimObject: {fileID: 0}
-  questionSprite: {fileID: 0}
+  itemSprite: {fileID: 21300000, guid: 193a47d9a58144b248ab94accc32a628, type: 3}
+  questionSprite: {fileID: 21300000, guid: b4b51224740dd4a579cade89339e0d19, type: 3}
 --- !u!114 &534725850
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1131,6 +1134,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85d2bbda980e4cd1829cb8985e038bf8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &534725851
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 534725842}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c60dbc171b414651b73dbe9839d2917, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  phaseAnimObject: {fileID: 129355552834074673, guid: 884399d0f58514f469b7e1c06a1cf949, type: 3}
+  animobj: {fileID: 0}
 --- !u!1 &644136872
 GameObject:
   m_ObjectHideFlags: 0
@@ -1856,7 +1873,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1397842340
 RectTransform:
   m_ObjectHideFlags: 0
