@@ -16,14 +16,17 @@ public class InformationManager : MonoBehaviour
 
     public void AddInformationText(string str)
     {
-        if(isTextAdded) return;
+        if(isTextAdded)
+        {
+            isTextAdded = false;
+            return;
+        }
         if(informationText.text != "") informationText.text = informationText.text += "\n";
         informationText.text = informationText.text + str;
     }
 
     public void ClearInformationText()
     {
-        isTextAdded = false;
         informationText.text = "";
     }
 
