@@ -19,8 +19,10 @@ public class ChooseServerManager : NetworkBehaviour
     bool hoststart=false;
     bool clientstart=false;
     TMP_InputField inputField;
-    string joinCode;
+    string joinCode="";
     private TextMeshProUGUI codeText;
+
+    GameObject waitObj;
 
     private const string PASSWORD_CHARS = 
         "0123456789abcdefghijklmnopqrstuvwxyz";
@@ -56,6 +58,8 @@ public class ChooseServerManager : NetworkBehaviour
 
         inputField = GameObject.Find("InputText").GetComponent<TMP_InputField>();
 
+        waitObj = GameObject.Find("ConnectWaiting");
+
         //サーバーにクライアントが接続したら実行されるメソッド
         //注意として、ホストは「サーバーでもありクライアントでもある」という立ち位置なので
         //ホストが接続を開始した場合もこれが実行される
@@ -63,6 +67,8 @@ public class ChooseServerManager : NetworkBehaviour
         //基本的に自分がホストかクライアントかを識別したい場合は
         //IsServerを使うといいかも
         NetworkManager.Singleton.OnClientConnectedCallback += ClientConnected;
+
+        waitObj.SetActive(false);
 
         GameObject codeTextObject = GameObject.Find("JoinCodeText");//sceneからjoincodeを表示するテキストを取得
             if (codeTextObject != null)
@@ -91,6 +97,15 @@ public class ChooseServerManager : NetworkBehaviour
     {
         joinCode = inputField.text;//テキストフィールドに文字が入れられるたびにその文字がcodeに代入される
     }
+
+    public void EndHostConnect(){
+        if(hoststart){
+            hoststart=false;
+            NetworkManager.Singleton.Shutdown();
+            waitObj.SetActive(false);
+            codeText.text="接続を中断しました";
+        }
+    }
     
     public async void ToHost(){
         if(hoststart==false & clientstart==false){
@@ -118,6 +133,8 @@ public class ChooseServerManager : NetworkBehaviour
                 codeText.text=$"JoinCode: {joinCode} 対戦相手と共有してください";
 
                 NetworkManager.Singleton.StartHost();
+
+                waitObj.SetActive(true);
             }
             catch (RelayServiceException e)
             {
