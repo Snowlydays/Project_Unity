@@ -88,6 +88,7 @@ public class ChooseServerManager : NetworkBehaviour
             NetworkManager.Singleton.SceneManager.LoadScene("CardSortingGame", LoadSceneMode.Single);
         }else{
             if(NetworkManager.Singleton.ConnectedClients.Count > 1){
+                waitObj.SetActive(false);
                 NetworkManager.Singleton.SceneManager.LoadScene("CardSortingGame", LoadSceneMode.Single);
             }
         }

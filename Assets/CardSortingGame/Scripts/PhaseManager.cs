@@ -59,12 +59,14 @@ public class PhaseManager : MonoBehaviour
         {
             case InitialPhase:
                 networkSystem.informationManager.ShowQuestionResult();
+                networkSystem.mainSystemScript.readyButton.gameObject.GetComponent<Animator>().SetBool("blStarted", false);
                 AttackAction();
                 break;
 
             case ItemPhase:
                 networkSystem.itemPhaseManager.StartItemPhase();
                 networkSystem.animationController.CreatePhaseLogo(itemSprite);
+                //networkSystem.mainSystemScript.readyButton.gameObject.GetComponent<Animator>().SetBool("blStarted", true);
                 break;
 
             case QuestionPhase:

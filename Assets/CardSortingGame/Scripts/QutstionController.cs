@@ -43,6 +43,8 @@ public class QutstionController : MonoBehaviour
         instruction = GameObject.Find("Text").GetComponent<TextMeshProUGUI>(); // 案内テキストを取得
         questionBG.SetActive(false);// 非表示
         originalBGColor = questionBG.GetComponent<Image>().color;
+
+        confirmButton.GetComponent<Animator>().keepAnimatorStateOnDisable = true;
         
         // クリックイベント設定
         confirmButton.GetComponent<Button>().onClick.AddListener(OnConfirmButtonClicked);
@@ -54,6 +56,7 @@ public class QutstionController : MonoBehaviour
         instruction.text = isThreeSelect ? "カードを3枚選んでください" : "カードを2枚選んでください"; // 案内テキストの中身を変更
         if(!isNotQuestion){
             questionBG.SetActive(true);
+            confirmButton.gameObject.SetActive(false);
             questionBG.GetComponent<Image>().color = originalBGColor; // 背面色の変更
             cardPanel.GameObject().SetActive(true);
             // CardsManagerからクローンカードを取得
@@ -136,6 +139,29 @@ public class QutstionController : MonoBehaviour
         // カードの選択を解除し、色を元に戻す
         selectedCards.Remove(card);
         card.GetComponent<Image>().color = originalColor;  // 元の色に戻す
+    }
+
+    void Update(){
+        if(questionBG.activeSelf){
+            if(confirmButton.gameObject.activeSelf)confirmButton.gameObject.SetActive(false);
+            if(isThreeSelect){
+                if (selectedCards.Count == 3)
+                {
+                    if(!confirmButton.gameObject.activeSelf)confirmButton.gameObject.SetActive(true);
+                    return;
+                }
+            }else{
+                if (selectedCards.Count == 2)
+                {
+                    if(!confirmButton.gameObject.activeSelf)confirmButton.gameObject.SetActive(true);
+                    return;
+                }
+            }
+            if (isAttacking){
+                if(!confirmButton.gameObject.activeSelf)confirmButton.gameObject.SetActive(true);
+                return;
+            }
+        }
     }
     
     void OnConfirmButtonClicked()
