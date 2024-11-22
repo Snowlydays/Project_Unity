@@ -148,6 +148,7 @@ public class ItemUsingManager : MonoBehaviour
 
         Debug.Log("アイテムを全て使い切りました");
 
+        networkSystem.informationManager.questionResult = ""; // 前回の質問の結果をクリアする
         allUsedItem=false;
         networkSystem.ToggleReady();
     }
