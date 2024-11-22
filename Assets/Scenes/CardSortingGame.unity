@@ -1070,6 +1070,8 @@ MonoBehaviour:
   questionController: {fileID: 0}
   itemUsingManager: {fileID: 0}
   informationManager: {fileID: 0}
+  animationController: {fileID: 0}
+  attackSprite: {fileID: 21300000, guid: 004f8546e22094cc19e0cacf8669bfce, type: 3}
 --- !u!114 &534725847
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1117,8 +1119,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b50a1a50f3c445cc97608ef4f975cc4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  phaseAnimObject: {fileID: 0}
-  questionSprite: {fileID: 0}
+  itemSprite: {fileID: 21300000, guid: 193a47d9a58144b248ab94accc32a628, type: 3}
+  questionSprite: {fileID: 21300000, guid: b4b51224740dd4a579cade89339e0d19, type: 3}
 --- !u!114 &534725850
 MonoBehaviour:
   m_ObjectHideFlags: 0
