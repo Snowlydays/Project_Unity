@@ -129,7 +129,7 @@ public class ChooseServerManager : NetworkBehaviour
     }
 
     public async void ToClient(){
-        if(hoststart==false & clientstart==false){
+        if(hoststart==false & clientstart==false & joinCode!=""){
             clientstart=true;
             try {
                 Debug.Log($"Joining... (code: {joinCode})");

@@ -68,6 +68,9 @@ public class NetworkSystem : NetworkBehaviour
     public ItemUsingManager itemUsingManager;
     private LogMenuController logMenuController;
     public InformationManager informationManager;
+    public AnimationController animationController;
+
+    public Sprite attackSprite;
 
     // ローカルプレイヤーの準備状態が変わった時に発火するイベント
     public event Action<bool> OnLocalReadyStateChanged;
@@ -129,6 +132,7 @@ public class NetworkSystem : NetworkBehaviour
         itemUsingManager = FindObjectOfType<ItemUsingManager>();
         logMenuController = FindObjectOfType<LogMenuController>();
         informationManager = FindObjectOfType<InformationManager>();
+        animationController = FindObjectOfType<AnimationController>();
         
         // イベント追加
         Debug.Log("NetworkSystem.OnNetworkSpawn");
@@ -434,8 +438,31 @@ public class NetworkSystem : NetworkBehaviour
         }*/
     }
 
-    public void HandleAttackAction(bool hostAttacked, bool clientAttacked)
+    //networkSystem.animationController.CreatePhaseLogo(questionSprite);
+
+    public void HandleAttackAction(bool hostAttacked, bool clientAttacked){
+        StartCoroutine(HandleAttackActionIEnumerator(hostAttacked,clientAttacked));
+    }
+
+    [ClientRpc]
+    private void CreateAttackLogoClientRpc(){
+        animationController.CreatePhaseLogo(attackSprite);
+    }
+
+    IEnumerator HandleAttackActionIEnumerator(bool hostAttacked, bool clientAttacked)
     {
+        CreateAttackLogoClientRpc();
+
+        //アニメーションが終了するまで待機
+        yield return new WaitForSeconds(1f);
+        while(animationController.animobj){
+            yield return null;
+        }
+
+        //以降の処理をホストに託す
+        if(!IsHost){
+            yield break;
+        }
         bool hostAsc = netIsHostAscending.Value;
         bool clientAsc = netIsClientAscending.Value;
         if(hostAttacked)hostAsc = CheckAscending(hostCard);
