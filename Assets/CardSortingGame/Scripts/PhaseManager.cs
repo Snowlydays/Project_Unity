@@ -64,6 +64,7 @@ public class PhaseManager : MonoBehaviour
                 break;
 
             case ItemPhase:
+                networkSystem.informationManager.questionResult = "";
                 networkSystem.itemPhaseManager.StartItemPhase();
                 networkSystem.animationController.CreatePhaseLogo(itemSprite);
                 //networkSystem.mainSystemScript.readyButton.gameObject.GetComponent<Animator>().SetBool("blStarted", true);

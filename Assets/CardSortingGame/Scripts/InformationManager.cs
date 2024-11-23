@@ -34,4 +34,14 @@ public class InformationManager : MonoBehaviour
     {
         AddInformationText(questionResult);
     }
+
+    public void SetQuestionResult(string str)
+    {
+        questionResult = str;
+    }
+    
+    public void ClearQuestionResult(string str)
+    {
+        questionResult = "";
+    }
 }
