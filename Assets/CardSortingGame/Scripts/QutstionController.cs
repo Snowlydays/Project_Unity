@@ -235,7 +235,7 @@ public class QutstionController : MonoBehaviour
 
             isGetDiff=false;
         }
-        networkSystem.informationManager.questionResult = informationText;
+        networkSystem.informationManager.SetQuestionResult(informationText);
         networkSystem.Log(informationText);
         return 0;
     }
@@ -293,7 +293,7 @@ public class QutstionController : MonoBehaviour
 
         Debug.Log("Left:"+left+" middle:"+middle+" right:"+right);
         networkSystem.Log("左:"+left+" 中:"+middle+" 右:"+right);
-        networkSystem.informationManager.questionResult = "左:"+left+" 中:"+middle+" 右:"+right;
+        networkSystem.informationManager.SetQuestionResult("左:"+left+" 中:"+middle+" 右:"+right);
         return 0;
     }
 }

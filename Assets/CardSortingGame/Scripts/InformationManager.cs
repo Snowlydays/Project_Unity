@@ -6,7 +6,6 @@ public class InformationManager : MonoBehaviour
 {
     public TextMeshProUGUI informationText;
     public string questionResult = "";
-    public bool isTextAdded = false;
 
     void Start()
     {
@@ -16,11 +15,7 @@ public class InformationManager : MonoBehaviour
 
     public void AddInformationText(string str)
     {
-        if(isTextAdded)
-        {
-            isTextAdded = false;
-            return;
-        }
+        if(informationText.text.Length > 3 && informationText.text.Substring(informationText.text.Length - 3, 3) == "..." && str.Substring(str.Length - 3, 3) == "...") return;
         if(informationText.text != "") informationText.text = informationText.text += "\n";
         informationText.text = informationText.text + str;
     }
@@ -33,5 +28,10 @@ public class InformationManager : MonoBehaviour
     public void ShowQuestionResult()
     {
         AddInformationText(questionResult);
+    }
+    
+    public void SetQuestionResult(string str)
+    {
+        questionResult = str;
     }
 }

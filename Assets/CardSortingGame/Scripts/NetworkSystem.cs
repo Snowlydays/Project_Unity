@@ -400,7 +400,6 @@ public class NetworkSystem : NetworkBehaviour
             };
             if (hostReady) {
                 informationManager.AddInformationText(infoDict[phase]);
-                informationManager.isTextAdded = true;
             }else{
                 AddInformationTextClientRpc(infoDict[phase]);  
             } 
@@ -508,7 +507,11 @@ public class NetworkSystem : NetworkBehaviour
                 informationManager.AddInformationText("攻撃失敗！");
                 AddInformationTextClientRpc("相手が攻撃に失敗しました");
             }
-            if (clientAttacked)AddInformationTextClientRpc("攻撃失敗！");
+            if (clientAttacked)
+            {
+                informationManager.AddInformationText("相手が攻撃に失敗しました");
+                AddInformationTextClientRpc("攻撃失敗！");
+            }
         }
     }
 
@@ -519,7 +522,6 @@ public class NetworkSystem : NetworkBehaviour
         {
             Debug.Log($"AddInformationTextClientRpc: {message}");
             informationManager.AddInformationText(message);
-            informationManager.isTextAdded = true;
         }
     }
     
