@@ -143,6 +143,7 @@ public class NetworkSystem : NetworkBehaviour
             phase = newParam;
             Debug.Log($"フェーズが {newParam} になりました。");
             phaseManager.HandlePhaseChange(newParam);
+            mainSystemScript.ChangeGuideImage(newParam);
         };
 
         netHostReady.OnValueChanged += (bool oldParam, bool newParam) =>

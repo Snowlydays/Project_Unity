@@ -28,6 +28,11 @@ public class MainSystemScript : MonoBehaviour
     [SerializeField] private Sprite readySprite;        // 準備完了時のスプライト
     [SerializeField] private Sprite notReadySprite;     // 未準備時のスプライト
 
+    private const int PHASE_NUM = 4;
+    private const int attackGuideID = 3; // MainSystemオブジェクトのGuideSprites/Element3が攻撃時のガイド
+    [SerializeField] private Image guideImage; // ガイドを表示するimageオブジェクト
+    [SerializeField] private Sprite[] guideSprites = new Sprite[PHASE_NUM]; // ガイド用の画像を保存する配列
+
     public GameObject[] GetMyCards()
     {
         return mycard;
@@ -93,6 +98,13 @@ public class MainSystemScript : MonoBehaviour
         
         readyButton.onClick.AddListener(OnReadyButtonClicked); // readyボタンにリスナーを追加
     }
+
+    public void ChangeGuideImage(int phase, bool isAttack=false)
+    {
+        int id = (isAttack ? attackGuideID : phase);
+        guideImage.sprite = guideSprites[id];
+    }
+
     
     void OnReadyButtonClicked()
     {

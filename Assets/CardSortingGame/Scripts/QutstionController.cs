@@ -102,6 +102,9 @@ public class QutstionController : MonoBehaviour
 
         // 背面色の変更
         questionBG.GetComponent<Image>().color = isAttacking ? attackingBGColor : originalBGColor;
+        
+        // ガイドの変更
+        networkSystem.mainSystemScript.ChangeGuideImage(NetworkSystem.phase, isAttacking);
     }
     
     // カード選択状態の切り替え関数
