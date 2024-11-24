@@ -13,8 +13,6 @@ public class QutstionController : MonoBehaviour
 {
     GameObject questionBG;
     private Transform cardPanel; // UIカードを配置するパネル
-    private Color originalBGColor;
-    private Color attackingBGColor = Color.red; // 攻撃時の色を指定
     
     private List<GameObject> selectedCards = new List<GameObject>();  // 選択されたカードのリスト
     private Color originalColor = Color.white;  // デフォルトのカードの色
@@ -32,6 +30,16 @@ public class QutstionController : MonoBehaviour
     public bool isNotQuestion = false;
     
     private TextMeshProUGUI instruction;
+    
+    [SerializeField] private Sprite questionQuestionBGSprite;  // 通常時のQuestionBGのスプライト
+    [SerializeField] private Sprite attackingQuestionBGSprite; // 攻撃時のQuestionBGのスプライト
+
+    [SerializeField] private Sprite questionSpellButtonSprite;  // 通常時のSpellButtonのスプライト
+    [SerializeField] private Sprite attackingSpellButtonSprite; // 攻撃時のSpellButtonのスプライト
+
+    private Image questionBGImage;    // QuestionBGのImage
+    private Image spellButtonImage;   // SpellButtonのImage
+
 
     void Start()
     {
@@ -42,8 +50,11 @@ public class QutstionController : MonoBehaviour
         cardPanel = GameObject.Find("QuestionCardPanel").transform;
         instruction = GameObject.Find("Text").GetComponent<TextMeshProUGUI>(); // 案内テキストを取得
         questionBG.SetActive(false);// 非表示
-        originalBGColor = questionBG.GetComponent<Image>().color;
-
+        
+        // Imageコンポーネントを取得
+        questionBGImage = questionBG.GetComponent<Image>();
+        spellButtonImage = spellButton.GetComponent<Image>();
+        
         confirmButton.GetComponent<Animator>().keepAnimatorStateOnDisable = true;
         
         // クリックイベント設定
@@ -53,11 +64,14 @@ public class QutstionController : MonoBehaviour
 
     public void StartQuestionPhase()
     {
-        instruction.text = isThreeSelect ? "カードを3枚選んでください" : "カードを2枚選んでください"; // 案内テキストの中身を変更
+        instruction.text = isThreeSelect ? "3" : "2"; // 案内テキストの中身を変更
         if(!isNotQuestion){
             questionBG.SetActive(true);
             confirmButton.gameObject.SetActive(false);
-            questionBG.GetComponent<Image>().color = originalBGColor; // 背面色の変更
+            
+            // 通常時のスプライトに初期化
+            questionBGImage.sprite = questionQuestionBGSprite;
+            spellButtonImage.sprite = questionSpellButtonSprite;
             
             cardPanel.GameObject().SetActive(true);
             cardsManager.PlaceCardsOnPanel(cardPanel,ToggleCardSelection);
@@ -84,8 +98,21 @@ public class QutstionController : MonoBehaviour
         isAttacking = !isAttacking;
         networkSystem.ToggleAttacked();
 
-        // 背面色の変更
-        questionBG.GetComponent<Image>().color = isAttacking ? attackingBGColor : originalBGColor;
+        // 背面の変更
+        if (isAttacking)
+        {
+            // 攻撃時のスプライトに変更
+            instruction.gameObject.SetActive(false);
+            questionBGImage.sprite = attackingQuestionBGSprite;
+            spellButtonImage.sprite = attackingSpellButtonSprite;
+        }
+        else
+        {
+            // 通常時のスプライトに戻す
+            instruction.gameObject.SetActive(true);
+            questionBGImage.sprite = questionQuestionBGSprite;
+            spellButtonImage.sprite = questionSpellButtonSprite;
+        }
         
         // ガイドの変更
         networkSystem.mainSystemScript.ChangeGuideImage(NetworkSystem.phase, isAttacking);
@@ -189,6 +216,7 @@ public class QutstionController : MonoBehaviour
             foreach (GameObject card in clonedCards) Destroy(card);
 
             // 背景のパネルを非表示に
+            instruction.gameObject.SetActive(true); // 攻撃時にsetActiveがfalseになっている場合でも、初期値に戻す
             questionBG.SetActive(false);
             cardPanel.GameObject().SetActive(false);
             
