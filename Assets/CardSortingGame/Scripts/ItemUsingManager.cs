@@ -296,22 +296,6 @@ public class ItemUsingManager : MonoBehaviour
         cardPanel.GameObject().SetActive(true);
         clonedCards = cardsManager.PlaceCardsOnPanel(cardPanel,ToggleCardSelection);
         
-        // clonedCards = cardsManager.CloneMyCardsAsUI();
-        // if(clonedCards == null)Debug.LogError("clonedCards are null!");
-
-        // キャンバスを探す
-        // Canvas canvas = GameObject.Find("ItemCanvas").GetComponent<Canvas>();
-            
-        // foreach(GameObject card in clonedCards)
-        // {
-        //     // キャンバスにカードを追加
-        //     card.transform.SetParent(canvas.transform);
-        //
-        //     // カードをボタンとして設定
-        //     Button cardButton = card.GetComponent<Button>();
-        //     cardButton.onClick.AddListener(() => ToggleCardSelection(card));
-        // }
-
         Debug.Log("カードと大小を選択してください");
 
         while(!confirmchecked){
@@ -399,22 +383,6 @@ public class ItemUsingManager : MonoBehaviour
         ItemSixBG.SetActive(true);//起動
         cardPanel.GameObject().SetActive(true);
         clonedCards = cardsManager.PlaceCardsOnPanel(cardPanel,ToggleCardSelection);
-        // clonedCards = cardsManager.CloneMyCardsAsUI();
-        // if(clonedCards == null)Debug.LogError("clonedCards are null!");
-
-        // // キャンバスを探す
-        // Canvas canvas = GameObject.Find("ItemCanvas").GetComponent<Canvas>();
-        //     
-        // foreach(GameObject card in clonedCards)
-        // {
-        //     // キャンバスにカードを追加
-        //     card.transform.SetParent(canvas.transform);
-        //
-        //     // カードをボタンとして設定
-        //     Button cardButton = card.GetComponent<Button>();
-        //     cardButton.onClick.AddListener(() => ToggleCardSelection(card));
-        // }
-
         Debug.Log("カードと数字を入力してください");
 
         while(!confirmchecked){
@@ -450,11 +418,17 @@ public class ItemUsingManager : MonoBehaviour
     void ToggleCardSelection(GameObject card){
         if(selectCard==card){
             selectCard=null;
-            card.GetComponent<Image>().color = Color.white;
+            cardsManager.DeselectCardUI(card); // カードを下げる
+            // card.GetComponent<Image>().color = Color.white;
         }else{
-            selectCard=card;
-            foreach (GameObject othercard in clonedCards)othercard.GetComponent<Image>().color = Color.white;
-            card.GetComponent<Image>().color = Color.red;
+            if(selectCard!=null){
+                // selectCard.GetComponent<Image>().color = Color.white;
+                cardsManager.DeselectCardUI(selectCard); // 元々選んでいたカードを下げる
+            }
+            selectCard = card;
+            cardsManager.SelectCardUI(card); // 新たに選んだカードをあげる
+            // card.GetComponent<Image>().color = Color.red;
+            // foreach (GameObject othercard in clonedCards)othercard.GetComponent<Image>().color = Color.white;
         }
     }
 

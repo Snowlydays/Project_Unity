@@ -11,10 +11,10 @@ using UnityEngine.SceneManagement;
 public class NetworkSystem : NetworkBehaviour
 {
     // フェーズごとの数字を変数で管理
-    const int initialPhase = 0;
-    const int itemPhase = 1;
-    const int questionPhase = 2;
-    const int itemUsingPhase = 3;
+    public const int initialPhase = 0;
+    public const int itemPhase = 1;
+    public const int questionPhase = 2;
+    public const int itemUsingPhase = 3;
     
     // フェーズを管理するNetWrokVariable
     private NetworkVariable<int> netphase = new NetworkVariable<int>(0);

@@ -58,25 +58,9 @@ public class QutstionController : MonoBehaviour
             questionBG.SetActive(true);
             confirmButton.gameObject.SetActive(false);
             questionBG.GetComponent<Image>().color = originalBGColor; // 背面色の変更
+            
             cardPanel.GameObject().SetActive(true);
-            // CardsManagerからクローンカードを取得
-            // GameObject[] clonedCards = cardsManager.CloneMyCardsAsUI();
-            // if(clonedCards == null)Debug.LogError("clonedCards are null!");
-
-            // キャンバスを探す
-            // Canvas canvas = GameObject.Find("QuestionCanvas").GetComponent<Canvas>();
-            
             cardsManager.PlaceCardsOnPanel(cardPanel,ToggleCardSelection);
-            
-            // foreach(GameObject card in clonedCards)
-            // {
-            // キャンバスにカードを追加
-            // card.transform.SetParent(canvas.transform);
-
-            // カードをボタンとして設定
-            // Button cardButton = card.GetComponent<Button>();
-            // cardButton.onClick.AddListener(() => ToggleCardSelection(card));
-            // }
         }else{
             //質問ができない場合はアイテム効果系bool変数を無効化してToggleReadyする。
             Debug.Log("相手のアイテム4の効果で質問ができない");
@@ -133,6 +117,7 @@ public class QutstionController : MonoBehaviour
     {
         // カードを選択状態にし、色を変更
         selectedCards.Add(card);
+        cardsManager.SelectCardUI(card);
         card.GetComponent<Image>().color = selectedColor;  // 色を変更
         Debug.Log("選択したカード枚数: "+selectedCards.Count);
     }
@@ -141,6 +126,7 @@ public class QutstionController : MonoBehaviour
     {
         // カードの選択を解除し、色を元に戻す
         selectedCards.Remove(card);
+        cardsManager.DeselectCardUI(card);
         card.GetComponent<Image>().color = originalColor;  // 元の色に戻す
     }
 

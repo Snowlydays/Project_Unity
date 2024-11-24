@@ -101,7 +101,8 @@ public class MainSystemScript : MonoBehaviour
 
     public void ChangeGuideImage(int phase, bool isAttack=false)
     {
-        int id = (isAttack ? attackGuideID : phase);
+        int id = (isAttack ? attackGuideID : phase); // 攻撃中ならば、そのガイドを表示
+        if (phase == NetworkSystem.itemUsingPhase) id = NetworkSystem.itemPhase; // ItemUsingPhaseの場合は、itemPhaseと同じGuideを表示
         guideImage.sprite = guideSprites[id];
     }
 

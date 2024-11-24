@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,7 +7,6 @@ using TMPro;
 using System.Linq;
 using Random = UnityEngine.Random;
 
-// using Vector2 = System.Numerics.Vector2;
 
 public class CardsManager : MonoBehaviour
 {
@@ -15,7 +15,10 @@ public class CardsManager : MonoBehaviour
     
     [SerializeField] private GameObject cardPrefab; // カードのプレハブ
     [SerializeField] private GameObject slotPrefab; // スロットのプレハブ
-    
+
+    private float selectionOffset = 30f; // 選択時の移動量
+    private Dictionary<GameObject, Vector3> originalCardPositions = new Dictionary<GameObject, Vector3>(); // 選択されたカードとその元の位置を保持するディクショナリ
+
     void Start()
     {
         networkSystem = FindObjectOfType<NetworkSystem>(); 
@@ -48,14 +51,9 @@ public class CardsManager : MonoBehaviour
             
             // カードにタグを追加
             clonedCard.tag = "ClonedCard";
-        
-            // UI用の適切な位置やサイズを設定
-            // clonedCard.transform.localScale = new Vector3(1.2f, 1.3f, 1f);  // スケールを調整
             
             // RectTransformを設定してUI要素にする
             clonedCard.AddComponent<RectTransform>();
-            // rectTransform.sizeDelta = new Vector2(100*(Screen.width / 1920f), 150*(Screen.height / 1080f)); // カードのサイズを指定
-            // rectTransform.anchoredPosition = new Vector2((570 + 130f * i)*(Screen.width / 1920f), 540*(Screen.height / 1080f)); // カードの位置を指定
         
             // Imageコンポーネントを追加してUI画像として表示
             clonedCard.AddComponent<Image>().sprite = card.cardObject.GetComponent<Image>().sprite; // 元のカードのスプライトを取得して設定
@@ -84,48 +82,70 @@ public class CardsManager : MonoBehaviour
             if (onClickAction != null)
             {
                 Button button = card.AddComponent<Button>();
-                button.onClick.AddListener(() => onClickAction(card));
+                button.onClick.AddListener(() => {
+                    onClickAction(card);
+                });
             }
         }
 
         return cards;
     }
     
-    
-    // myCardsのカードをクローンしてUI用のオブジェクトを生成
-    // public GameObject[] CloneMyCardsAsUI()
-    // {
-    //     List<GameObject> clonedCards = new List<GameObject>();
-    //
-    //     for(int i = 0; i < myCards.Count; i++)
-    //     {
-    //         CardClass card = myCards[i];
-    //         
-    //         // カードのゲームオブジェクトを複製
-    //         GameObject clonedCard = new GameObject("ClonedCard_" + card.cardNum);
-    //         
-    //         // カードにUI用の設定（例：ボタン、画像など）を追加
-    //         clonedCard.AddComponent<Button>();
-    //         clonedCard.tag = "ClonedCard";  // タグを設定
-    //
-    //         // UI用の適切な位置やサイズを設定
-    //         clonedCard.transform.localScale = new Vector3(1.2f, 1.3f, 1f);  // スケールを調整
-    //         // clonedCard.GetComponent<Image>().color = Color.white;  // 色をリセット
-    //         
-    //         // RectTransformを設定してUI要素にする
-    //         RectTransform rectTransform = clonedCard.AddComponent<RectTransform>();
-    //         rectTransform.sizeDelta = new Vector2(100*(Screen.width / 1920f), 150*(Screen.height / 1080f)); // カードのサイズを指定
-    //         rectTransform.anchoredPosition = new Vector2((570 + 130f * i)*(Screen.width / 1920f), 540*(Screen.height / 1080f)); // カードの位置を指定
-    //
-    //         // Imageコンポーネントを追加してUI画像として表示
-    //         Image image = clonedCard.AddComponent<Image>();
-    //         image.sprite = card.cardObject.GetComponent<Image>().sprite; // 元のカードのスプライトを取得して設定
-    //
-    //         clonedCards.Add(clonedCard);
-    //     }
-    //     return clonedCards.ToArray();
-    // }
+    public void SelectCardUI(GameObject card)
+    {
+        // カードの元の位置を記録
+        RectTransform rectTransform = card.GetComponent<RectTransform>();
+        if (!originalCardPositions.ContainsKey(card))
+        {
+            originalCardPositions.Add(card, rectTransform.anchoredPosition);
+        }
 
+        // 上に移動させるターゲット位置を計算
+        Vector2 targetPosition = rectTransform.anchoredPosition + new Vector2(0, selectionOffset);
+
+        // アニメーションを開始
+        StartCoroutine(MoveCard(card, targetPosition));
+
+        // 選択状態を示すために色を変更（必要に応じて）
+        card.GetComponent<Image>().color = Color.yellow;
+    }
+
+    public void DeselectCardUI(GameObject card)
+    {
+        // 元の位置を取得
+        if (originalCardPositions.ContainsKey(card))
+        {
+            Vector2 originalPosition = originalCardPositions[card];
+            RectTransform rectTransform = card.GetComponent<RectTransform>();
+
+            // アニメーションを開始
+            StartCoroutine(MoveCard(card, originalPosition));
+
+            // 元の位置を削除
+            originalCardPositions.Remove(card);
+        }
+
+        // 色を元に戻す（必要に応じて）
+        card.GetComponent<Image>().color = Color.white;
+    }
+
+    // Coroutineでカードを移動させる関数
+    private IEnumerator MoveCard(GameObject card, Vector2 targetPosition)
+    {
+        RectTransform rectTransform = card.GetComponent<RectTransform>();
+        Vector2 startPosition = rectTransform.anchoredPosition;
+        float currentTime = 0f;
+        float animationTime = 0.2f;
+
+        while (currentTime < animationTime)
+        {
+            rectTransform.anchoredPosition = Vector2.Lerp(startPosition, targetPosition, currentTime / animationTime);
+            currentTime += Time.deltaTime;
+            yield return null;
+        }
+        rectTransform.anchoredPosition = targetPosition;
+    }
+    
     // ランダムインデックス生成
     public int[] GenRandomIdx(int origin, int len)
     {
