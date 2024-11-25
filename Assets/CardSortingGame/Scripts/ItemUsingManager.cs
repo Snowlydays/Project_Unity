@@ -27,7 +27,8 @@ public class ItemUsingManager : MonoBehaviour
     GameObject ItemSixBG;
     GameObject ItemOneBG;
     GameObject selectCard;
-    private Transform cardPanel;
+    private Transform itemSixCardPanel;
+    private Transform itemOneCardPanel;
 
     GameObject smallerButton;
     GameObject largerButton;
@@ -57,6 +58,12 @@ public class ItemUsingManager : MonoBehaviour
         { 6, "エリクサー" },
     };
 
+    // パネルのサイズを調整する用の変数
+    [SerializeField] private float cardWidth;       // 各カードの幅
+    [SerializeField] private float cardSpacing;      // カード間のスペース
+    [SerializeField] private float paddingLeft;     // パネルの左余白
+    [SerializeField] private float paddingRight;    // パネルの右余白
+    
     void Start()
     {
         cardsManager = FindObjectOfType<CardsManager>();
@@ -65,7 +72,8 @@ public class ItemUsingManager : MonoBehaviour
         //各種UI初期化
         ItemSixBG = GameObject.Find("ItemSixBG");
         ItemOneBG = GameObject.Find("ItemOneBG");
-        cardPanel = GameObject.Find("ItemUsingCardPanel").transform;
+        itemSixCardPanel = GameObject.Find("ItemSixCardPanel").transform;
+        itemOneCardPanel = GameObject.Find("ItemOneCardPanel").transform;
 
         GameObject.Find("ConfirmButtonOne").GetComponent<Button>().onClick.AddListener(OnConfirmButtonClickedOne);
         GameObject.Find("ConfirmButtonSix").GetComponent<Button>().onClick.AddListener(OnConfirmButtonClickedSix);
@@ -81,7 +89,6 @@ public class ItemUsingManager : MonoBehaviour
 
         ItemSixBG.SetActive(false);
         ItemOneBG.SetActive(false);
-        cardPanel.GameObject().SetActive(false);
     }
 
     public void InputNumber()
@@ -300,8 +307,7 @@ public class ItemUsingManager : MonoBehaviour
     {
         //各種UIの起動
         ItemOneBG.SetActive(true);//起動
-        cardPanel.GameObject().SetActive(true);
-        clonedCards = cardsManager.PlaceCardsOnPanel(cardPanel,ToggleCardSelection);
+        clonedCards = cardsManager.PlaceCardsOnPanel(itemOneCardPanel,ToggleCardSelection, cardWidth, cardSpacing, paddingLeft, paddingRight);
         
         Debug.Log("カードと大小を選択してください");
 
@@ -354,7 +360,6 @@ public class ItemUsingManager : MonoBehaviour
         nowUsingItem=-1;
         confirmchecked=false;
         ItemOneBG.SetActive(false);
-        cardPanel.GameObject().SetActive(false);
     }
 
     // 番号からカードのインデックスを取得
@@ -388,8 +393,7 @@ public class ItemUsingManager : MonoBehaviour
     {
         //各種UIの起動
         ItemSixBG.SetActive(true);//起動
-        cardPanel.GameObject().SetActive(true);
-        clonedCards = cardsManager.PlaceCardsOnPanel(cardPanel,ToggleCardSelection);
+        clonedCards = cardsManager.PlaceCardsOnPanel(itemSixCardPanel,ToggleCardSelection, cardWidth, cardSpacing, paddingLeft, paddingRight);
         Debug.Log("カードと数字を入力してください");
 
         while(!confirmchecked){
@@ -421,7 +425,6 @@ public class ItemUsingManager : MonoBehaviour
         nowUsingItem=-1;
         confirmchecked=false;
         ItemSixBG.SetActive(false);//非表示
-        cardPanel.GameObject().SetActive(false);
     }
 
     void ToggleCardSelection(GameObject card){

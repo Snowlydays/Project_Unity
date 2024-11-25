@@ -39,8 +39,13 @@ public class QutstionController : MonoBehaviour
 
     private Image questionBGImage;    // QuestionBGのImage
     private Image spellButtonImage;   // SpellButtonのImage
-
-
+    
+    // パネルのサイズを調整する用の変数
+    [SerializeField] private float cardWidth;       // 各カードの幅
+    [SerializeField] private float cardSpacing;      // カード間のスペース
+    [SerializeField] private float paddingLeft;     // パネルの左余白
+    [SerializeField] private float paddingRight;    // パネルの右余白
+    
     void Start()
     {
         cardsManager = FindObjectOfType<CardsManager>();
@@ -74,7 +79,7 @@ public class QutstionController : MonoBehaviour
             spellButtonImage.sprite = questionSpellButtonSprite;
             
             cardPanel.GameObject().SetActive(true);
-            cardsManager.PlaceCardsOnPanel(cardPanel,ToggleCardSelection);
+            cardsManager.PlaceCardsOnPanel(cardPanel,ToggleCardSelection, cardWidth, cardSpacing, paddingLeft, paddingRight);
         }else{
             //質問ができない場合はアイテム効果系bool変数を無効化してToggleReadyする。
             Debug.Log("相手のアイテム4の効果で質問ができない");

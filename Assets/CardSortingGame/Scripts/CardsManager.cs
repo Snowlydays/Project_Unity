@@ -12,19 +12,21 @@ public class CardsManager : MonoBehaviour
 {
     public List<CardClass> myCards = new List<CardClass>(); // 手札のリスト
     private NetworkSystem networkSystem;
+    private MainSystemScript mainSystem;
     
     [SerializeField] private GameObject cardPrefab; // カードのプレハブ
     [SerializeField] private GameObject slotPrefab; // スロットのプレハブ
 
     private float selectionOffset = 30f; // 選択時の移動量
     private Dictionary<GameObject, Vector3> originalCardPositions = new Dictionary<GameObject, Vector3>(); // 選択されたカードとその元の位置を保持するディクショナリ
-
+    
     void Start()
     {
-        networkSystem = FindObjectOfType<NetworkSystem>(); 
-        MainSystemScript mainSystem = FindObjectOfType<MainSystemScript>();
-        GameObject[] cardObjects = mainSystem.GetMyCards(); // MainSystemScriptで生成されたカードを取得
+        networkSystem = FindObjectOfType<NetworkSystem>();
+        mainSystem = FindObjectOfType<MainSystemScript>();
         
+        GameObject[] cardObjects = mainSystem.GetMyCards(); // MainSystemScriptで生成されたカードを取得
+
         int[] idx = GenRandomIdx(1, cardObjects.Length); // シャッフルインデックスを生成
         
         // カードをリストに登録
@@ -63,16 +65,16 @@ public class CardsManager : MonoBehaviour
         return clonedCards.ToArray();
     }
     
+    
     // カードをパネルに配置するようのメソッド
-    public GameObject[] PlaceCardsOnPanel(Transform panel, Action<GameObject> onClickAction = null, bool isMySlot = false)
+    public GameObject[] PlaceCardsOnPanel(Transform panel, Action<GameObject> onClickAction, float _cardWidth, float _cardSpacing, float _paddingLeft, float _paddingRight)
     {
+        RectTransform panelRect = panel.GetComponent<RectTransform>(); // RectTransformを取得
+        AdjustPanelSize(panelRect,_cardWidth,_cardSpacing, _paddingLeft, _paddingRight);
+        
         GameObject[] cards = CloneMyCardsAsUI();
         for (int i = 0; i < cards.Length; i++)
         {
-            // スロット生成
-            // GameObject slot = Instantiate(slotPrefab, panel);
-            // slot.GetComponent<CardSlot>().isMySlot = isMySlot;
-        
             // スロット内にカードを作成
             GameObject card = cards[i];
             card.transform.SetParent(panel,false);
@@ -89,6 +91,14 @@ public class CardsManager : MonoBehaviour
         }
 
         return cards;
+    }
+    
+    // パネルの横幅のサイズを調整するためのメソッド
+    public void AdjustPanelSize(RectTransform panelRect, float cardWidth, float cardSpacing, float paddingLeft, float paddingRight)
+    {
+        // パネルの横幅を計算
+        float totalWidth = paddingLeft + paddingRight + (cardWidth * NetworkSystem.cardNum) + (cardSpacing * (NetworkSystem.cardNum - 1));
+        panelRect.sizeDelta = new Vector2(totalWidth, panelRect.sizeDelta.y);
     }
     
     public void SelectCardUI(GameObject card)
