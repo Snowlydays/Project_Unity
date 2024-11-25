@@ -16,6 +16,7 @@ public class PhaseManager : MonoBehaviour
     public const int ItemUsingPhase = 3;
 
     private NetworkSystem networkSystem;
+    private LogMenuController logMenuController;
 
     public Sprite itemSprite;
     public Sprite questionSprite;
@@ -25,6 +26,7 @@ public class PhaseManager : MonoBehaviour
     private void Start()
     {
         networkSystem = FindObjectOfType<NetworkSystem>();
+        logMenuController = FindObjectOfType<LogMenuController>();
         canvas = GameObject.Find("Canvas");
     }
 
@@ -38,7 +40,8 @@ public class PhaseManager : MonoBehaviour
     {
         Debug.Log($"PhaseManager.HandlePhaseChangeが実行されました");
 
-        networkSystem.informationManager.ClearInformationText();
+        networkSystem.informationManager.ClearInformationText(); //infoをクリア
+        logMenuController.CloseDrawer(); // フェイズが変わったらログタブを閉じる
 
         //ここで足なみを揃える
         while(networkSystem.hostWaiting!=0 || networkSystem.clientWaiting!=0){

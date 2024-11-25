@@ -19,6 +19,8 @@ public class LogMenuController : MonoBehaviour
     [SerializeField] private RectTransform drawerPanel;
     [SerializeField] private float animationDuration = 0.5f; // アニメーションの時間
 
+    public bool activeButton = true;
+
     private NetworkSystem networkSystem;
 
     void Start()
