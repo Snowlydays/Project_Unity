@@ -324,6 +324,12 @@ MonoBehaviour:
   isGetDiff: 0
   isThreeSelect: 0
   isNotQuestion: 0
+  questionQuestionBGSprite: {fileID: 0}
+  attackingQuestionBGSprite: {fileID: 0}
+  questionSpellButtonSprite: {fileID: 0}
+  attackingSpellButtonSprite: {fileID: 0}
+  cardSound: {fileID: 8300000, guid: 0cd53b04134b147f0a1d548279590773, type: 3}
+  cardSoundObject: {fileID: 8952582336682380940, guid: 5e86fc38c315040b0949fc764056978c, type: 3}
 --- !u!1 &8917476115376455248
 GameObject:
   m_ObjectHideFlags: 0

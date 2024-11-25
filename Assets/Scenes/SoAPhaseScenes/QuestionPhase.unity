@@ -675,6 +675,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8828475109760790770, guid: 89ae0cdfc7df548b3964f552be417ba0, type: 3}
+      propertyPath: cardSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 6f90b13c2031a4883b2f8622af356dc7, type: 3}
+    - target: {fileID: 8828475109760790770, guid: 89ae0cdfc7df548b3964f552be417ba0, type: 3}
       propertyPath: cardWidth
       value: 170
       objectReference: {fileID: 0}
@@ -683,13 +687,29 @@ PrefabInstance:
       value: 240
       objectReference: {fileID: 0}
     - target: {fileID: 8828475109760790770, guid: 89ae0cdfc7df548b3964f552be417ba0, type: 3}
+      propertyPath: SoundObject
+      value: 
+      objectReference: {fileID: 8952582336682380940, guid: 5e86fc38c315040b0949fc764056978c, type: 3}
+    - target: {fileID: 8828475109760790770, guid: 89ae0cdfc7df548b3964f552be417ba0, type: 3}
+      propertyPath: cancelSound
+      value: 
+      objectReference: {fileID: 8300000, guid: c9eb5b79b814b44be9550b25e97b128a, type: 3}
+    - target: {fileID: 8828475109760790770, guid: 89ae0cdfc7df548b3964f552be417ba0, type: 3}
       propertyPath: cardSpacing
       value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 8828475109760790770, guid: 89ae0cdfc7df548b3964f552be417ba0, type: 3}
+      propertyPath: decideSound
+      value: 
+      objectReference: {fileID: 8300000, guid: ee50a08976b8c4329b7e3ddc170296cc, type: 3}
+    - target: {fileID: 8828475109760790770, guid: 89ae0cdfc7df548b3964f552be417ba0, type: 3}
       propertyPath: spellButton
       value: 
       objectReference: {fileID: 194469543}
+    - target: {fileID: 8828475109760790770, guid: 89ae0cdfc7df548b3964f552be417ba0, type: 3}
+      propertyPath: confirmSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 6c4f139faedb544819dbc708a03edf9a, type: 3}
     - target: {fileID: 8828475109760790770, guid: 89ae0cdfc7df548b3964f552be417ba0, type: 3}
       propertyPath: confirmButton
       value: 

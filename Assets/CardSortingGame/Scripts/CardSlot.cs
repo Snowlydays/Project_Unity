@@ -8,6 +8,9 @@ public class CardSlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
     private Canvas canvas;
     private Image slotImage;
     public bool isMySlot = false; // 自分のスロットかどうかを示すフラグ
+
+    public AudioClip cardSound;
+    public GameObject cardSoundObject;
     
     void Awake()
     {
@@ -36,6 +39,8 @@ public class CardSlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
             {
                 // スロットに他のカードがある場合は、スワップ処理を行う
                 Transform currentCard = dropSlot.GetChild(0);
+                GameObject soundobj=Instantiate(cardSoundObject);
+                soundobj.GetComponent<PlaySound>().PlaySE(cardSound);
                 if (currentCard != droppedCard.transform)
                 {
                     // 既存のカードを元のスロットにアニメーションで移動

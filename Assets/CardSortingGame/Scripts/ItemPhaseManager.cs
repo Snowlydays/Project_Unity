@@ -31,6 +31,11 @@ public class ItemPhaseManager : MonoBehaviour
     [SerializeField] private Color toggleOffColor = Color.white; // トグルがオフの時の色
 
     private NetworkSystem networkSystem;
+
+    public AudioClip decideSound;
+    public AudioClip cancelSound;
+    public AudioClip confirmSound;
+    public GameObject SoundObject;
     
     void Awake()
     {
@@ -127,6 +132,8 @@ public class ItemPhaseManager : MonoBehaviour
     private void OnConfirmButtonClicked()
     {
         Debug.Log("決定ボタンがクリックされた");
+        GameObject soundobj=Instantiate(SoundObject);
+        soundobj.GetComponent<PlaySound>().PlaySE(confirmSound);
         foreach (int itemIdx in selectedItems)
         {
             networkSystem.ChangeItems(itemIdx,false);
@@ -245,6 +252,8 @@ public class ItemPhaseManager : MonoBehaviour
             if (!selectedItems.Contains(itemIdx))
             {
                 Debug.Log($"アイテム{itemIdx} を選択");
+                GameObject soundobj=Instantiate(SoundObject);
+                soundobj.GetComponent<PlaySound>().PlaySE(decideSound);
                 selectedItems.Add(itemIdx);
             }
         }
@@ -253,6 +262,8 @@ public class ItemPhaseManager : MonoBehaviour
             if (selectedItems.Contains(itemIdx))
             {
                 Debug.Log($"アイテム{itemIdx} の選択を解除");
+                GameObject soundobj=Instantiate(SoundObject);
+                soundobj.GetComponent<PlaySound>().PlaySE(cancelSound);
                 selectedItems.Remove(itemIdx);
             }
         }

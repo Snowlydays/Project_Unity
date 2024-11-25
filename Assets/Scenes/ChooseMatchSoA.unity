@@ -1025,6 +1025,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0dd6b155fa26242fcae0f8397c4af4b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  decideSound: {fileID: 8300000, guid: ee50a08976b8c4329b7e3ddc170296cc, type: 3}
+  SoundObject: {fileID: 8952582336682380940, guid: 5e86fc38c315040b0949fc764056978c, type: 3}
 --- !u!4 &2002530838
 Transform:
   m_ObjectHideFlags: 0

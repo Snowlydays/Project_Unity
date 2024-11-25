@@ -33,6 +33,9 @@ public class MainSystemScript : MonoBehaviour
     [SerializeField] private Image guideImage; // ガイドを表示するimageオブジェクト
     [SerializeField] private Sprite[] guideSprites = new Sprite[PHASE_NUM]; // ガイド用の画像を保存する配列
 
+    public AudioClip confirmSound;
+    public GameObject SoundObject;
+    
     public GameObject[] GetMyCards()
     {
         return mycard;
@@ -115,6 +118,8 @@ public class MainSystemScript : MonoBehaviour
         if(NetworkSystem.phase==0){
             networkSystem.ToggleReady();
             readyButton.gameObject.GetComponent<Animator>().SetBool("blStarted", true);
+            GameObject soundobj=Instantiate(SoundObject);
+            soundobj.GetComponent<PlaySound>().PlaySE(confirmSound);
         }
     }
     

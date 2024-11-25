@@ -45,7 +45,13 @@ public class QutstionController : MonoBehaviour
     [SerializeField] private float cardSpacing;      // カード間のスペース
     [SerializeField] private float paddingLeft;     // パネルの左余白
     [SerializeField] private float paddingRight;    // パネルの右余白
-    
+
+    public AudioClip cardSound;
+    public AudioClip confirmSound;
+    public AudioClip decideSound;
+    public AudioClip cancelSound;
+    public GameObject SoundObject;
+
     void Start()
     {
         cardsManager = FindObjectOfType<CardsManager>();
@@ -108,6 +114,8 @@ public class QutstionController : MonoBehaviour
         if (isAttacking)
         {
             // 攻撃時のスプライトに変更
+            GameObject soundobj=Instantiate(SoundObject);
+            soundobj.GetComponent<PlaySound>().PlaySE(decideSound);
             instruction.gameObject.SetActive(false);
             questionBGImage.sprite = attackingQuestionBGSprite;
             spellButtonImage.sprite = attackingSpellButtonSprite;
@@ -115,6 +123,8 @@ public class QutstionController : MonoBehaviour
         else
         {
             // 通常時のスプライトに戻す
+            GameObject soundobj=Instantiate(SoundObject);
+            soundobj.GetComponent<PlaySound>().PlaySE(cancelSound);
             instruction.gameObject.SetActive(true);
             questionBGImage.sprite = questionQuestionBGSprite;
             spellButtonImage.sprite = questionSpellButtonSprite;
@@ -149,6 +159,9 @@ public class QutstionController : MonoBehaviour
     void SelectCard(GameObject card)
     {
         // カードを選択状態にし、色を変更
+        GameObject soundobj=Instantiate(SoundObject);
+        soundobj.GetComponent<PlaySound>().PlaySE(cardSound);
+        
         selectedCards.Add(card);
         cardsManager.SelectCardUI(card);
         card.GetComponent<Image>().color = selectedColor;  // 色を変更
@@ -158,6 +171,9 @@ public class QutstionController : MonoBehaviour
     void DeselectCard(GameObject card)
     {
         // カードの選択を解除し、色を元に戻す
+
+        GameObject soundobj=Instantiate(SoundObject);
+        soundobj.GetComponent<PlaySound>().PlaySE(cancelSound);
         selectedCards.Remove(card);
         cardsManager.DeselectCardUI(card);
         card.GetComponent<Image>().color = originalColor;  // 元の色に戻す
@@ -211,6 +227,8 @@ public class QutstionController : MonoBehaviour
                 }
             }
             // 比較後に選択状態をリセット
+            GameObject soundobj=Instantiate(SoundObject);
+            soundobj.GetComponent<PlaySound>().PlaySE(confirmSound);
             foreach (GameObject card in selectedCards)
             {
                 card.GetComponent<Image>().color = originalColor; // 色を元に戻す

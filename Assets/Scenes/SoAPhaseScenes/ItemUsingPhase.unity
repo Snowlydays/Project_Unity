@@ -507,6 +507,11 @@ MonoBehaviour:
   cardSpacing: 12.5
   paddingLeft: 10
   paddingRight: 10
+  cardSound: {fileID: 8300000, guid: 6f90b13c2031a4883b2f8622af356dc7, type: 3}
+  confirmSound: {fileID: 8300000, guid: 6c4f139faedb544819dbc708a03edf9a, type: 3}
+  decideSound: {fileID: 8300000, guid: ee50a08976b8c4329b7e3ddc170296cc, type: 3}
+  cancelSound: {fileID: 8300000, guid: c9eb5b79b814b44be9550b25e97b128a, type: 3}
+  SoundObject: {fileID: 8952582336682380940, guid: 5e86fc38c315040b0949fc764056978c, type: 3}
 --- !u!4 &441501307
 Transform:
   m_ObjectHideFlags: 0

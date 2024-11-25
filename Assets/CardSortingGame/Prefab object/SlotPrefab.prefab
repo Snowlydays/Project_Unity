@@ -89,3 +89,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isMySlot: 0
+  cardSound: {fileID: 8300000, guid: 6f90b13c2031a4883b2f8622af356dc7, type: 3}
+  cardSoundObject: {fileID: 8952582336682380940, guid: 5e86fc38c315040b0949fc764056978c, type: 3}
