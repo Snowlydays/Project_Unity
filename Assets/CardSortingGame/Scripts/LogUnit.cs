@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class LogUnit : MonoBehaviour
+public class LogUnit
 {
     private LogMenuController logMenuController;
     public bool isMyLog;
@@ -32,15 +33,21 @@ public class LogUnit : MonoBehaviour
 
     public LogUnit(bool isMyLog, int messageNum)
     {
+        logMenuController = Object.FindObjectOfType<LogMenuController>();
         this.isMyLog = isMyLog;
-        if(isMyLog)
+        if(this.isMyLog)
         {
-            this.logSprite = logMenuController.myLogSprites[messageNum];
+            if(logMenuController == null) Debug.Log("controller is null");
+            if(logMenuController.myLogPrefab == null) Debug.Log("prefab is null");
+            if(logMenuController.content == null) Debug.Log("content is null");
+            logObject = Object.Instantiate(logMenuController.myLogPrefab, logMenuController.content.transform.parent);
+            logObject.transform.Find("Image").GetComponent<Image>().sprite = logMenuController.myLogSprites[messageNum];
+        }
+        else
+        {
+            logObject = Object.Instantiate(logMenuController.opponentLogPrefab, logMenuController.content.transform.parent);
+            logObject.transform.Find("Image").GetComponent<Image>().sprite = logMenuController.opponentLogSprites[messageNum];
         }
     }
 
-    void Start()
-    {
-        logMenuController = FindObjectOfType<LogMenuController>();
-    }
 }

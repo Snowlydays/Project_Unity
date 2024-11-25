@@ -4112,6 +4112,7 @@ MonoBehaviour:
   allLogs: []
   myLogs: []
   opponentLogs: []
+  content: {fileID: 2181992592892721769}
   myLogPrefab: {fileID: 460533548226646018, guid: 55b1075aee0244eafbc8dc380f15a2b9, type: 3}
   opponentLogPrefab: {fileID: 8652786290552291129, guid: 1b050a8f9d4ea45f897073da6c5917a9, type: 3}
   myLogSprites:

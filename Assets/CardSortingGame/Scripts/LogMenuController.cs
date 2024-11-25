@@ -7,10 +7,11 @@ using System.Collections.Generic;
 public class LogMenuController : MonoBehaviour
 {
     public Button myTabButton, opponentTabButton, closeButton;
-    public List<string> allLogs = new List<string>();
-    public List<string> myLogs = new List<string>();
-    public List<string> opponentLogs = new List<string>();
+    public List<LogUnit> allLogs = new List<LogUnit>();
+    public List<LogUnit> myLogs = new List<LogUnit>();
+    public List<LogUnit> opponentLogs = new List<LogUnit>();
 
+    [SerializeField] public GameObject content;
     [SerializeField] public GameObject myLogPrefab;
     [SerializeField] public GameObject opponentLogPrefab;
 
@@ -132,7 +133,7 @@ public class LogMenuController : MonoBehaviour
         }
     }
 
-    private void DisplayLogEntries(List<string> entries)
+    private void DisplayLogEntries(List<LogUnit> entries)
     {
         // contentText.text = string.Join("\n", entries);
     }
