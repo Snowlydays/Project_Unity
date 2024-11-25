@@ -6,33 +6,55 @@ using System.Collections.Generic;
 
 public class LogMenuController : MonoBehaviour
 {
-    public Button allTabButton, myselfTabButton, opponentTabButton, closeButton;
+    public Button myTabButton, opponentTabButton, closeButton;
     public TMP_Text contentText;
 
     public List<string> allLogs = new List<string>();
     public List<string> myLogs = new List<string>();
     public List<string> opponentLogs = new List<string>();
 
+    [SerializeField] private Sprite[] myLogSprites = new Sprite[18];
+    [SerializeField] private Sprite[] opponentLogSprites = new Sprite[18];
+
     public enum TabType { All, Myself, Opponent }
     private TabType currentTab = TabType.All;
 
     [SerializeField] private RectTransform drawerPanel;
-    [SerializeField] private float animationDuration = 0.5f; // アニメーションの時間
+    [SerializeField] private float animationDuration = 0.3f; // アニメーションの時間
+
+    [SerializeField] private Sprite myButtonSprite;
+    [SerializeField] private Sprite opponentButtonSprite;
+    [SerializeField] private Sprite pushedMyButtonSprite;
+    [SerializeField] private Sprite pushedOpponentButtonSprite;
+
+    private Image myButtonImage;
+    private Image opponentButtonImage;
+
+    private RectTransform myButtonTransform;
+    private RectTransform opponentButtonTransform;
+
+    private Vector2 baseSize = new Vector2(646, 414);
+    private Vector2 pushedSize = new Vector2(646, 375);
 
     public bool activeButton = true;
+    private bool myButtonPushed = false;
+    private bool opponentButtonPushed = false;
 
     private NetworkSystem networkSystem;
 
     void Start()
     {
-        allTabButton.onClick.AddListener(() => SwitchTab(TabType.All));
-        myselfTabButton.onClick.AddListener(() => SwitchTab(TabType.Myself));
-        opponentTabButton.onClick.AddListener(() => SwitchTab(TabType.Opponent));
+        myButtonImage = myTabButton.GetComponent<Image>();
+        opponentButtonImage = opponentTabButton.GetComponent<Image>();
+
+        myButtonTransform = myTabButton.GetComponent<RectTransform>();
+        opponentButtonTransform = opponentTabButton.GetComponent<RectTransform>();
+        
+        myTabButton.onClick.AddListener(() => ManageTabState(TabType.Myself));
+        opponentTabButton.onClick.AddListener(() => ManageTabState(TabType.Opponent));
         closeButton.onClick.AddListener(CloseDrawer);
 
-
         drawerPanel.anchoredPosition = new Vector2(-drawerPanel.rect.width, drawerPanel.anchoredPosition.y);
-
         networkSystem = FindObjectOfType<NetworkSystem>();
     }
 
@@ -41,6 +63,54 @@ public class LogMenuController : MonoBehaviour
         if(t == TabType.All)allLogs.Add(str);
         else if(t == TabType.Myself)myLogs.Add(str);
         else if(t == TabType.Opponent)opponentLogs.Add(str);
+    }
+
+    private void ManageTabState(TabType pushedButton)
+    {
+        if(pushedButton == TabType.Myself)
+        {
+            myButtonPushed = !myButtonPushed;
+            opponentButtonPushed = false;
+        }
+        else if(pushedButton == TabType.Opponent)
+        {
+            opponentButtonPushed = !opponentButtonPushed;
+            myButtonPushed = false;
+        }
+
+        if(myButtonPushed)
+        {
+            myButtonImage.sprite = pushedMyButtonSprite;
+            myButtonTransform.sizeDelta = pushedSize;
+        }
+        else
+        {
+            myButtonImage.sprite = myButtonSprite;
+            myButtonTransform.sizeDelta = baseSize;
+        }
+        if(opponentButtonPushed)
+        {
+            opponentButtonImage.sprite = pushedOpponentButtonSprite;
+            opponentButtonTransform.sizeDelta = pushedSize;
+        }
+        else
+        {
+            opponentButtonImage.sprite = opponentButtonSprite;
+            opponentButtonTransform.sizeDelta = baseSize;
+        }
+
+        if(!myButtonPushed && !opponentButtonPushed)
+        {
+            SwitchTab(TabType.All);
+        }
+        else if(myButtonPushed)
+        {
+            SwitchTab(TabType.Myself);
+        }
+        else if(opponentButtonPushed)
+        {
+            SwitchTab(TabType.Opponent);
+        }
     }
 
     private void SwitchTab(TabType tab)
@@ -63,7 +133,7 @@ public class LogMenuController : MonoBehaviour
 
     private void DisplayLogEntries(List<string> entries)
     {
-        contentText.text = string.Join("\n", entries);
+        // contentText.text = string.Join("\n", entries);
     }
     
     public void CloseDrawer()
