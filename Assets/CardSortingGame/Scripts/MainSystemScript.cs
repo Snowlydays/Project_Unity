@@ -48,17 +48,30 @@ public class MainSystemScript : MonoBehaviour
 
     void Awake(){
         networkSystem = FindObjectOfType<NetworkSystem>();
+        cardsManager = FindObjectOfType<CardsManager>();
     }
 
+    // パネルのサイズを調整する用の変数
+    [SerializeField] private float cardWidth;       // 各カードの幅
+    [SerializeField] private float cardSpacing;      // カード間のスペース
+    [SerializeField] private float paddingLeft;     // パネルの左余白
+    [SerializeField] private float paddingRight;    // パネルの右余白
+    
     void Start()
     {
         Debug.Log("ゲームスタート");
         // ボタンのImageコンポーネントを取得
         buttonImage = readyButton.GetComponent<Image>();
     
-        // 初期状態の画像を設定（未準備状態）
+        // 初期状態の画像を設定
         UpdateButtonImage(false);
         if(networkSystem != null)networkSystem.OnLocalReadyStateChanged += UpdateButtonImage;
+        
+        // パネルのサイズ調整
+        RectTransform myCardPanelRect = myCardPanel.GetComponent<RectTransform>();
+        RectTransform otherCardPanelRect = otherCardPanel.GetComponent<RectTransform>();
+        cardsManager.AdjustPanelSize(myCardPanelRect,cardWidth,cardSpacing,paddingLeft,paddingRight);
+        cardsManager.AdjustPanelSize(otherCardPanelRect,cardWidth,cardSpacing,paddingLeft,paddingRight);
         
         // 自分のスロット、カード生成
         for (int i = 0; i < CARD_NUM; i++)
@@ -72,10 +85,6 @@ public class MainSystemScript : MonoBehaviour
             mycard[i] = Instantiate(CardPrefab, mySlots[i].transform);
             mycard[i].GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
             
-            // カードの色をわかりやすいように変更
-            // float hue = i / (float)CARD_NUM;
-            // mycard[i].GetComponent<Image>().color = Color.HSVToRGB(hue, 0.8f, 0.9f);
-
             // DraggableCard スクリプトを取得してドラッグ"可能"に設定
             DraggableCard draggable = mycard[i].GetComponent<DraggableCard>();
             draggable.isDraggable = true;
