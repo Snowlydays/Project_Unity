@@ -32,7 +32,7 @@ public class NetworkSystem : NetworkBehaviour
     private NetworkVariable<int> netIsHostWaiting = new NetworkVariable<int>(0);
     private NetworkVariable<int> netIsClientWaiting = new NetworkVariable<int>(0);
 
-    public static int cardNum = 7;// 盤面上にあるカードの枚数
+    public static int cardNum = 5;// 盤面上にあるカードの枚数
     private int ITEM_NUM = 6; // ゲーム内のアイテム数
 
     // カードのNetworkList

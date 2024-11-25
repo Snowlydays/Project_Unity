@@ -12,7 +12,7 @@ public class MainSystemScript : MonoBehaviour
     private NetworkSystem networkSystem;
     private CardsManager cardsManager;
 
-    private const int CARD_NUM = 7;
+    private static readonly int CARD_NUM = NetworkSystem.cardNum;
     private GameObject[] mycard = new GameObject[CARD_NUM];//自分の手札
     private GameObject[] othercard = new GameObject[CARD_NUM];//相手の手札
     private GameObject[] mySlots = new GameObject[CARD_NUM]; // スロットを保持する配列
