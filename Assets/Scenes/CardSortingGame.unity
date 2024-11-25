@@ -1009,6 +1009,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: b41c6ac31799f444d90794be83e67cd3, type: 3}
   - {fileID: 21300000, guid: d820dc5e737e146f8b654020f0a77076, type: 3}
   - {fileID: 21300000, guid: 2d817e42d2d474a8f86966de959d9cb8, type: 3}
+  confirmSound: {fileID: 8300000, guid: 6c4f139faedb544819dbc708a03edf9a, type: 3}
+  SoundObject: {fileID: 8952582336682380940, guid: 5e86fc38c315040b0949fc764056978c, type: 3}
 --- !u!212 &534725844
 SpriteRenderer:
   m_ObjectHideFlags: 0
