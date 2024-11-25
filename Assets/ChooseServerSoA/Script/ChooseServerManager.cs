@@ -13,6 +13,7 @@ using Unity.Netcode.Transports.UTP;
 using Unity.Networking.Transport.Relay;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class ChooseServerManager : NetworkBehaviour
 {
@@ -23,7 +24,10 @@ public class ChooseServerManager : NetworkBehaviour
     private TextMeshProUGUI codeText;
 
     GameObject waitObj;
-
+    GameObject joinButton;
+    private GameObject connectPanel;
+    private Button roomJoinButtonComponent;
+    
     private const string PASSWORD_CHARS = 
         "0123456789abcdefghijklmnopqrstuvwxyz";
 
@@ -59,7 +63,15 @@ public class ChooseServerManager : NetworkBehaviour
         inputField = GameObject.Find("InputText").GetComponent<TMP_InputField>();
 
         waitObj = GameObject.Find("ConnectWaiting");
+        joinButton = GameObject.Find("RoomJoinButton");
+        connectPanel = GameObject.Find("ConnectPanel");
 
+        if (joinButton != null)
+        {
+            roomJoinButtonComponent = joinButton.GetComponent<Button>();
+            if (roomJoinButtonComponent != null)roomJoinButtonComponent.onClick.AddListener(OnRoomJoinButtonClicked);
+        }
+        
         //サーバーにクライアントが接続したら実行されるメソッド
         //注意として、ホストは「サーバーでもありクライアントでもある」という立ち位置なので
         //ホストが接続を開始した場合もこれが実行される
@@ -67,14 +79,22 @@ public class ChooseServerManager : NetworkBehaviour
         //基本的に自分がホストかクライアントかを識別したい場合は
         //IsServerを使うといいかも
         NetworkManager.Singleton.OnClientConnectedCallback += ClientConnected;
-
-        waitObj.SetActive(false);
-
+        
         GameObject codeTextObject = GameObject.Find("JoinCodeText");//sceneからjoincodeを表示するテキストを取得
-            if (codeTextObject != null)
-                codeText = codeTextObject.GetComponent<TextMeshProUGUI>();
+        if (codeTextObject != null) codeText = codeTextObject.GetComponent<TextMeshProUGUI>();
+        
+        waitObj.SetActive(false);
+        connectPanel.SetActive(false);
     }
 
+    private void OnRoomJoinButtonClicked()
+    {
+        if (connectPanel != null)
+        {
+            connectPanel.SetActive(true);
+        }
+    }
+    
     private void ClientConnected(ulong clientId)
     {
         /*
@@ -131,7 +151,7 @@ public class ChooseServerManager : NetworkBehaviour
 
                 //Debug.Log(joinCode);
 
-                codeText.text=$"JoinCode: {joinCode} 対戦相手と共有してください";
+                codeText.text=$"{joinCode}";
 
                 NetworkManager.Singleton.StartHost();
 

@@ -2656,7 +2656,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   informationText: {fileID: 0}
   questionResult: 
-  isTextAdded: 0
 --- !u!1 &1844511469
 GameObject:
   m_ObjectHideFlags: 0
