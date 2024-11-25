@@ -48,6 +48,15 @@ public class ItemUsingManager : MonoBehaviour
 
     public GameObject itemUseCanvas;
 
+    public static Dictionary<int, string> itemNameDict = new Dictionary<int, string> {
+        { 1, "オーブ" },
+        { 2, "レンズ" },
+        { 3, "ミラー" },
+        { 4, "鎖" },
+        { 5, "天秤" },
+        { 6, "エリクサー" },
+    };
+
     void Start()
     {
         cardsManager = FindObjectOfType<CardsManager>();
@@ -156,15 +165,15 @@ public class ItemUsingManager : MonoBehaviour
         if(otherlist.Contains(3)){
             //もし相手がアイテム4を持っていたら、質問不可能bool値をtrueにする。
             networkSystem.questionController.isNotQuestion=true;
-            networkSystem.informationManager.AddInformationText("相手のアイテム効果により質問できません!");
+            networkSystem.informationManager.AddInformationText($"相手の{ItemUsingManager.itemNameDict[4]}により質問できません!");
         }
     }
 
     IEnumerator ItemUseAwaiting(){
         foreach(int item in mylist){
             nowUsingItem=item;
-            Debug.Log($"アイテム{item+1}を使用しました");
-            networkSystem.Log($"アイテム{item+1}を使用しました");
+            Debug.Log($"{itemNameDict[item+1]}を使用しました");
+            networkSystem.Log($"{itemNameDict[item+1]}を使用しました");
             ApplyItemEffect(item);
             //アイテム処理が終わったらnowUsingItem=-1;にして次のアイテム処理に移行させる。
             yield return new WaitUntil(() => nowUsingItem==-1);
@@ -396,14 +405,14 @@ public class ItemUsingManager : MonoBehaviour
 
         if(cardNumber>chooseNumber){
             //カードの値より入力した値が大きかった時
-            Debug.Log($"カードの数値は{chooseNumber}より大きいです");
-            networkSystem.Log($"カードの数値は{chooseNumber}より大きいです");
-            networkSystem.informationManager.AddQuestionResult($"カードの数値は{chooseNumber}より大きいです");
+            Debug.Log($"{itemNameDict[6]}の効果:カードの数値は{chooseNumber}より大きいです");
+            networkSystem.Log($"{itemNameDict[6]}の効果:カードの数値は{chooseNumber}より大きいです");
+            networkSystem.informationManager.AddQuestionResult($"{itemNameDict[2]}の効果:選んだカードの数値は{chooseNumber}より大きいです");
         }else{
             //入力した値がカードの値以下だった時
-            Debug.Log($"カードの数値は{chooseNumber}以下です");
-            networkSystem.Log($"カードの数値は{chooseNumber}以下です");
-            networkSystem.informationManager.AddQuestionResult($"カードの数値は{chooseNumber}以下です");
+            Debug.Log($"{itemNameDict[6]}の効果:カードの数値は{chooseNumber}以下です");
+            networkSystem.Log($"{itemNameDict[6]}の効果:カードの数値は{chooseNumber}以下です");
+            networkSystem.informationManager.AddQuestionResult($"{itemNameDict[2]}の効果:選んだカードの数値は{chooseNumber}以下です");
         }
 
         foreach (GameObject card in clonedCards) Destroy(card);
