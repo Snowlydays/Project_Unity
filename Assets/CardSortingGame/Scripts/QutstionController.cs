@@ -257,13 +257,13 @@ public class QutstionController : MonoBehaviour
             int Diff=0;
             Diff=Mathf.Abs(leftName[leftName.Length - 1] - rightName[rightName.Length - 1]);
 
-            Debug.Log("カードの差は"+Diff.ToString()+"です");
-            networkSystem.Log("カードの差は"+Diff.ToString()+"です");
-            informationText = informationText + "\nカードの差は" + Diff.ToString() + "です";
+            Debug.Log($"{ItemUsingManager.itemNameDict[2]}の効果:カードの差は"+Diff.ToString()+"です");
+            networkSystem.Log($"{ItemUsingManager.itemNameDict[2]}の効果:カードの差は"+Diff.ToString()+"です");
+            informationText = informationText + $"\n{ItemUsingManager.itemNameDict[2]}の効果:カードの差は" + Diff.ToString() + "です";
 
             isGetDiff=false;
         }
-        networkSystem.informationManager.SetQuestionResult(informationText);
+        networkSystem.informationManager.AddQuestionResult(informationText);
         networkSystem.Log(informationText);
         return 0;
     }
@@ -319,9 +319,9 @@ public class QutstionController : MonoBehaviour
             right="middle";
         }
 
-        Debug.Log("Left:"+left+" middle:"+middle+" right:"+right);
-        networkSystem.Log("左:"+left+" 中:"+middle+" 右:"+right);
-        networkSystem.informationManager.SetQuestionResult("左:"+left+" 中:"+middle+" 右:"+right);
+        Debug.Log($"{ItemUsingManager.itemNameDict[5]}の効果:"+"Left:"+left+" middle:"+middle+" right:"+right);
+        networkSystem.Log($"{ItemUsingManager.itemNameDict[5]}の効果:"+"左:"+left+" 中:"+middle+" 右:"+right);
+        networkSystem.informationManager.AddQuestionResult($"{ItemUsingManager.itemNameDict[5]}の効果:"+"左:"+left+" 中:"+middle+" 右:"+right);
         return 0;
     }
 }
