@@ -334,6 +334,9 @@ public class ItemUsingManager : MonoBehaviour
 
         if(startIndex==-1)Debug.LogError("カードが見つかりませんでした");
 
+        // 初期インデックスを保存
+        int initialIndex = startIndex;
+        
         if(chooseCompareTo==1){
             //大選択
             while(startIndex<NetworkSystem.cardNum-1){
@@ -359,6 +362,24 @@ public class ItemUsingManager : MonoBehaviour
             }
         }
 
+        // 最終インデックスを保存
+        int finalIndex = startIndex;
+
+        // 移動量を計算
+        int distanceMoved = finalIndex - initialIndex;
+
+        // 移動方向と移動量をinfoTextでプレイヤーへ通知
+        if(distanceMoved != 0)
+        {
+            networkSystem.informationManager.AddQuestionResult($"{itemNameDict[1]}の効果: 選んだ{initialIndex + 1}番目のカードは{finalIndex + 1}番目まで移動しました。");
+            Debug.Log($"{itemNameDict[1]}の効果: 選んだ{initialIndex + 1}番目のカードは{finalIndex + 1}番目まで移動しました。");
+        }
+        else
+        {
+            networkSystem.informationManager.AddQuestionResult($"{itemNameDict[1]}の効果: 選んだ{initialIndex + 1}番目のカードは移動しませんでした。");
+            Debug.Log($"{itemNameDict[1]}の効果: 選んだ{initialIndex + 1}番目のカードは移動しませんでした。");
+        }
+        
         foreach (GameObject card in clonedCards) Destroy(card);
 
         chooseCompareTo=0;
