@@ -44,7 +44,7 @@ public class NetworkSystem : NetworkBehaviour
     private NetworkList<bool> netClientItems;
 
     // ログのNetworkList
-    private NetworkList<FixedString64Bytes> logDataList;
+    private NetworkList<FixedString128Bytes> logDataList;
     
     // アイテムのNetworkList(使用順などもわかるもの)
     private NetworkList<int> netHostItemSelects;
@@ -83,7 +83,7 @@ public class NetworkSystem : NetworkBehaviour
         netClientCard = new NetworkList<int>();
         netHostItems = new NetworkList<bool>();
         netClientItems = new NetworkList<bool>();
-        logDataList = new NetworkList<FixedString64Bytes>();
+        logDataList = new NetworkList<FixedString128Bytes>();
         netHostItemSelects = new NetworkList<int>();
         netClientItemSelects = new NetworkList<int>();
     }
@@ -269,7 +269,7 @@ public class NetworkSystem : NetworkBehaviour
         itemPhaseManager.UpdateInventoryUI();
     }
 
-    public void OnNetLogChanged(NetworkListEvent<FixedString64Bytes> changeEvent)
+    public void OnNetLogChanged(NetworkListEvent<FixedString128Bytes> changeEvent)
     {
         logMenuController.myLogs.Clear();
         logMenuController.opponentLogs.Clear();
@@ -718,13 +718,13 @@ public class NetworkSystem : NetworkBehaviour
     [Unity.Netcode.ServerRpc(RequireOwnership = false)]
     public void LogClientServerRpc(string str)
     {
-        FixedString64Bytes fstr = new FixedString64Bytes(str + "/c");
+        FixedString128Bytes fstr = new FixedString128Bytes(str + "/c");
         logDataList.Add(fstr);
     }
 
     public void LogHost(string str)
     {
-        FixedString64Bytes fstr = new FixedString64Bytes(str + "/h");
+        FixedString128Bytes fstr = new FixedString128Bytes(str + "/h");
         logDataList.Add(fstr);
     }
     
