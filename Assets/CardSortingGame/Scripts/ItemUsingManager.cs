@@ -64,6 +64,12 @@ public class ItemUsingManager : MonoBehaviour
     [SerializeField] private float paddingLeft;     // パネルの左余白
     [SerializeField] private float paddingRight;    // パネルの右余白
     
+    public AudioClip cardSound;
+    public AudioClip confirmSound;
+    public AudioClip decideSound;
+    public AudioClip cancelSound;
+    public GameObject SoundObject;
+
     void Start()
     {
         cardsManager = FindObjectOfType<CardsManager>();
@@ -429,10 +435,14 @@ public class ItemUsingManager : MonoBehaviour
 
     void ToggleCardSelection(GameObject card){
         if(selectCard==card){
+            GameObject soundobj=Instantiate(SoundObject);
+            soundobj.GetComponent<PlaySound>().PlaySE(cancelSound);
             selectCard=null;
             cardsManager.DeselectCardUI(card); // カードを下げる
             // card.GetComponent<Image>().color = Color.white;
         }else{
+            GameObject soundobj=Instantiate(SoundObject);
+            soundobj.GetComponent<PlaySound>().PlaySE(cardSound);
             if(selectCard!=null){
                 // selectCard.GetComponent<Image>().color = Color.white;
                 cardsManager.DeselectCardUI(selectCard); // 元々選んでいたカードを下げる
@@ -447,6 +457,8 @@ public class ItemUsingManager : MonoBehaviour
     void OnConfirmButtonClickedOne()
     {
         if(selectCard!=null && chooseCompareTo!=0){
+            GameObject soundobj=Instantiate(SoundObject);
+            soundobj.GetComponent<PlaySound>().PlaySE(confirmSound);
             confirmchecked=true;
         }
         if(selectCard==null){
@@ -460,6 +472,8 @@ public class ItemUsingManager : MonoBehaviour
     void OnConfirmButtonClickedSix()
     {
         if(selectCard!=null && (chooseNumber>=1 && chooseNumber<=NetworkSystem.cardNum)){
+            GameObject soundobj=Instantiate(SoundObject);
+            soundobj.GetComponent<PlaySound>().PlaySE(confirmSound);
             confirmchecked=true;
         }
         if(selectCard==null){
@@ -472,6 +486,8 @@ public class ItemUsingManager : MonoBehaviour
 
     void OnSmallerButtonClicked()
     {
+        GameObject soundobj=Instantiate(SoundObject);
+        soundobj.GetComponent<PlaySound>().PlaySE(decideSound);
         chooseCompareTo=-1;
         smallerButton.GetComponent<Image>().color=Color.green;
         largerButton.GetComponent<Image>().color=Color.white;
@@ -479,6 +495,8 @@ public class ItemUsingManager : MonoBehaviour
 
     void OnLargerButtonClicked()
     {
+        GameObject soundobj=Instantiate(SoundObject);
+        soundobj.GetComponent<PlaySound>().PlaySE(decideSound);
         chooseCompareTo=1;
         smallerButton.GetComponent<Image>().color=Color.white;
         largerButton.GetComponent<Image>().color=Color.green;

@@ -44,3 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78f6d2f775900430db161f6b1fffa0e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  winSound: {fileID: 8300000, guid: 9012ee11dcad14ac2b16409ae2fdbccf, type: 3}
+  loseSound: {fileID: 8300000, guid: fe8fd97f5cd314073b19ab2e0321f93c, type: 3}
+  drawSound: {fileID: 8300000, guid: cc19a33d06fc54fd7b240e1641c0f9b3, type: 3}
+  decideSound: {fileID: 8300000, guid: ee50a08976b8c4329b7e3ddc170296cc, type: 3}
+  SoundObject: {fileID: 8952582336682380940, guid: 5e86fc38c315040b0949fc764056978c, type: 3}

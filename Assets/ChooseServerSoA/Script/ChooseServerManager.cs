@@ -31,6 +31,10 @@ public class ChooseServerManager : NetworkBehaviour
     private const string PASSWORD_CHARS = 
         "0123456789abcdefghijklmnopqrstuvwxyz";
 
+    public AudioClip decideSound;
+    public AudioClip cancelSound;
+    public GameObject SoundObject;
+
     public static string GeneratePassword( int length )
     {
         var sb  = new System.Text.StringBuilder( length );
@@ -92,6 +96,8 @@ public class ChooseServerManager : NetworkBehaviour
         if (connectPanel != null)
         {
             connectPanel.SetActive(true);
+            GameObject soundobj=Instantiate(SoundObject);
+            soundobj.GetComponent<PlaySound>().PlaySE(decideSound);
         }
     }
     
@@ -125,12 +131,16 @@ public class ChooseServerManager : NetworkBehaviour
             NetworkManager.Singleton.Shutdown();
             waitObj.SetActive(false);
             codeText.text="接続を中断しました";
+            GameObject soundobj=Instantiate(SoundObject);
+            soundobj.GetComponent<PlaySound>().PlaySE(cancelSound);
         }
     }
     
     public async void ToHost(){
         if(hoststart==false & clientstart==false){
             hoststart=true;
+            GameObject soundobj=Instantiate(SoundObject);
+            soundobj.GetComponent<PlaySound>().PlaySE(decideSound);
             try
             {
                 NetworkManager.Singleton.ConnectionApprovalCallback = ApprovalCheck;
@@ -167,7 +177,12 @@ public class ChooseServerManager : NetworkBehaviour
     }
 
     public async void ToClient(){
-        if(hoststart==false & clientstart==false & joinCode!=""){
+        if(hoststart==false & clientstart==false){
+            GameObject soundobj=Instantiate(SoundObject);
+            soundobj.GetComponent<PlaySound>().PlaySE(decideSound);
+            if(joinCode==""){
+                return;
+            }
             clientstart=true;
             try {
                 Debug.Log($"Joining... (code: {joinCode})");

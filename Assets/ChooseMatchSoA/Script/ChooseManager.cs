@@ -5,8 +5,13 @@ using UnityEngine.SceneManagement;
 
 public class ChooseManager : MonoBehaviour
 {
+    public AudioClip decideSound;
+    public GameObject SoundObject;
+    
     public void ToPrivateMatch()
     {
+        GameObject soundobj=Instantiate(SoundObject);
+        soundobj.GetComponent<PlaySound>().PlaySE(decideSound);
         SceneManager.LoadScene("ChooseServerSoA");
     }
 

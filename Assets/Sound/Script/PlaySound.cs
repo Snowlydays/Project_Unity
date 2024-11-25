@@ -10,6 +10,10 @@ public class PlaySound : MonoBehaviour
 
     bool soundplayed=false;
 
+    void Start(){
+        DontDestroyOnLoad(this.gameObject);//シーンを跨ぐと効果音などが途切れるのを防止
+    }
+
     public void PlaySE(AudioClip se)
     {
         audioSource = GetComponent<AudioSource>();
@@ -19,7 +23,8 @@ public class PlaySound : MonoBehaviour
 
     void Update(){
         if(soundplayed==true){
-            if(audioSource.isPlaying)Destroy(this);
+            //効果音を流し終えたらそのオブジェクトは用済みなので削除する
+            if(!audioSource.isPlaying)Destroy(this.gameObject);
         }
     }
 }
