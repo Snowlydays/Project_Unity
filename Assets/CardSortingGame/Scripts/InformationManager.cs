@@ -16,7 +16,7 @@ public class InformationManager : MonoBehaviour
     public void AddInformationText(string str)
     {
         if(informationText.text.Length > 3 && informationText.text.Substring(informationText.text.Length - 3, 3) == "..." && str.Substring(str.Length - 3, 3) == "...") return;
-        if(informationText.text != "") informationText.text = informationText.text += "\n";
+        if(informationText.text != "") informationText.text = informationText.text + "\n";
         informationText.text = informationText.text + str;
     }
 
@@ -30,8 +30,9 @@ public class InformationManager : MonoBehaviour
         AddInformationText(questionResult);
     }
     
-    public void SetQuestionResult(string str)
+    public void AddQuestionResult(string str)
     {
-        questionResult = str;
+        if(questionResult != "") questionResult = questionResult + "\n";
+        questionResult = questionResult + str;
     }
 }

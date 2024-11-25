@@ -398,10 +398,12 @@ public class ItemUsingManager : MonoBehaviour
             //カードの値より入力した値が大きかった時
             Debug.Log($"カードの数値は{chooseNumber}より大きいです");
             networkSystem.Log($"カードの数値は{chooseNumber}より大きいです");
+            networkSystem.informationManager.AddQuestionResult($"カードの数値は{chooseNumber}より大きいです");
         }else{
             //入力した値がカードの値以下だった時
             Debug.Log($"カードの数値は{chooseNumber}以下です");
             networkSystem.Log($"カードの数値は{chooseNumber}以下です");
+            networkSystem.informationManager.AddQuestionResult($"カードの数値は{chooseNumber}以下です");
         }
 
         foreach (GameObject card in clonedCards) Destroy(card);
