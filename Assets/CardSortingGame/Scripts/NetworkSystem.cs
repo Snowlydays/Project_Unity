@@ -219,6 +219,16 @@ public class NetworkSystem : NetworkBehaviour
                 netClientItems.Add(false);
             }
         }
+
+        if (!IsServer)
+        {
+            // ネットワークリストが既に存在する場合にUIを更新
+            if (netHostCard.Count > 0)
+            {
+                OnNetHostCardChanged(new NetworkListEvent<int>());
+            }
+        }
+
         Debug.Log("NetworkSystemの初期化完了");
     }
 
@@ -227,9 +237,10 @@ public class NetworkSystem : NetworkBehaviour
         string log=" ";
         for(int i=0;i<netHostCard.Count;i++){
             hostCard[i]=netHostCard[i];
+            if(!IsHost) mainSystemScript.otherCardNumber[i] = netHostCard[i];
             log+=netHostCard[i].ToString()+",";
         }
-
+        mainSystemScript.UpdateOtherCardUI();
         //このログで現在のホストのカードの状態を見れる
         //ただコンソール画面を埋め尽くすほど大量に出力するので、基本コメントアウト推奨
         // Debug.Log("Host Card is :"+log.Remove(log.Length-1));
@@ -240,9 +251,10 @@ public class NetworkSystem : NetworkBehaviour
         string log=" ";
         for(int i=0;i < netClientCard.Count;i++){
             clientCard[i]=netClientCard[i];
+            if (IsHost) mainSystemScript.otherCardNumber[i] = netClientCard[i];
             log+=netClientCard[i].ToString()+",";
         }
-
+        mainSystemScript.UpdateOtherCardUI();
         //クライアントのカードログ 以降上記と同様
         //Debug.Log("Client Card is :"+log.Remove(log.Length-1)); 
     }
