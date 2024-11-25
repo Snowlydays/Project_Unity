@@ -78,6 +78,7 @@ public class QutstionController : MonoBehaviour
         }else{
             //質問ができない場合はアイテム効果系bool変数を無効化してToggleReadyする。
             Debug.Log("相手のアイテム4の効果で質問ができない");
+            networkSystem.informationManager.AddInformationText($"相手の{ItemUsingManager.itemNameDict[4]}の効果により質問できません!");
             // 攻撃トグルを初期化
             isAttacking = false;
 
