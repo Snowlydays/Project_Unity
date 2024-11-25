@@ -13,6 +13,10 @@ public class AnimationController : MonoBehaviour
 
     public GameObject animobj;
 
+    public AudioClip logoSound;
+
+    public GameObject logoSoundObject;
+
     void Start(){
         networkSystem = FindObjectOfType<NetworkSystem>(); 
     }
@@ -25,6 +29,8 @@ public class AnimationController : MonoBehaviour
     }
 
     public void CreatePhaseLogo(Sprite sprite){
+        GameObject soundobj=Instantiate(logoSoundObject);
+        soundobj.GetComponent<PlaySound>().PlaySE(logoSound);
         GameObject canvas=networkSystem.itemUsingManager.itemUseCanvas;
         animobj=Instantiate(phaseAnimObject);
         animobj.transform.SetParent(canvas.transform);

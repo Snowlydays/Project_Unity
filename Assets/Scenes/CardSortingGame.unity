@@ -1176,6 +1176,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   phaseAnimObject: {fileID: 129355552834074673, guid: 884399d0f58514f469b7e1c06a1cf949, type: 3}
   animobj: {fileID: 0}
+  logoSound: {fileID: 8300000, guid: 1e59a023cd1c848f8bc3565f676978fc, type: 3}
+  logoSoundObject: {fileID: 8952582336682380940, guid: 5e86fc38c315040b0949fc764056978c, type: 3}
 --- !u!1 &644136872
 GameObject:
   m_ObjectHideFlags: 0

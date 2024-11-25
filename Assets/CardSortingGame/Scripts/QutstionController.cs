@@ -45,7 +45,10 @@ public class QutstionController : MonoBehaviour
     [SerializeField] private float cardSpacing;      // カード間のスペース
     [SerializeField] private float paddingLeft;     // パネルの左余白
     [SerializeField] private float paddingRight;    // パネルの右余白
-    
+
+    public AudioClip cardSound;
+    public GameObject cardSoundObject;
+
     void Start()
     {
         cardsManager = FindObjectOfType<CardsManager>();
@@ -149,6 +152,9 @@ public class QutstionController : MonoBehaviour
     void SelectCard(GameObject card)
     {
         // カードを選択状態にし、色を変更
+        GameObject soundobj=Instantiate(cardSoundObject);
+        soundobj.GetComponent<PlaySound>().PlaySE(cardSound);
+        
         selectedCards.Add(card);
         cardsManager.SelectCardUI(card);
         card.GetComponent<Image>().color = selectedColor;  // 色を変更
