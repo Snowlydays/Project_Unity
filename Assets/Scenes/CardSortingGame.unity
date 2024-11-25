@@ -1012,6 +1012,18 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 2d817e42d2d474a8f86966de959d9cb8, type: 3}
   confirmSound: {fileID: 8300000, guid: 6c4f139faedb544819dbc708a03edf9a, type: 3}
   SoundObject: {fileID: 8952582336682380940, guid: 5e86fc38c315040b0949fc764056978c, type: 3}
+  numberSprites:
+  - {fileID: 21300000, guid: b5bfbffeff1474d40b06ac2d3c23bf4a, type: 3}
+  - {fileID: 21300000, guid: ed7fa7206eaee4321868eb05cf13c70e, type: 3}
+  - {fileID: 21300000, guid: 92f6edcd92d734a6d84b6f9aa07c5563, type: 3}
+  - {fileID: 21300000, guid: 57161d090cb9d4dd1866787762ecf334, type: 3}
+  - {fileID: 21300000, guid: 796a8379feac649b1bbe8a25ad0a282d, type: 3}
+  - {fileID: 21300000, guid: c6b77d44e8a9d44bf8bd4e6c7f0b837d, type: 3}
+  - {fileID: 21300000, guid: 0614546ce370f4188b52a640bc7af818, type: 3}
+  - {fileID: 21300000, guid: c3424979734854ffcbca01ee888a464c, type: 3}
+  - {fileID: 21300000, guid: 058e7226d97284604925a83a83fa188a, type: 3}
+  - {fileID: 21300000, guid: 1cb363df00aaf473cb94e1edbfe5ab73, type: 3}
+  otherCardNumber: 0000000000000000000000000000000000000000
   cardWidth: 85
   cardSpacing: 12.5
   paddingLeft: 10
@@ -1307,13 +1319,13 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 644136872}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 1, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 51677879}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 180}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 40, y: 85}

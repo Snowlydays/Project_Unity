@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine.SceneManagement;
 
 public class MainSystemScript : MonoBehaviour
@@ -36,6 +37,9 @@ public class MainSystemScript : MonoBehaviour
     public AudioClip confirmSound;
     public GameObject SoundObject;
     
+    [SerializeField] private Sprite[] numberSprites = new Sprite[10]; // 数字のスプライト(0-9まで)
+    public int[] otherCardNumber = new int[CARD_NUM];
+
     public GameObject[] GetMyCards()
     {
         return mycard;
@@ -90,7 +94,7 @@ public class MainSystemScript : MonoBehaviour
             draggable.isDraggable = true;
         }
 
-        // 自分のカード生成(スロットは不要)
+        // 相手のカード生成
         for (int i = 0; i < CARD_NUM; i++)
         {
             // スロット生成
@@ -101,7 +105,6 @@ public class MainSystemScript : MonoBehaviour
             // カードを配置
             othercard[i] = Instantiate(CardPrefab, otherSlots[i].transform);
             othercard[i].GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-            othercard[i].GetComponent<Image>().color = new Color(1f, 0f, 0f);
 
             // DraggableCard スクリプトを取得してドラッグ"不可"に設定
             DraggableCard draggable = othercard[i].GetComponent<DraggableCard>();
@@ -111,6 +114,14 @@ public class MainSystemScript : MonoBehaviour
         readyButton.onClick.AddListener(OnReadyButtonClicked); // readyボタンにリスナーを追加
     }
 
+    public void UpdateOtherCardUI()
+    {
+        for (int i = 0; i < CARD_NUM; i++)
+        {
+            Image cardsImage = othercard[i].GetComponent<Image>();
+            cardsImage.sprite = numberSprites[otherCardNumber[i]];
+        }
+    }
     public void ChangeGuideImage(int phase, bool isAttack=false)
     {
         int id = (isAttack ? attackGuideID : phase); // 攻撃中ならば、そのガイドを表示
