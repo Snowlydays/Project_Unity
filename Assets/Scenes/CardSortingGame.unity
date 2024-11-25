@@ -4109,48 +4109,49 @@ MonoBehaviour:
   myTabButton: {fileID: 3968499347948325818}
   opponentTabButton: {fileID: 8696289411170475494}
   closeButton: {fileID: 1100963078497810217}
-  contentText: {fileID: 0}
   allLogs: []
   myLogs: []
   opponentLogs: []
+  myLogPrefab: {fileID: 460533548226646018, guid: 55b1075aee0244eafbc8dc380f15a2b9, type: 3}
+  opponentLogPrefab: {fileID: 8652786290552291129, guid: 1b050a8f9d4ea45f897073da6c5917a9, type: 3}
   myLogSprites:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 21300000, guid: 6c181885cb5a64995acf2ec7a4112046, type: 3}
+  - {fileID: 21300000, guid: 4f8ae9d6b760846f8bbd6fcd5e044bb6, type: 3}
+  - {fileID: 21300000, guid: 69a176aceb7d84554af0287f1bac5d59, type: 3}
+  - {fileID: 21300000, guid: 8ba4a56b8dac94a1da9f9fd497c246cc, type: 3}
+  - {fileID: 21300000, guid: 2ae7265bc0bd249afab3188829811142, type: 3}
+  - {fileID: 21300000, guid: 3c775bd7450094c3a804d12c51002476, type: 3}
+  - {fileID: 21300000, guid: e5ca84afec8094b47a1e46b4029d5df7, type: 3}
+  - {fileID: 21300000, guid: 8319c0442e65246c7bc0fa7bf1831f98, type: 3}
+  - {fileID: 21300000, guid: 18d0b5277b4eb4eb9bb57966d2911cd2, type: 3}
+  - {fileID: 21300000, guid: 600b47d5a8a9f465a9457a606d8df62e, type: 3}
+  - {fileID: 21300000, guid: b31167c61b87c431c9b8cdd79ded69bf, type: 3}
+  - {fileID: 21300000, guid: 93892ad3eaa464aed998510a9b8255f5, type: 3}
+  - {fileID: 21300000, guid: c2a29e9df347043bcb5c349b70f17a6f, type: 3}
+  - {fileID: 21300000, guid: b0754044fbaaa46aba75a84fe0ded00d, type: 3}
+  - {fileID: 21300000, guid: 0a7333ad7cf0b4a5393375eacfdb8ed2, type: 3}
+  - {fileID: 21300000, guid: 4cab4d777ac5044feb51ce0517d5268f, type: 3}
+  - {fileID: 21300000, guid: af807d47aebbb48b699443d6756a0ffa, type: 3}
+  - {fileID: 21300000, guid: f78cc50cf5fa9436cae693b44bc295de, type: 3}
   opponentLogSprites:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 21300000, guid: a8dc6effd866b4c92999ef62f4812437, type: 3}
+  - {fileID: 21300000, guid: 571a227e0bd09419eaddae6161048add, type: 3}
+  - {fileID: 21300000, guid: 64a691e585c1342fbbca1e184f31aa8e, type: 3}
+  - {fileID: 21300000, guid: 9ec51830e657d4c44aad6eb09c7a8ab6, type: 3}
+  - {fileID: 21300000, guid: 79763738d38b94c399e136300b4d0bd8, type: 3}
+  - {fileID: 21300000, guid: 5c0f62d54848045baa0d2dc8d9880530, type: 3}
+  - {fileID: 21300000, guid: 40cf81d1def804aefae4f6c0337478e7, type: 3}
+  - {fileID: 21300000, guid: 5bf918e643d36466eb9954a6888891e7, type: 3}
+  - {fileID: 21300000, guid: 0ac1730059c56484ea2c99f32bacca9b, type: 3}
+  - {fileID: 21300000, guid: f74f849a292d041ff8efdc51f2903605, type: 3}
+  - {fileID: 21300000, guid: 5007344c9cbb74b4c8283876b78aef6b, type: 3}
+  - {fileID: 21300000, guid: eaad84fbe48fd4e8f860209351b2dbd6, type: 3}
+  - {fileID: 21300000, guid: 5aa0d0d808c144d099edefed8d7df952, type: 3}
+  - {fileID: 21300000, guid: 5721f8150e1744979b60ba97692bf935, type: 3}
+  - {fileID: 21300000, guid: 0a98825d674394e24a1579578f408ee4, type: 3}
+  - {fileID: 21300000, guid: c7bca76318a4746dcad19144ce5326e2, type: 3}
+  - {fileID: 21300000, guid: 084f8dba1c07d408db82baad244c17e2, type: 3}
+  - {fileID: 21300000, guid: 63d3e9b6ae64443b4b0aa5d7359a1f00, type: 3}
   drawerPanel: {fileID: 8651838000007907440}
   animationDuration: 0.3
   myButtonSprite: {fileID: 21300000, guid: f372f532ea68c4293b58481b649b0e57, type: 3}

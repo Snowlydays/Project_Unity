@@ -7,14 +7,15 @@ using System.Collections.Generic;
 public class LogMenuController : MonoBehaviour
 {
     public Button myTabButton, opponentTabButton, closeButton;
-    public TMP_Text contentText;
-
     public List<string> allLogs = new List<string>();
     public List<string> myLogs = new List<string>();
     public List<string> opponentLogs = new List<string>();
 
-    [SerializeField] private Sprite[] myLogSprites = new Sprite[18];
-    [SerializeField] private Sprite[] opponentLogSprites = new Sprite[18];
+    [SerializeField] public GameObject myLogPrefab;
+    [SerializeField] public GameObject opponentLogPrefab;
+
+    public Sprite[] myLogSprites = new Sprite[18];
+    public Sprite[] opponentLogSprites = new Sprite[18];
 
     public enum TabType { All, Myself, Opponent }
     private TabType currentTab = TabType.All;
@@ -60,9 +61,9 @@ public class LogMenuController : MonoBehaviour
 
     public void AddLogText(string str, TabType t)
     {
-        if(t == TabType.All)allLogs.Add(str);
-        else if(t == TabType.Myself)myLogs.Add(str);
-        else if(t == TabType.Opponent)opponentLogs.Add(str);
+        // if(t == TabType.All)allLogs.Add(str);
+        // else if(t == TabType.Myself)myLogs.Add(str);
+        // else if(t == TabType.Opponent)opponentLogs.Add(str);
     }
 
     private void ManageTabState(TabType pushedButton)
