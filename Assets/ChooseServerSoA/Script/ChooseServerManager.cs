@@ -111,9 +111,13 @@ public class ChooseServerManager : NetworkBehaviour
         Debug.Log("テスト");
 
         if(clientstart){
+            GameObject titleobj = GameObject.Find("TitleBGM");
+            if(titleobj!=null)Destroy(titleobj);
             NetworkManager.Singleton.SceneManager.LoadScene("CardSortingGame", LoadSceneMode.Single);
         }else{
             if(NetworkManager.Singleton.ConnectedClients.Count > 1){
+                GameObject titleobj = GameObject.Find("TitleBGM");
+                if(titleobj!=null)Destroy(titleobj);
                 waitObj.SetActive(false);
                 NetworkManager.Singleton.SceneManager.LoadScene("CardSortingGame", LoadSceneMode.Single);
             }

@@ -17,6 +17,14 @@ public class AnimationController : MonoBehaviour
 
     public GameObject logoSoundObject;
 
+    public Sprite[] itemSprites;
+
+    public GameObject itemThreeMyObject;
+
+    public GameObject itemThreeOtherObject;
+
+    public Sprite newSprite;
+
     void Start(){
         networkSystem = FindObjectOfType<NetworkSystem>(); 
     }
@@ -24,8 +32,14 @@ public class AnimationController : MonoBehaviour
     public void OnPhaseAnimationEnd()
     {
         //フェーズ開始時のロゴアニメーション終了時の処理
+        //他にもアニメーション終了系全般はこれ
         //自身を削除してシーン内にオブジェクトが溜まるのを防止
         Destroy(this.gameObject);
+    }
+
+    public void OnChangeThreeItem(){
+        //スプライトを変更
+        this.GetComponent<Image>().overrideSprite=newSprite;
     }
 
     public void CreatePhaseLogo(Sprite sprite){
@@ -37,5 +51,21 @@ public class AnimationController : MonoBehaviour
         animobj.GetComponent<RectTransform>().anchoredPosition=Vector3.zero;
         animobj.GetComponent<RectTransform>().rotation = Quaternion.Euler(0, 0, 29f);
         animobj.GetComponentsInChildren<Image>()[1].overrideSprite=sprite;
+    }
+
+    public void CreateMyThreeItem(int newitem,float posx=0f){
+        GameObject canvas=networkSystem.itemUsingManager.itemUseCanvas;
+        animobj=Instantiate(itemThreeMyObject);
+        animobj.transform.SetParent(canvas.transform);
+        animobj.GetComponent<RectTransform>().anchoredPosition=new Vector3(posx,0f,0f);
+        animobj.GetComponent<AnimationController>().newSprite=itemSprites[newitem];
+    }
+
+    public void CreateOtherThreeItem(int newitem,float posx=0f){
+        GameObject canvas=networkSystem.itemUsingManager.itemUseCanvas;
+        animobj=Instantiate(itemThreeOtherObject);
+        animobj.transform.SetParent(canvas.transform);
+        animobj.GetComponent<RectTransform>().anchoredPosition=new Vector3(posx,0f,0f);
+        animobj.GetComponent<AnimationController>().newSprite=itemSprites[newitem];
     }
 }
