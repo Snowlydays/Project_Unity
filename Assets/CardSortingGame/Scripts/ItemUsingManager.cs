@@ -30,8 +30,7 @@ public class ItemUsingManager : MonoBehaviour
     private Transform itemSixCardPanel;
     private Transform itemOneCardPanel;
 
-    GameObject smallerButton;
-    GameObject largerButton;
+    GameObject triggerButton;
 
     GameObject[] clonedCards;
 
@@ -45,9 +44,12 @@ public class ItemUsingManager : MonoBehaviour
 
     int chooseNumber=-1;
 
-    int chooseCompareTo=0;//アイテム1で大小どちらへ比較するか、1で大、-1で小、0で無選択
+    int chooseCompareTo=-1;//アイテム1で大小どちらへ比較するか、1で大、-1で小、0で無選択
 
     public GameObject itemUseCanvas;
+
+    public Sprite smallSprite;
+    public Sprite bigSprite;
 
     public static Dictionary<int, string> itemNameDict = new Dictionary<int, string> {
         { 1, "オーブ" },
@@ -84,10 +86,8 @@ public class ItemUsingManager : MonoBehaviour
         GameObject.Find("ConfirmButtonOne").GetComponent<Button>().onClick.AddListener(OnConfirmButtonClickedOne);
         GameObject.Find("ConfirmButtonSix").GetComponent<Button>().onClick.AddListener(OnConfirmButtonClickedSix);
 
-        smallerButton=GameObject.Find("SmallerButton");
-        smallerButton.GetComponent<Button>().onClick.AddListener(OnSmallerButtonClicked);
-        largerButton=GameObject.Find("LargerButton");
-        largerButton.GetComponent<Button>().onClick.AddListener(OnLargerButtonClicked);
+        triggerButton=GameObject.Find("TriggerButton");
+        triggerButton.GetComponent<Button>().onClick.AddListener(OnTriggerButtonClicked);
 
         inputField = GameObject.Find("InputText").GetComponent<TMP_InputField>();
 
@@ -418,9 +418,8 @@ public class ItemUsingManager : MonoBehaviour
         ItemOneBG.SetActive(true);//起動
         clonedCards = cardsManager.PlaceCardsOnPanel(itemOneCardPanel,ToggleCardSelection, cardWidth, cardSpacing, paddingLeft, paddingRight);
 
-        chooseCompareTo=0;
-        smallerButton.GetComponent<Image>().color=Color.white;
-        largerButton.GetComponent<Image>().color=Color.white;
+        chooseCompareTo=-1;
+        triggerButton.GetComponent<Image>().sprite=smallSprite;
         
         Debug.Log("カードと大小を選択してください");
 
@@ -612,21 +611,16 @@ public class ItemUsingManager : MonoBehaviour
         }
     }
 
-    void OnSmallerButtonClicked()
+    void OnTriggerButtonClicked()
     {
         GameObject soundobj=Instantiate(SoundObject);
         soundobj.GetComponent<PlaySound>().PlaySE(decideSound);
-        chooseCompareTo=-1;
-        smallerButton.GetComponent<Image>().color=Color.green;
-        largerButton.GetComponent<Image>().color=Color.white;
-    }
-
-    void OnLargerButtonClicked()
-    {
-        GameObject soundobj=Instantiate(SoundObject);
-        soundobj.GetComponent<PlaySound>().PlaySE(decideSound);
-        chooseCompareTo=1;
-        smallerButton.GetComponent<Image>().color=Color.white;
-        largerButton.GetComponent<Image>().color=Color.green;
+        if(chooseCompareTo==-1){
+            chooseCompareTo=1;
+            triggerButton.GetComponent<Image>().sprite=bigSprite;
+        }else{
+            chooseCompareTo=-1;
+            triggerButton.GetComponent<Image>().sprite=smallSprite;
+        }
     }
 }
