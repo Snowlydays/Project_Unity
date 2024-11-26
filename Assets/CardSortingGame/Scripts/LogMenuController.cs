@@ -37,6 +37,7 @@ public class LogMenuController : MonoBehaviour
 
     private RectTransform myButtonTransform;
     private RectTransform opponentButtonTransform;
+    [SerializeField] private ScrollRect scrollRect;
 
     private Vector2 baseSize = new Vector2(646, 414);
     private Vector2 pushedSize = new Vector2(646, 375);
@@ -65,7 +66,7 @@ public class LogMenuController : MonoBehaviour
 
         drawerPanel.anchoredPosition = new Vector2(-drawerPanel.rect.width, drawerPanel.anchoredPosition.y);
         networkSystem = FindObjectOfType<NetworkSystem>();
-        Debug();
+        // Debug();
     }
 
     void Debug()
@@ -78,6 +79,33 @@ public class LogMenuController : MonoBehaviour
 
         new LogUnit(TabType.All, true, 12);        
         new LogUnit(TabType.Myself, true, 12);        
+
+        new LogUnit(TabType.All, true, 1);        
+        new LogUnit(TabType.Myself, true, 1);        
+
+        new LogUnit(TabType.All, false, 3);        
+        new LogUnit(TabType.Opponent, false, 3);
+
+        new LogUnit(TabType.All, true, 12);        
+        new LogUnit(TabType.Myself, true, 12); 
+
+        new LogUnit(TabType.All, true, 1);        
+        new LogUnit(TabType.Myself, true, 1);        
+
+        new LogUnit(TabType.All, false, 3);        
+        new LogUnit(TabType.Opponent, false, 3);
+
+        new LogUnit(TabType.All, true, 12);        
+        new LogUnit(TabType.Myself, true, 12); 
+
+        new LogUnit(TabType.All, true, 12);        
+        new LogUnit(TabType.Myself, true, 12); 
+        new LogUnit(TabType.All, true, 12);        
+        new LogUnit(TabType.Myself, true, 12); 
+        new LogUnit(TabType.All, true, 12);        
+        new LogUnit(TabType.Myself, true, 12); 
+        new LogUnit(TabType.All, true, 12);        
+        new LogUnit(TabType.Myself, true, 12); 
     }
 
     private void ManageTabState(TabType pushedButton)
@@ -138,16 +166,19 @@ public class LogMenuController : MonoBehaviour
                 myLogMenu.SetActive(false);
                 oppLogMenu.SetActive(false);
                 allLogMenu.SetActive(true);
+                scrollRect.content = allLogMenu.GetComponent<RectTransform>();
                 break;
             case TabType.Myself:
                 myLogMenu.SetActive(true);
                 oppLogMenu.SetActive(false);
                 allLogMenu.SetActive(false);
+                scrollRect.content = myLogMenu.GetComponent<RectTransform>();
                 break;
             case TabType.Opponent:
                 myLogMenu.SetActive(false);
                 oppLogMenu.SetActive(true);
                 allLogMenu.SetActive(false);
+                scrollRect.content = oppLogMenu.GetComponent<RectTransform>();
                 break;
         }
     }

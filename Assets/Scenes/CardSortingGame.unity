@@ -4032,7 +4032,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3205475723691185010}
   m_HandleRect: {fileID: 6594981405130016033}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -4477,6 +4477,7 @@ MonoBehaviour:
   opponentButtonSprite: {fileID: 21300000, guid: caddb343410c242d7a29bc25d48ccf7b, type: 3}
   pushedMyButtonSprite: {fileID: 21300000, guid: e1b8c1c3cc3314705ab67d6ace379eed, type: 3}
   pushedOpponentButtonSprite: {fileID: 21300000, guid: c75bab360801149e7a01bb05b9c2fd26, type: 3}
+  scrollRect: {fileID: 1566236463781222664}
   activeButton: 1
 --- !u!114 &3968499347948325818
 MonoBehaviour:
