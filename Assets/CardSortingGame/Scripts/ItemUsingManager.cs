@@ -93,6 +93,12 @@ public class ItemUsingManager : MonoBehaviour
 
         itemUseCanvas = GameObject.Find("ItemCanvas");
 
+        GameObject inputText = ItemSixBG.transform.Find("InputText").gameObject;
+        GameObject textArea = inputText.transform.Find("TextArea").gameObject;
+        GameObject placeholder = textArea.transform.Find("Placeholder").gameObject;
+        TextMeshProUGUI placeholderText = placeholder.GetComponent<TextMeshProUGUI>();
+        placeholderText.text = $"1からまで{NetworkSystem.cardNum}までの値を入れてください";
+        
         ItemSixBG.SetActive(false);
         ItemOneBG.SetActive(false);
     }

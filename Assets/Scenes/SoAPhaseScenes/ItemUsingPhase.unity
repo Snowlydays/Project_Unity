@@ -271,7 +271,7 @@ GameObject:
   - component: {fileID: 448688088}
   - component: {fileID: 448688089}
   m_Layer: 5
-  m_Name: Text Area
+  m_Name: TextArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1085,7 +1085,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "1\u304B\u30896\u307E\u3067\u306E\u5024\u3092\u5165\u308C\u3066\u304F\u3060\u3055\u3044"
+  m_text: "1\u304B\u3089X\u307E\u3067\u306E\u5024\u3092\u5165\u308C\u3066\u304F\u3060\u3055\u3044"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3f9508a64a5d04eb7aab767b58288ae5, type: 2}
   m_sharedMaterial: {fileID: 8491621916487589897, guid: 3f9508a64a5d04eb7aab767b58288ae5, type: 2}
@@ -1112,10 +1112,10 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20
+  m_fontSize: 21.75
   m_fontSizeBase: 20
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 2
@@ -1320,8 +1320,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -165}
-  m_SizeDelta: {x: 336.1451, y: 52.3959}
+  m_AnchoredPosition: {x: -5.7115, y: -163.5721}
+  m_SizeDelta: {x: 346.9671, y: 49.6904}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1697363337
 MonoBehaviour:
