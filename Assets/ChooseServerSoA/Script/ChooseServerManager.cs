@@ -71,7 +71,11 @@ public class ChooseServerManager : NetworkBehaviour
         if (backButton != null)
         {
             backButtonComponent = backButton.GetComponent<Button>();
-            if (backButtonComponent != null)backButtonComponent.onClick.AddListener(OnBackButtonClicked);
+            if (backButtonComponent != null)
+            {
+                backButtonComponent.onClick.AddListener(OnBackButtonClicked);
+                Debug.Log("Listener added to BackButton.");
+            }
         }
         
         GameObject codeTextObject = GameObject.Find("JoinCodeText");//sceneからjoincodeを表示するテキストを取得
@@ -106,7 +110,7 @@ public class ChooseServerManager : NetworkBehaviour
         }
     }
     
-    private void OnBackButtonClicked()
+    public void OnBackButtonClicked()
     {
         if (connectPanel != null)
         {
