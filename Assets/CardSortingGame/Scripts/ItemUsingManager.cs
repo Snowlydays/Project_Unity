@@ -54,8 +54,8 @@ public class ItemUsingManager : MonoBehaviour
         { 2, "レンズ" },
         { 3, "ミラー" },
         { 4, "鎖" },
-        { 5, "天秤" },
-        { 6, "エリクサー" },
+        { 5, "エリクサー" },
+        { 6, "天秤" },
     };
 
     // パネルのサイズを調整する用の変数
@@ -185,7 +185,27 @@ public class ItemUsingManager : MonoBehaviour
         foreach(int item in mylist){
             nowUsingItem=item;
             Debug.Log($"{itemNameDict[item+1]}を使用しました");
-            networkSystem.Log($"{itemNameDict[item+1]}を使用しました");
+            switch(item+1)
+            {
+                case 1:
+                networkSystem.Log(1);
+                break;
+                case 2:
+                networkSystem.Log(4);
+                break;
+                case 3:
+                networkSystem.Log(3);
+                break;
+                case 4:
+                networkSystem.Log(17);
+                break;
+                case 5:
+                networkSystem.Log(0);
+                break;
+                case 6:
+                networkSystem.Log(6);
+                break;
+            }
             ApplyItemEffect(item);
             //アイテム処理が終わったらnowUsingItem=-1;にして次のアイテム処理に移行させる。
             yield return new WaitUntil(() => nowUsingItem==-1);
@@ -436,12 +456,12 @@ public class ItemUsingManager : MonoBehaviour
         if(cardNumber>chooseNumber){
             //カードの値より入力した値が大きかった時
             Debug.Log($"{itemNameDict[6]}の効果:カードの数値は{chooseNumber}より大きいです");
-            networkSystem.Log($"{itemNameDict[6]}の効果:カードの数値は{chooseNumber}より大きいです");
+            networkSystem.Log(7);
             networkSystem.informationManager.AddQuestionResult($"{itemNameDict[2]}の効果:選んだカードの数値は{chooseNumber}より大きいです");
         }else{
             //入力した値がカードの値以下だった時
             Debug.Log($"{itemNameDict[6]}の効果:カードの数値は{chooseNumber}以下です");
-            networkSystem.Log($"{itemNameDict[6]}の効果:カードの数値は{chooseNumber}以下です");
+            networkSystem.Log(8);
             networkSystem.informationManager.AddQuestionResult($"{itemNameDict[2]}の効果:選んだカードの数値は{chooseNumber}以下です");
         }
 

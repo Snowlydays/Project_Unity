@@ -8,6 +8,25 @@ using Unity.Collections;
 using Random = UnityEngine.Random;
 using UnityEngine.SceneManagement;
 
+public struct LogData : INetworkSerializable, IEquatable<LogData>
+{
+    public int messageNum;
+    public bool logIsHost;
+    public LogData(int messageNum, bool logIsHost)
+    {
+        this.messageNum = messageNum;
+        this.logIsHost = logIsHost;
+    }
+    public bool Equals(LogData other)
+    {
+        return messageNum == other.messageNum && logIsHost == other.logIsHost;
+    }
+    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+    {
+        serializer.SerializeValue(ref messageNum);
+        serializer.SerializeValue(ref logIsHost);
+    }
+}
 public class NetworkSystem : NetworkBehaviour
 {
     // フェーズごとの数字を変数で管理
@@ -44,7 +63,7 @@ public class NetworkSystem : NetworkBehaviour
     private NetworkList<bool> netClientItems;
 
     // ログのNetworkList
-    private NetworkList<FixedString128Bytes> logDataList;
+    private NetworkList<LogData> logList;
     
     // アイテムのNetworkList(使用順などもわかるもの)
     private NetworkList<int> netHostItemSelects;
@@ -83,7 +102,7 @@ public class NetworkSystem : NetworkBehaviour
         netClientCard = new NetworkList<int>();
         netHostItems = new NetworkList<bool>();
         netClientItems = new NetworkList<bool>();
-        logDataList = new NetworkList<FixedString128Bytes>();
+        logList = new NetworkList<LogData>();
         netHostItemSelects = new NetworkList<int>();
         netClientItemSelects = new NetworkList<int>();
     }
@@ -95,7 +114,7 @@ public class NetworkSystem : NetworkBehaviour
         netClientCard?.Dispose();
         netHostItems?.Dispose();
         netClientItems?.Dispose();
-        logDataList?.Dispose();
+        logList?.Dispose();
         netHostItemSelects?.Dispose();
         netClientItemSelects?.Dispose();
 
@@ -178,7 +197,7 @@ public class NetworkSystem : NetworkBehaviour
         netHostItems.OnListChanged += OnNetHostItemChanged;
         netClientItems.OnListChanged += OnNetClientItemChanged;
 
-        logDataList.OnListChanged += OnNetLogChanged;
+        logList.OnListChanged += OnNetLogChanged;
         
         netHostItemSelects.OnListChanged += netHostItemSelectsChanged;
         netClientItemSelects.OnListChanged += netClientItemSelectsChanged;
@@ -281,26 +300,20 @@ public class NetworkSystem : NetworkBehaviour
         itemPhaseManager.UpdateInventoryUI();
     }
 
-    public void OnNetLogChanged(NetworkListEvent<FixedString128Bytes> changeEvent)
+    public void OnNetLogChanged(NetworkListEvent<LogData> changeEvent)
     {
-        logMenuController.myLogs.Clear();
-        logMenuController.opponentLogs.Clear();
-        logMenuController.allLogs.Clear();
-        foreach(var txt in logDataList)
+        Debug.Log("ログ追加");
+        LogData logData = changeEvent.Value;
+
+        if(logData.logIsHost == IsHost)
         {
-            string dat = txt.ToString();
-            string id = dat.Substring(dat.Length - 2);
-            dat = dat.Remove(dat.Length - 2);
-            if((IsHost && id == "/h") || (!IsHost && id == "/c"))
-            {
-                logMenuController.myLogs.Add(dat);
-                logMenuController.allLogs.Add("あなた: " + dat);
-            }
-            else
-            {
-                logMenuController.allLogs.Add("相手: " + dat);
-                logMenuController.opponentLogs.Add(dat);
-            }
+            logMenuController.allLogs.Add(new LogUnit(TabType.All, true, logData.messageNum));
+            logMenuController.myLogs.Add(new LogUnit(TabType.Myself, true, logData.messageNum));
+        }
+        else
+        {
+            logMenuController.opponentLogs.Add(new LogUnit(TabType.All, false, logData.messageNum));
+            logMenuController.opponentLogs.Add(new LogUnit(TabType.Opponent, false, logData.messageNum));
         }
     }
     
@@ -515,12 +528,15 @@ public class NetworkSystem : NetworkBehaviour
             if (hostAttacked)
             {
                 Debug.Log("攻撃失敗！");
-                Log("攻撃失敗！");
+                LogHost(10); // 詠唱ログ
+                LogHost(9); // 攻撃失敗ログ
                 informationManager.AddInformationText("攻撃失敗！");
                 AddInformationTextClientRpc("相手が攻撃に失敗しました");
             }
             if (clientAttacked)
             {
+                LogClientServerRpc(10); // 詠唱ログ
+                LogClientServerRpc(9); // 攻撃失敗ログ
                 informationManager.AddInformationText("相手が攻撃に失敗しました");
                 AddInformationTextClientRpc("攻撃失敗！");
             }
@@ -715,29 +731,29 @@ public class NetworkSystem : NetworkBehaviour
         netClientItems[pos] = value;
     }
 
-    public void Log(string str)
+    public void Log(int messageNum)
     {
         if(IsHost)
         {
-            LogHost(str);
+            LogHost(messageNum);
         }
         else
         {
-            LogClientServerRpc(str);
+            LogClientServerRpc(messageNum);
         }
     }
 
     [Unity.Netcode.ServerRpc(RequireOwnership = false)]
-    public void LogClientServerRpc(string str)
+    public void LogClientServerRpc(int messageNum)
     {
-        FixedString128Bytes fstr = new FixedString128Bytes(str + "/c");
-        logDataList.Add(fstr);
+        LogData logData = new LogData(messageNum, false);
+        logList.Add(logData);
     }
 
-    public void LogHost(string str)
+    public void LogHost(int messageNum)
     {
-        FixedString128Bytes fstr = new FixedString128Bytes(str + "/h");
-        logDataList.Add(fstr);
+        LogData logData = new LogData(messageNum, true);
+        logList.Add(logData);
     }
     
     //netItemSelectsの中身を変更するメソッド群(引数にarrayを入れることでそのarrayの中身通りに変更する)

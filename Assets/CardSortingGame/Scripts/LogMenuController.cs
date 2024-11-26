@@ -4,19 +4,24 @@ using TMPro;
 using System.Collections;
 using System.Collections.Generic;
 
+public enum TabType { All, Myself, Opponent }
+
 public class LogMenuController : MonoBehaviour
 {
     public Button myTabButton, opponentTabButton, closeButton;
-    public TMP_Text contentText;
+    public List<LogUnit> allLogs = new List<LogUnit>();
+    public List<LogUnit> myLogs = new List<LogUnit>();
+    public List<LogUnit> opponentLogs = new List<LogUnit>();
 
-    public List<string> allLogs = new List<string>();
-    public List<string> myLogs = new List<string>();
-    public List<string> opponentLogs = new List<string>();
+    [SerializeField] public GameObject allLogMenu;
+    [SerializeField] public GameObject myLogMenu;
+    [SerializeField] public GameObject oppLogMenu;
+    [SerializeField] public GameObject myLogPrefab;
+    [SerializeField] public GameObject opponentLogPrefab;
 
-    [SerializeField] private Sprite[] myLogSprites = new Sprite[18];
-    [SerializeField] private Sprite[] opponentLogSprites = new Sprite[18];
-
-    public enum TabType { All, Myself, Opponent }
+    public Sprite[] myLogSprites = new Sprite[18];
+    public Sprite[] opponentLogSprites = new Sprite[18];
+    
     private TabType currentTab = TabType.All;
 
     [SerializeField] private RectTransform drawerPanel;
@@ -44,6 +49,10 @@ public class LogMenuController : MonoBehaviour
 
     void Start()
     {
+        myLogMenu.SetActive(false);
+        oppLogMenu.SetActive(false);
+        allLogMenu.SetActive(true);
+        
         myButtonImage = myTabButton.GetComponent<Image>();
         opponentButtonImage = opponentTabButton.GetComponent<Image>();
 
@@ -56,13 +65,19 @@ public class LogMenuController : MonoBehaviour
 
         drawerPanel.anchoredPosition = new Vector2(-drawerPanel.rect.width, drawerPanel.anchoredPosition.y);
         networkSystem = FindObjectOfType<NetworkSystem>();
+        Debug();
     }
 
-    public void AddLogText(string str, TabType t)
+    void Debug()
     {
-        if(t == TabType.All)allLogs.Add(str);
-        else if(t == TabType.Myself)myLogs.Add(str);
-        else if(t == TabType.Opponent)opponentLogs.Add(str);
+        new LogUnit(TabType.All, true, 1);        
+        new LogUnit(TabType.Myself, true, 1);        
+
+        new LogUnit(TabType.All, false, 3);        
+        new LogUnit(TabType.Opponent, false, 3);
+
+        new LogUnit(TabType.All, true, 12);        
+        new LogUnit(TabType.Myself, true, 12);        
     }
 
     private void ManageTabState(TabType pushedButton)
@@ -120,22 +135,23 @@ public class LogMenuController : MonoBehaviour
         switch(currentTab)
         {
             case TabType.All:
-                DisplayLogEntries(allLogs);
+                myLogMenu.SetActive(false);
+                oppLogMenu.SetActive(false);
+                allLogMenu.SetActive(true);
                 break;
             case TabType.Myself:
-                DisplayLogEntries(myLogs);
+                myLogMenu.SetActive(true);
+                oppLogMenu.SetActive(false);
+                allLogMenu.SetActive(false);
                 break;
             case TabType.Opponent:
-                DisplayLogEntries(opponentLogs);
+                myLogMenu.SetActive(false);
+                oppLogMenu.SetActive(true);
+                allLogMenu.SetActive(false);
                 break;
         }
     }
 
-    private void DisplayLogEntries(List<string> entries)
-    {
-        // contentText.text = string.Join("\n", entries);
-    }
-    
     public void CloseDrawer()
     {
         StartCoroutine(SlideDrawer(-drawerPanel.rect.width));
@@ -144,7 +160,6 @@ public class LogMenuController : MonoBehaviour
     // メニューを開く関数
     public void OpenDrawer()
     {
-        DisplayLogEntries(allLogs);
         StartCoroutine(SlideDrawer(0));
     }
 
