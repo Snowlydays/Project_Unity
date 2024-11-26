@@ -23,6 +23,10 @@ public class AnimationController : MonoBehaviour
 
     public GameObject itemThreeOtherObject;
 
+    public GameObject itemDefaultObject;
+
+    public GameObject itemDefaultOtherObject;
+
     public Sprite newSprite;
 
     void Start(){
@@ -66,6 +70,24 @@ public class AnimationController : MonoBehaviour
         animobj=Instantiate(itemThreeOtherObject);
         animobj.transform.SetParent(canvas.transform);
         animobj.GetComponent<RectTransform>().anchoredPosition=new Vector3(posx,0f,0f);
+        animobj.transform.localScale=new Vector3(1f,-1f,1f);
         animobj.GetComponent<AnimationController>().newSprite=itemSprites[newitem];
+    }
+
+    public void CreateDefaultItem(int newitem,float posx=0f){
+        GameObject canvas=networkSystem.itemUsingManager.itemUseCanvas;
+        animobj=Instantiate(itemDefaultObject);
+        animobj.transform.SetParent(canvas.transform);
+        animobj.GetComponent<RectTransform>().anchoredPosition=new Vector3(posx,0f,0f);
+        animobj.GetComponent<Image>().overrideSprite=itemSprites[newitem];
+    }
+
+    public void CreateDefaultOtherItem(int newitem,float posx=0f){
+        GameObject canvas=networkSystem.itemUsingManager.itemUseCanvas;
+        animobj=Instantiate(itemDefaultOtherObject);
+        animobj.transform.SetParent(canvas.transform);
+        animobj.GetComponent<RectTransform>().anchoredPosition=new Vector3(posx,0f,0f);
+        animobj.transform.localScale=new Vector3(1f,-1f,1f);
+        animobj.GetComponent<Image>().overrideSprite=itemSprites[newitem];
     }
 }
