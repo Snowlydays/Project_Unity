@@ -366,6 +366,7 @@ public class QutstionController : MonoBehaviour
         }
 
         Debug.Log($"{ItemUsingManager.itemNameDict[5]}の効果:"+"Left:"+left+" middle:"+middle+" right:"+right);
+        Debug.Log("log関数使用直前: " + leftOder.ToString() + " " + middleOder.ToString() + " " + rightOder.ToString());
         networkSystem.Log(14, leftOder, middleOder, rightOder);
         networkSystem.informationManager.AddQuestionResult($"{ItemUsingManager.itemNameDict[5]}の効果:"+"左:"+left+" 中:"+middle+" 右:"+right);
         return 0;
