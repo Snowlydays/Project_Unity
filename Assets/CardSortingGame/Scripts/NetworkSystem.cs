@@ -528,12 +528,15 @@ public class NetworkSystem : NetworkBehaviour
             if (hostAttacked)
             {
                 Debug.Log("攻撃失敗！");
-                Log(9); // 攻撃失敗ログ
+                LogHost(10); // 詠唱ログ
+                LogHost(9); // 攻撃失敗ログ
                 informationManager.AddInformationText("攻撃失敗！");
                 AddInformationTextClientRpc("相手が攻撃に失敗しました");
             }
             if (clientAttacked)
             {
+                LogClientServerRpc(10); // 詠唱ログ
+                LogClientServerRpc(9); // 攻撃失敗ログ
                 informationManager.AddInformationText("相手が攻撃に失敗しました");
                 AddInformationTextClientRpc("攻撃失敗！");
             }

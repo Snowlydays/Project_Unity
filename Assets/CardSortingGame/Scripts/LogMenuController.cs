@@ -49,6 +49,10 @@ public class LogMenuController : MonoBehaviour
 
     void Start()
     {
+        myLogMenu.SetActive(false);
+        oppLogMenu.SetActive(false);
+        allLogMenu.SetActive(true);
+        
         myButtonImage = myTabButton.GetComponent<Image>();
         opponentButtonImage = opponentTabButton.GetComponent<Image>();
 
@@ -61,13 +65,19 @@ public class LogMenuController : MonoBehaviour
 
         drawerPanel.anchoredPosition = new Vector2(-drawerPanel.rect.width, drawerPanel.anchoredPosition.y);
         networkSystem = FindObjectOfType<NetworkSystem>();
+        Debug();
     }
 
-    public void AddLogText(string str, TabType t)
+    void Debug()
     {
-        // if(t == TabType.All)allLogs.Add(str);
-        // else if(t == TabType.Myself)myLogs.Add(str);
-        // else if(t == TabType.Opponent)opponentLogs.Add(str);
+        new LogUnit(TabType.All, true, 1);        
+        new LogUnit(TabType.Myself, true, 1);        
+
+        new LogUnit(TabType.All, false, 3);        
+        new LogUnit(TabType.Opponent, false, 3);
+
+        new LogUnit(TabType.All, true, 12);        
+        new LogUnit(TabType.Myself, true, 12);        
     }
 
     private void ManageTabState(TabType pushedButton)
@@ -142,11 +152,6 @@ public class LogMenuController : MonoBehaviour
         }
     }
 
-    private void DisplayLogEntries(List<LogUnit> entries)
-    {
-        // contentText.text = string.Join("\n", entries);
-    }
-    
     public void CloseDrawer()
     {
         StartCoroutine(SlideDrawer(-drawerPanel.rect.width));
@@ -155,7 +160,6 @@ public class LogMenuController : MonoBehaviour
     // メニューを開く関数
     public void OpenDrawer()
     {
-        DisplayLogEntries(allLogs);
         StartCoroutine(SlideDrawer(0));
     }
 

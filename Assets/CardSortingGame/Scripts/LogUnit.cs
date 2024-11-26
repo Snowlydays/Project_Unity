@@ -22,10 +22,10 @@ public class LogUnit
     7: 天秤効果大 *
     8: 天秤効果小 *
     9: 失敗 *
-    10: 詠唱
-    11: 質問
-    12: (質問)エリクサー
-    13: 質問(鎖)
+    10: 詠唱 *
+    11: 質問 *
+    12: (質問)エリクサー *
+    13: 質問(鎖) *
     14: 質問結果(エリクサー) *
     15: 質問結果(右) *
     16: 質問結果(左) *
@@ -34,6 +34,10 @@ public class LogUnit
 
     public LogUnit(TabType tabType, bool isMyLog, int messageNum)
     {
+        if((tabType == TabType.Myself && !isMyLog) || (tabType == TabType.Opponent && isMyLog))
+        {
+            Debug.LogError("ログを追加しようとしているタブが違います");
+        }
         logMenuController = Object.FindObjectOfType<LogMenuController>();
         this.tabType = tabType;
         

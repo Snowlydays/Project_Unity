@@ -89,6 +89,7 @@ public class QutstionController : MonoBehaviour
         }else{
             //質問ができない場合はアイテム効果系bool変数を無効化してToggleReadyする。
             Debug.Log("相手のアイテム4の効果で質問ができない");
+            networkSystem.Log(13);
             networkSystem.informationManager.AddInformationText($"相手の{ItemUsingManager.itemNameDict[4]}の効果により質問できません!");
             // 攻撃トグルを初期化
             isAttacking = false;
@@ -261,6 +262,7 @@ public class QutstionController : MonoBehaviour
     
     int CompareCards(GameObject leftCard, GameObject rightCard)
     {
+        networkSystem.Log(11);
         if(leftCard.transform.position.x > rightCard.transform.position.x)
         {
             (leftCard, rightCard) = (rightCard, leftCard);
@@ -301,6 +303,7 @@ public class QutstionController : MonoBehaviour
 
     int CompareThreeCards(GameObject leftCard, GameObject middleCard, GameObject rightCard)
     {
+        networkSystem.Log(12);
         GameObject[] Cards ={leftCard,middleCard,rightCard};
 
         Cards.OrderBy(e => e.transform.position.x);//x座標の昇順に並び替え 仮
