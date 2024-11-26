@@ -168,7 +168,6 @@ public class ItemPhaseManager : MonoBehaviour
         selectedItems.Clear(); // 選択していたアイテムをクリア
         itemDisplayPanel.gameObject.SetActive(false);
         confirmButton.gameObject.SetActive(false);
-        // networkSystem.ToggleReady();
     }
 
     // プレイヤーにアイテムを配布するメソッド
@@ -249,10 +248,6 @@ public class ItemPhaseManager : MonoBehaviour
                 popupParentTransform
             );
         }
-        else
-        {
-            Debug.LogWarning("ItemLongPressHandlerがトグルプレハブにアタッチされていません。");
-        }
     }
 
     // Toggleのボタンを昇順に並び変えるメソッド(これがないとボタンが作成された順に並ぶ)
@@ -303,7 +298,6 @@ public class ItemPhaseManager : MonoBehaviour
                 selectedItems.Remove(itemIdx);
             }
         }
-        // networkSystem.ChangeItemSelects(selectedItems.ToArray());
     }
 
     // テスト用
@@ -326,37 +320,6 @@ public class ItemPhaseManager : MonoBehaviour
             
             // アイテム選択用トグルを作成
             CreateToggle(id);
-        }
-    }
-
-    private void ApplyItemEffect(int itemIdx)
-    {
-        // ここにアイテムの効果を実装
-        switch(itemIdx)
-        {
-            case 0:
-                // アイテム0の効果
-                break;
-
-            case 1:
-                networkSystem.questionController.isGetDiff = true;
-                break;
-
-            case 2:
-                // アイテム2の効果
-                break;
-
-            case 3:
-                // アイテム3の効果
-                break;
-
-            case 4:
-                // アイテム4の効果
-                break;
-
-            case 5:
-                networkSystem.questionController.isThreeSelect = true;
-                break;
         }
     }
 }
