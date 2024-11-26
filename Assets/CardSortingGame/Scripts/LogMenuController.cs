@@ -52,7 +52,7 @@ public class LogMenuController : MonoBehaviour
         myLogMenu.SetActive(false);
         oppLogMenu.SetActive(false);
         allLogMenu.SetActive(true);
-        
+
         myButtonImage = myTabButton.GetComponent<Image>();
         opponentButtonImage = opponentTabButton.GetComponent<Image>();
 
@@ -160,7 +160,7 @@ public class LogMenuController : MonoBehaviour
     // メニューを開く関数
     public void OpenDrawer()
     {
-        StartCoroutine(SlideDrawer(0));
+        StartCoroutine(SlideDrawer(-640));
     }
 
     // スライドアニメーションを行うコルーチン
