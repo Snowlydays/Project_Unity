@@ -50,20 +50,7 @@ public class ChooseServerManager : NetworkBehaviour
         return sb.ToString();
     }
 
-    async void Start(){
-        //InitializationOptions hostOptions = new InitializationOptions().SetProfile(GeneratePassword(10));
-       
-        await UnityServices.InitializeAsync();
-
-        //await UnityServices.InitializeAsync();
-       
-        AuthenticationService.Instance.SignedIn += () =>
-        {
-            Debug.Log("Signed in: " + AuthenticationService.Instance.PlayerId);
-        };
-
-        await AuthenticationService.Instance.SignInAnonymouslyAsync();
-
+    void Awake(){
         inputField = GameObject.Find("InputText").GetComponent<TMP_InputField>();
 
         waitObj = GameObject.Find("ConnectWaiting");
@@ -76,19 +63,26 @@ public class ChooseServerManager : NetworkBehaviour
             if (roomJoinButtonComponent != null)roomJoinButtonComponent.onClick.AddListener(OnRoomJoinButtonClicked);
         }
         
-        //サーバーにクライアントが接続したら実行されるメソッド
-        //注意として、ホストは「サーバーでもありクライアントでもある」という立ち位置なので
-        //ホストが接続を開始した場合もこれが実行される
-        //ホスト接続なのにIsClientがtrueになるのはこれが理由
-        //基本的に自分がホストかクライアントかを識別したい場合は
-        //IsServerを使うといいかも
-        NetworkManager.Singleton.OnClientConnectedCallback += ClientConnected;
-        
         GameObject codeTextObject = GameObject.Find("JoinCodeText");//sceneからjoincodeを表示するテキストを取得
         if (codeTextObject != null) codeText = codeTextObject.GetComponent<TextMeshProUGUI>();
         
         waitObj.SetActive(false);
         connectPanel.SetActive(false);
+    }
+
+    async void Start(){
+       
+        await UnityServices.InitializeAsync();
+       
+        AuthenticationService.Instance.SignedIn += () =>
+        {
+            Debug.Log("Signed in: " + AuthenticationService.Instance.PlayerId);
+        };
+
+        await AuthenticationService.Instance.SignInAnonymouslyAsync();
+
+
+        NetworkManager.Singleton.OnClientConnectedCallback += ClientConnected;
     }
 
     private void OnRoomJoinButtonClicked()

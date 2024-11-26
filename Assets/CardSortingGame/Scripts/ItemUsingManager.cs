@@ -170,7 +170,11 @@ public class ItemUsingManager : MonoBehaviour
 
         allUsedItem=false;
 
-        StartCoroutine(ItemUseAwaiting());
+        if(mylist.Count>0){
+            StartCoroutine(ItemUseAwaiting());
+        }else{
+            allUsedItem=true;
+        }
 
         yield return new WaitUntil(() => allUsedItem==true);
 
@@ -349,7 +353,7 @@ public class ItemUsingManager : MonoBehaviour
             }
         }
 
-        if(mygetitem==-1 || mygetitem==2){
+        if(mygetitem==2){
             networkSystem.informationManager.AddInformationText($"{itemNameDict[3]}の効果: アイテムを奪えなかった");
             Debug.Log($"{itemNameDict[3]}の効果: アイテムを奪えなかった");
         }
