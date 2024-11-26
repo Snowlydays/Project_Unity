@@ -138,7 +138,7 @@ public class ItemUsingManager : MonoBehaviour
             Debug.Log("相手はアイテムを選択していません");
         }*/
 
-        ItemThreeCheckAndUse();//アイテム3効果を処理する部分
+        yield return StartCoroutine(ItemThreeCheckAndUse());//アイテム3効果を処理する部分
 
         /*Debug.Log("アイテム3処理後");
         Debug.Log("自分のアイテム");
@@ -160,7 +160,7 @@ public class ItemUsingManager : MonoBehaviour
             Debug.Log("相手はアイテムを選択していません");
         }*/
 
-        ItemFourCheckAndUse();//相手がアイテム4を使っているかどうかと実行処理
+        yield return StartCoroutine(ItemFourCheckAndUse());//相手がアイテム4を使っているかどうかと実行処理
 
         allUsedItem=false;
 
@@ -174,10 +174,11 @@ public class ItemUsingManager : MonoBehaviour
         networkSystem.ToggleReady();
     }
 
-    private void ItemFourCheckAndUse(){
+    IEnumerator ItemFourCheckAndUse(){
         if(otherlist.Contains(3)){
             //もし相手がアイテム4を持っていたら、質問不可能bool値をtrueにする。
             networkSystem.questionController.isNotQuestion=true;
+            yield return null;
         }
     }
 
@@ -213,7 +214,7 @@ public class ItemUsingManager : MonoBehaviour
         allUsedItem=true;
     }
 
-    private void ItemThreeCheckAndUse(){
+    IEnumerator ItemThreeCheckAndUse(){
         int mynum=mylist.Count;//自分の使用するアイテム数を取得
         int othernum=otherlist.Count;//相手の使用するアイテム数を取得
         int mythreeindex=mylist.IndexOf(2);//自分が使用するアイテム3のindexを取得(1番目なら0、2番目なら1...)
@@ -231,7 +232,7 @@ public class ItemUsingManager : MonoBehaviour
             //リストからアイテム3をremoveして終了
             myusethree=false;
             mylist.Remove(2);
-            return;
+            yield break;
         }
         
         if(mynum<=0 && otherusethree==true){
@@ -239,7 +240,7 @@ public class ItemUsingManager : MonoBehaviour
             //リストからアイテム3をremoveして終了
             otherusethree=false;
             otherlist.Remove(2);
-            return;
+            yield break;
         }
 
         if(mythreeindex+1>othernum && myusethree==true){
@@ -264,15 +265,48 @@ public class ItemUsingManager : MonoBehaviour
         if(mygetitem!=-1){
             //取得したアイテムが3でなければ、3があった場所に奪ったアイテムを入れ替える
             //その後奪った相手のアイテムをremove
-            if(mygetitem!=2)mylist[mylist.IndexOf(2)]=mygetitem;
+            if(mygetitem!=2){
+                mylist[mylist.IndexOf(2)]=mygetitem;
+                //ここに自分がアイテム3を使った時の効果アニメーション
+            }
             otherlist.Remove(mygetitem);
         }
 
         if(othergetitem!=-1){
             //相手も同様
-            if(othergetitem!=2)otherlist[otherlist.IndexOf(2)]=othergetitem;
+            if(othergetitem!=2){
+                otherlist[otherlist.IndexOf(2)]=othergetitem;
+                //ここに相手がアイテム3を使った時の効果アニメーション
+            }
             mylist.Remove(othergetitem);
         }
+
+        if(mygetitem!=-1 & othergetitem==-1){
+            //自分だけ使うパターン
+            if(mygetitem!=2){
+                networkSystem.animationController.CreateMyThreeItem(mygetitem);
+                yield return new WaitForSeconds(3.5f);
+            }
+        }
+
+        if(mygetitem==-1 & othergetitem!=-1){
+            //相手だけ使うパターン
+            if(othergetitem!=2){
+                networkSystem.animationController.CreateOtherThreeItem(othergetitem);
+                yield return new WaitForSeconds(3.5f);
+            }
+        }
+
+        if(mygetitem!=-1 & othergetitem!=-1){
+            //両方使うパターン
+            if(mygetitem!=2 & othergetitem!=2){
+                networkSystem.animationController.CreateMyThreeItem(mygetitem,-300f);
+                networkSystem.animationController.CreateOtherThreeItem(othergetitem,300f);
+                yield return new WaitForSeconds(3.5f);
+            }
+        }
+
+        //アイテム3アニメーションから3.5秒後にログ表示、ログを1.5秒程度見せてから次へ
     }
 
     //アイテム3の位置を変更するのに使用するメソッド
@@ -334,6 +368,10 @@ public class ItemUsingManager : MonoBehaviour
         //各種UIの起動
         ItemOneBG.SetActive(true);//起動
         clonedCards = cardsManager.PlaceCardsOnPanel(itemOneCardPanel,ToggleCardSelection, cardWidth, cardSpacing, paddingLeft, paddingRight);
+
+        chooseCompareTo=0;
+        smallerButton.GetComponent<Image>().color=Color.white;
+        largerButton.GetComponent<Image>().color=Color.white;
         
         Debug.Log("カードと大小を選択してください");
 
@@ -429,8 +467,8 @@ public class ItemUsingManager : MonoBehaviour
         //位置の並び替え
         cardsManager.myCards[toIndex].cardObject.transform.SetParent(fromSlot, false);
         cardsManager.myCards[toIndex].cardObject.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-        cardsManager.myCards[toIndex].cardObject.transform.SetParent(toSlot, false);
-        cardsManager.myCards[toIndex].cardObject.transform.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+        cardsManager.myCards[fromIndex].cardObject.transform.SetParent(toSlot, false);
+        cardsManager.myCards[fromIndex].cardObject.transform.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
 
         //配列の並び替え
         cardsManager.SwapCardsInList(toIndex, fromIndex);

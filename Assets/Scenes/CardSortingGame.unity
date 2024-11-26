@@ -1410,6 +1410,16 @@ MonoBehaviour:
   animobj: {fileID: 0}
   logoSound: {fileID: 8300000, guid: 1e59a023cd1c848f8bc3565f676978fc, type: 3}
   logoSoundObject: {fileID: 8952582336682380940, guid: 5e86fc38c315040b0949fc764056978c, type: 3}
+  itemSprites:
+  - {fileID: 21300000, guid: 0f71a93c03e904defa36b9d83f9e2e90, type: 3}
+  - {fileID: 21300000, guid: 5f11ada96fac844b098ac43bdf28cf4c, type: 3}
+  - {fileID: 21300000, guid: fa5da8bf3cb3641f09c27c3e158b2a3e, type: 3}
+  - {fileID: 21300000, guid: 628cc613cee13428685b8e6159de58c4, type: 3}
+  - {fileID: 21300000, guid: c31f15253c593455095fb680b8909900, type: 3}
+  - {fileID: 21300000, guid: 9042e0fe3c6e74df0ae853721141e5ef, type: 3}
+  itemThreeMyObject: {fileID: 3517201315559664316, guid: a659191d29acc4aeb8c3137f5d0ed604, type: 3}
+  itemThreeOtherObject: {fileID: 3517201315559664316, guid: 09ea907f5e2c5416c8f0500b27d7601d, type: 3}
+  newSprite: {fileID: 0}
 --- !u!82 &534725852
 AudioSource:
   m_ObjectHideFlags: 0
@@ -2622,7 +2632,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1397842340
 RectTransform:
   m_ObjectHideFlags: 0
