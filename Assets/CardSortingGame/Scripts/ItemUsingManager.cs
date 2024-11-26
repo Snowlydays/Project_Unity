@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -504,13 +505,13 @@ public class ItemUsingManager : MonoBehaviour
         {
             networkSystem.informationManager.AddInformationText($"{itemNameDict[1]}の効果: 選んだ{initialIndex + 1}番目のカードは{finalIndex + 1}番目まで移動しました。");
             Debug.Log($"{itemNameDict[1]}の効果: 選んだ{initialIndex + 1}番目のカードは{finalIndex + 1}番目まで移動しました。");
-            networkSystem.Log(2);
+            networkSystem.Log(2, Math.Abs(initialIndex - finalIndex));
         }
         else
         {
             networkSystem.informationManager.AddInformationText($"{itemNameDict[1]}の効果: 選んだ{initialIndex + 1}番目のカードは移動しませんでした。");
             Debug.Log($"{itemNameDict[1]}の効果: 選んだ{initialIndex + 1}番目のカードは移動しませんでした。");
-            networkSystem.Log(2);
+            networkSystem.Log(2, Math.Abs(initialIndex - finalIndex));
         }
         
         foreach (GameObject card in clonedCards) Destroy(card);
@@ -569,12 +570,12 @@ public class ItemUsingManager : MonoBehaviour
         if(cardNumber>chooseNumber){
             //カードの値より入力した値が大きかった時
             Debug.Log($"{itemNameDict[6]}の効果:カードの数値は{chooseNumber}より大きいです");
-            networkSystem.Log(7);
+            networkSystem.Log(7, chooseNumber);
             networkSystem.informationManager.AddInformationText($"{itemNameDict[6]}の効果:選んだカードの数値は{chooseNumber}より大きいです");
         }else{
             //入力した値がカードの値以下だった時
             Debug.Log($"{itemNameDict[6]}の効果:カードの数値は{chooseNumber}以下です");
-            networkSystem.Log(8);
+            networkSystem.Log(8, chooseNumber);
             networkSystem.informationManager.AddInformationText($"{itemNameDict[6]}の効果:選んだカードの数値は{chooseNumber}以下です");
         }
 

@@ -8,23 +8,24 @@ using TMPro;
 LogMenuContorollerに登録されているログUIの番号
 0: エリクサー
 1: オーブ 
-2: オーブ効果
+2: オーブ効果 *
 3: ミラー
 4: レンズ
-5: レンズ効果
+5: レンズ効果 *
 6: 天秤
-7: 天秤効果大
-8: 天秤効果小
+7: 天秤効果大 *
+8: 天秤効果小 *
 9: 失敗
 10: 詠唱
 11: 質問
 12: (質問)エリクサー
 13: 質問(鎖)
-14: 質問結果(エリクサー)
+14: 質問結果(エリクサー) *
 15: 質問結果(右)
 16: 質問結果(左)
 17: 鎖
 */
+
 public class LogUnit
 {
     private LogMenuController logMenuController;
@@ -67,21 +68,37 @@ public class LogUnit
         // 結果により変化するテキストの処理
         if(messageNum == 2)
         {
+            if(dataA < 0)
+            {
+                Debug.LogError("引数が正しくありません");
+            }
             Transform text2 = image.transform.Find("Sprite2Text");
             text2.GetComponent<TextMeshProUGUI>().text = dataA.ToString();
         }
         else if(messageNum == 5)
         {
+            if(dataA < 0)
+            {
+                Debug.LogError("引数が正しくありません");
+            }
             Transform text5 = image.transform.Find("Sprite5Text");
             text5.GetComponent<TextMeshProUGUI>().text = dataA.ToString();
         }
         else if(messageNum == 7 || messageNum == 8)
         {
+            if(dataA < 0)
+            {
+                Debug.LogError("引数が正しくありません");
+            }
             Transform text78 = image.transform.Find("Sprite78Text");
             text78.GetComponent<TextMeshProUGUI>().text = dataA.ToString();
         }
         else if(messageNum == 14) // エリクサーを使う場合は引数で左から順に1~3の順序を割り振る
         {
+            if(dataA <= 0 || dataB <= 0 || dataC <= 0)
+            {
+                Debug.LogError("引数が正しくありません");
+            }
             Transform text14L = image.transform.Find("Sprite14TextL");
             Transform text14M = image.transform.Find("Sprite14TextM");
             Transform text14R = image.transform.Find("Sprite14TextR");
