@@ -25,10 +25,12 @@ public class ChooseServerManager : NetworkBehaviour
 
     GameObject waitObj;
     GameObject joinButton;
+    GameObject backButton;
     private GameObject connectPanel;
     private Button roomJoinButtonComponent;
+    private Button backButtonComponent;
     public GameObject connectionErrorImage;
-    
+
     private const string PASSWORD_CHARS = 
         "0123456789abcdefghijklmnopqrstuvwxyz";
 
@@ -57,6 +59,7 @@ public class ChooseServerManager : NetworkBehaviour
         waitObj = GameObject.Find("ConnectWaiting");
         joinButton = GameObject.Find("RoomJoinButton");
         connectPanel = GameObject.Find("ConnectPanel");
+        backButton = GameObject.Find("BackButton");
         connectionErrorImage = connectPanel.transform.Find("ConnectionErrorImage").gameObject;
         connectionErrorImage.SetActive(false);
 
@@ -64,6 +67,11 @@ public class ChooseServerManager : NetworkBehaviour
         {
             roomJoinButtonComponent = joinButton.GetComponent<Button>();
             if (roomJoinButtonComponent != null)roomJoinButtonComponent.onClick.AddListener(OnRoomJoinButtonClicked);
+        }
+        if (backButton != null)
+        {
+            backButtonComponent = backButton.GetComponent<Button>();
+            if (backButtonComponent != null)backButtonComponent.onClick.AddListener(OnBackButtonClicked);
         }
         
         GameObject codeTextObject = GameObject.Find("JoinCodeText");//sceneからjoincodeを表示するテキストを取得
@@ -95,6 +103,16 @@ public class ChooseServerManager : NetworkBehaviour
             connectPanel.SetActive(true);
             GameObject soundobj=Instantiate(SoundObject);
             soundobj.GetComponent<PlaySound>().PlaySE(decideSound);
+        }
+    }
+    
+    private void OnBackButtonClicked()
+    {
+        if (connectPanel != null)
+        {
+            connectPanel.SetActive(false);
+            GameObject soundobj=Instantiate(SoundObject);
+            soundobj.GetComponent<PlaySound>().PlaySE(cancelSound);
         }
     }
     
