@@ -157,7 +157,7 @@ public class ChooseServerManager : NetworkBehaviour
                 allocation.ConnectionData
                 );*/
 
-                //Debug.Log(joinCode);
+                Debug.Log(joinCode);
 
                 codeText.text=$"{joinCode}";
 
