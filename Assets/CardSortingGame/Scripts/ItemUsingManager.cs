@@ -504,11 +504,13 @@ public class ItemUsingManager : MonoBehaviour
         {
             networkSystem.informationManager.AddInformationText($"{itemNameDict[1]}の効果: 選んだ{initialIndex + 1}番目のカードは{finalIndex + 1}番目まで移動しました。");
             Debug.Log($"{itemNameDict[1]}の効果: 選んだ{initialIndex + 1}番目のカードは{finalIndex + 1}番目まで移動しました。");
+            networkSystem.Log(2);
         }
         else
         {
             networkSystem.informationManager.AddInformationText($"{itemNameDict[1]}の効果: 選んだ{initialIndex + 1}番目のカードは移動しませんでした。");
             Debug.Log($"{itemNameDict[1]}の効果: 選んだ{initialIndex + 1}番目のカードは移動しませんでした。");
+            networkSystem.Log(2);
         }
         
         foreach (GameObject card in clonedCards) Destroy(card);
