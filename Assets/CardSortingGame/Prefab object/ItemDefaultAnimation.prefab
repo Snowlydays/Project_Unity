@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 3529062602190494}
   - component: {fileID: 308566368986262342}
   - component: {fileID: 6868351426167295308}
-  - component: {fileID: 1292648826168163472}
+  - component: {fileID: 8001141066760305915}
   m_Layer: 5
-  m_Name: ItemThreeOtherAnimation
+  m_Name: ItemDefaultAnimation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -29,7 +29,7 @@ RectTransform:
   m_GameObject: {fileID: 3517201315559664316}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: -1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -67,7 +67,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: fa5da8bf3cb3641f09c27c3e158b2a3e, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 0f71a93c03e904defa36b9d83f9e2e90, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -96,9 +96,8 @@ MonoBehaviour:
   itemSprites: []
   itemThreeMyObject: {fileID: 0}
   itemThreeOtherObject: {fileID: 0}
-  itemDefaultObject: {fileID: 0}
   newSprite: {fileID: 0}
---- !u!95 &1292648826168163472
+--- !u!95 &8001141066760305915
 Animator:
   serializedVersion: 5
   m_ObjectHideFlags: 0
@@ -108,7 +107,7 @@ Animator:
   m_GameObject: {fileID: 3517201315559664316}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: eb956fb64121442c99b896d8399eabc0, type: 2}
+  m_Controller: {fileID: 9100000, guid: 44b7326db308e43508ff8da390759e03, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

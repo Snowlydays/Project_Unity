@@ -175,14 +175,37 @@ public class ItemUsingManager : MonoBehaviour
     }
 
     IEnumerator ItemFourCheckAndUse(){
+        if(mylist.Contains(3) && otherlist.Contains(3)){
+            networkSystem.questionController.isNotQuestion=true;
+            networkSystem.animationController.CreateDefaultItem(3,-300f);
+            networkSystem.animationController.CreateDefaultOtherItem(3,300f);
+            yield return new WaitForSeconds(1.8f);
+            networkSystem.informationManager.AddInformationText($"{itemNameDict[4]}の効果: 相手は質問できない");
+            Debug.Log($"{itemNameDict[3]}の効果: 相手は質問できない");
+            networkSystem.informationManager.AddInformationText($"{itemNameDict[4]}の効果: 自分の質問が封じられた。");
+            Debug.Log($"{itemNameDict[3]}の効果: 自分の質問が封じられた。");
+            yield break;
+        }
+        if(mylist.Contains(3)){
+            networkSystem.animationController.CreateDefaultItem(3);
+            yield return new WaitForSeconds(1.8f);
+            networkSystem.informationManager.AddInformationText($"{itemNameDict[4]}の効果: 相手は質問できない");
+            Debug.Log($"{itemNameDict[3]}の効果: 相手は質問できない");
+            yield break;
+        }
         if(otherlist.Contains(3)){
             //もし相手がアイテム4を持っていたら、質問不可能bool値をtrueにする。
+            networkSystem.animationController.CreateDefaultOtherItem(3);
             networkSystem.questionController.isNotQuestion=true;
-            yield return null;
+            yield return new WaitForSeconds(1.8f);
+            networkSystem.informationManager.AddInformationText($"{itemNameDict[4]}の効果: 自分の質問が封じられた。");
+            Debug.Log($"{itemNameDict[3]}の効果: 自分の質問が封じられた。");
+            yield break;
         }
     }
 
     IEnumerator ItemUseAwaiting(){
+        int lastitem=0;
         foreach(int item in mylist){
             nowUsingItem=item;
             Debug.Log($"{itemNameDict[item+1]}を使用しました");
@@ -207,10 +230,15 @@ public class ItemUsingManager : MonoBehaviour
                 networkSystem.Log(6);
                 break;
             }
-            ApplyItemEffect(item);
+            if(item!=3)networkSystem.animationController.CreateDefaultItem(item);
+            yield return new WaitForSeconds(1.8f);
+            StartCoroutine(ApplyItemEffect(item));
+            lastitem=item;
             //アイテム処理が終わったらnowUsingItem=-1;にして次のアイテム処理に移行させる。
             yield return new WaitUntil(() => nowUsingItem==-1);
         }
+        if(lastitem==0 || lastitem==5)yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1.5f);
         allUsedItem=true;
     }
 
@@ -232,6 +260,8 @@ public class ItemUsingManager : MonoBehaviour
             //リストからアイテム3をremoveして終了
             myusethree=false;
             mylist.Remove(2);
+            networkSystem.informationManager.AddInformationText($"{itemNameDict[3]}の効果: アイテムを奪えなかった");
+            Debug.Log($"{itemNameDict[3]}の効果: アイテムを奪えなかった");
             yield break;
         }
         
@@ -267,7 +297,7 @@ public class ItemUsingManager : MonoBehaviour
             //その後奪った相手のアイテムをremove
             if(mygetitem!=2){
                 mylist[mylist.IndexOf(2)]=mygetitem;
-                //ここに自分がアイテム3を使った時の効果アニメーション
+                networkSystem.Log(3);//ログ適応
             }
             otherlist.Remove(mygetitem);
         }
@@ -276,7 +306,6 @@ public class ItemUsingManager : MonoBehaviour
             //相手も同様
             if(othergetitem!=2){
                 otherlist[otherlist.IndexOf(2)]=othergetitem;
-                //ここに相手がアイテム3を使った時の効果アニメーション
             }
             mylist.Remove(othergetitem);
         }
@@ -286,6 +315,8 @@ public class ItemUsingManager : MonoBehaviour
             if(mygetitem!=2){
                 networkSystem.animationController.CreateMyThreeItem(mygetitem);
                 yield return new WaitForSeconds(3.5f);
+                networkSystem.informationManager.AddInformationText($"{itemNameDict[3]}の効果: 相手の{itemNameDict[mygetitem]}を奪った。");
+                Debug.Log($"{itemNameDict[3]}の効果: 相手の{itemNameDict[mygetitem]}を奪った。");
             }
         }
 
@@ -294,6 +325,8 @@ public class ItemUsingManager : MonoBehaviour
             if(othergetitem!=2){
                 networkSystem.animationController.CreateOtherThreeItem(othergetitem);
                 yield return new WaitForSeconds(3.5f);
+                networkSystem.informationManager.AddInformationText($"{itemNameDict[3]}の効果: 相手に{itemNameDict[othergetitem]}を奪われた。");
+                Debug.Log($"{itemNameDict[3]}の効果: 相手に{itemNameDict[othergetitem]}を奪われた。");
             }
         }
 
@@ -303,10 +336,20 @@ public class ItemUsingManager : MonoBehaviour
                 networkSystem.animationController.CreateMyThreeItem(mygetitem,-300f);
                 networkSystem.animationController.CreateOtherThreeItem(othergetitem,300f);
                 yield return new WaitForSeconds(3.5f);
+                networkSystem.informationManager.AddInformationText($"{itemNameDict[3]}の効果: 相手の{itemNameDict[mygetitem]}を奪った。");
+                Debug.Log($"{itemNameDict[3]}の効果: 相手の{itemNameDict[mygetitem]}を奪った。");
+                networkSystem.informationManager.AddInformationText($"{itemNameDict[3]}の効果: 相手に{itemNameDict[othergetitem]}を奪われた。");
+                Debug.Log($"{itemNameDict[3]}の効果: 相手に{itemNameDict[othergetitem]}を奪われた。");
             }
         }
 
+        if(mygetitem==-1 || mygetitem==2){
+            networkSystem.informationManager.AddInformationText($"{itemNameDict[3]}の効果: アイテムを奪えなかった");
+            Debug.Log($"{itemNameDict[3]}の効果: アイテムを奪えなかった");
+        }
+
         //アイテム3アニメーションから3.5秒後にログ表示、ログを1.5秒程度見せてから次へ
+        if(mygetitem!=-1 || othergetitem!=-1)yield return new WaitForSeconds(1.5f);
     }
 
     //アイテム3の位置を変更するのに使用するメソッド
@@ -332,7 +375,7 @@ public class ItemUsingManager : MonoBehaviour
        //Debug.Log("並び替え完了");
     }
 
-    private void ApplyItemEffect(int itemIdx)
+    IEnumerator ApplyItemEffect(int itemIdx)
     {
         // ここにアイテムの効果を実装
         switch(itemIdx)
@@ -344,6 +387,8 @@ public class ItemUsingManager : MonoBehaviour
             case 1:
                 networkSystem.questionController.isGetDiff=true;
                 nowUsingItem=-1;
+                networkSystem.informationManager.AddInformationText($"{itemNameDict[2]}の効果: 次比較するカードの差がわかる");
+                Debug.Log($"{itemNameDict[2]}の効果: 次比較するカードの差がわかる");
             break;
 
             //2,3は外部処理のためここには記述なし
@@ -351,6 +396,8 @@ public class ItemUsingManager : MonoBehaviour
             case 4:
                 networkSystem.questionController.isThreeSelect=true;
                 nowUsingItem=-1;
+                networkSystem.informationManager.AddInformationText($"{itemNameDict[5]}の効果: 次の質問でカードを3つ比較する");
+                Debug.Log($"{itemNameDict[5]}の効果: 次の質問でカードを3つ比較する");
             break;
 
             case 5:
@@ -361,6 +408,8 @@ public class ItemUsingManager : MonoBehaviour
                 nowUsingItem=-1;
             break;
         }
+
+        yield break;
     }
 
     IEnumerator ItemUseOne()
@@ -429,12 +478,12 @@ public class ItemUsingManager : MonoBehaviour
         // 移動方向と移動量をinfoTextでプレイヤーへ通知
         if(distanceMoved != 0)
         {
-            networkSystem.informationManager.AddQuestionResult($"{itemNameDict[1]}の効果: 選んだ{initialIndex + 1}番目のカードは{finalIndex + 1}番目まで移動しました。");
+            networkSystem.informationManager.AddInformationText($"{itemNameDict[1]}の効果: 選んだ{initialIndex + 1}番目のカードは{finalIndex + 1}番目まで移動しました。");
             Debug.Log($"{itemNameDict[1]}の効果: 選んだ{initialIndex + 1}番目のカードは{finalIndex + 1}番目まで移動しました。");
         }
         else
         {
-            networkSystem.informationManager.AddQuestionResult($"{itemNameDict[1]}の効果: 選んだ{initialIndex + 1}番目のカードは移動しませんでした。");
+            networkSystem.informationManager.AddInformationText($"{itemNameDict[1]}の効果: 選んだ{initialIndex + 1}番目のカードは移動しませんでした。");
             Debug.Log($"{itemNameDict[1]}の効果: 選んだ{initialIndex + 1}番目のカードは移動しませんでした。");
         }
         
@@ -495,12 +544,12 @@ public class ItemUsingManager : MonoBehaviour
             //カードの値より入力した値が大きかった時
             Debug.Log($"{itemNameDict[6]}の効果:カードの数値は{chooseNumber}より大きいです");
             networkSystem.Log(7);
-            networkSystem.informationManager.AddQuestionResult($"{itemNameDict[2]}の効果:選んだカードの数値は{chooseNumber}より大きいです");
+            networkSystem.informationManager.AddInformationText($"{itemNameDict[6]}の効果:選んだカードの数値は{chooseNumber}より大きいです");
         }else{
             //入力した値がカードの値以下だった時
             Debug.Log($"{itemNameDict[6]}の効果:カードの数値は{chooseNumber}以下です");
             networkSystem.Log(8);
-            networkSystem.informationManager.AddQuestionResult($"{itemNameDict[2]}の効果:選んだカードの数値は{chooseNumber}以下です");
+            networkSystem.informationManager.AddInformationText($"{itemNameDict[6]}の効果:選んだカードの数値は{chooseNumber}以下です");
         }
 
         foreach (GameObject card in clonedCards) Destroy(card);
