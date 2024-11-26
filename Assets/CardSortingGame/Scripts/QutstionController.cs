@@ -292,7 +292,7 @@ public class QutstionController : MonoBehaviour
             Diff=Mathf.Abs(leftName[leftName.Length - 1] - rightName[rightName.Length - 1]);
 
             Debug.Log($"{ItemUsingManager.itemNameDict[2]}の効果:カードの差は"+Diff.ToString()+"です");
-            networkSystem.Log(4); // レンズの効果
+            networkSystem.Log(5, Diff); // レンズの効果
             informationText = informationText + $"\n{ItemUsingManager.itemNameDict[2]}の効果:カードの差は" + Diff.ToString() + "です";
 
             isGetDiff=false;
@@ -317,16 +317,22 @@ public class QutstionController : MonoBehaviour
 
         int maxindex=Array.IndexOf(array,array.Max());
 
+        int leftOder = 0;
+        int middleOder = 0;
+        int rightOder = 0;
         switch(maxindex)
         {
             case 0:
                 left="big";
+                leftOder = 1;
             break;
             case 1:
                 middle="big";
+                middleOder = 1;
             break;
             case 2:
                 right="big";
+                rightOder = 1;
             break;
         }
 
@@ -336,25 +342,31 @@ public class QutstionController : MonoBehaviour
         {
             case 0:
                 left="small";
+                leftOder = 3;
             break;
             case 1:
                 middle="small";
+                middleOder = 3;
             break;
             case 2:
                 right="small";
+                rightOder = 3; 
             break;
         }
 
         if(left==""){
             left="middle";
+            leftOder = 2;
         }else if(middle==""){
             middle="middle";
+            middleOder = 2;
         }else{
             right="middle";
+            rightOder = 2;
         }
 
         Debug.Log($"{ItemUsingManager.itemNameDict[5]}の効果:"+"Left:"+left+" middle:"+middle+" right:"+right);
-        networkSystem.Log(14);
+        networkSystem.Log(14, leftOder, middleOder, rightOder);
         networkSystem.informationManager.AddQuestionResult($"{ItemUsingManager.itemNameDict[5]}の効果:"+"左:"+left+" 中:"+middle+" 右:"+right);
         return 0;
     }

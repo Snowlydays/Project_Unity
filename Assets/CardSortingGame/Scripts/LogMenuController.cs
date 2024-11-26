@@ -66,7 +66,7 @@ public class LogMenuController : MonoBehaviour
 
         drawerPanel.anchoredPosition = new Vector2(-drawerPanel.rect.width, drawerPanel.anchoredPosition.y);
         networkSystem = FindObjectOfType<NetworkSystem>();
-        // Debug();
+        Debug();
     }
 
     void Debug()
@@ -87,25 +87,29 @@ public class LogMenuController : MonoBehaviour
         new LogUnit(TabType.Opponent, false, 3);
 
         new LogUnit(TabType.All, true, 12);        
-        new LogUnit(TabType.Myself, true, 12); 
+        new LogUnit(TabType.Myself, true, 12);  
 
-        new LogUnit(TabType.All, true, 1);        
-        new LogUnit(TabType.Myself, true, 1);        
+        new LogUnit(TabType.All, true, 2, 2);        
+        new LogUnit(TabType.Myself, true, 2, 2);
+        new LogUnit(TabType.All, true, 5, 2);        
+        new LogUnit(TabType.Myself, true, 5, 2); 
+        new LogUnit(TabType.All, true, 7, 3);        
+        new LogUnit(TabType.Myself, true, 7, 3); 
+        new LogUnit(TabType.All, true, 8, 4);        
+        new LogUnit(TabType.Myself, true, 8, 4); 
+        new LogUnit(TabType.All, true, 14, 1, 2, 3);        
+        new LogUnit(TabType.Myself, true, 14, 1, 2, 3); 
 
-        new LogUnit(TabType.All, false, 3);        
-        new LogUnit(TabType.Opponent, false, 3);
-
-        new LogUnit(TabType.All, true, 12);        
-        new LogUnit(TabType.Myself, true, 12); 
-
-        new LogUnit(TabType.All, true, 12);        
-        new LogUnit(TabType.Myself, true, 12); 
-        new LogUnit(TabType.All, true, 12);        
-        new LogUnit(TabType.Myself, true, 12); 
-        new LogUnit(TabType.All, true, 12);        
-        new LogUnit(TabType.Myself, true, 12); 
-        new LogUnit(TabType.All, true, 12);        
-        new LogUnit(TabType.Myself, true, 12); 
+        new LogUnit(TabType.All, false, 2, 2);        
+        new LogUnit(TabType.Opponent, false, 2, 2); 
+        new LogUnit(TabType.All, false, 5, 2);        
+        new LogUnit(TabType.Opponent, false, 5, 2); 
+        new LogUnit(TabType.All, false, 7, 3);        
+        new LogUnit(TabType.Opponent, false, 7, 3); 
+        new LogUnit(TabType.All, false, 8, 4);        
+        new LogUnit(TabType.Opponent, false, 8, 4); 
+        new LogUnit(TabType.All, false, 14, 2, 3, 1);        
+        new LogUnit(TabType.Opponent, false, 14, 2, 3, 1); 
     }
 
     private void ManageTabState(TabType pushedButton)

@@ -12,10 +12,17 @@ public struct LogData : INetworkSerializable, IEquatable<LogData>
 {
     public int messageNum;
     public bool logIsHost;
-    public LogData(int messageNum, bool logIsHost)
+    public int dataA;
+    public int dataB;
+    public int dataC;
+    
+    public LogData(int messageNum, bool logIsHost, int dataA = -1, int dataB = -1, int dataC = -1)
     {
         this.messageNum = messageNum;
         this.logIsHost = logIsHost;
+        this.dataA = dataA;
+        this.dataB = dataB;
+        this.dataC = dataC;
     }
     public bool Equals(LogData other)
     {
@@ -731,28 +738,28 @@ public class NetworkSystem : NetworkBehaviour
         netClientItems[pos] = value;
     }
 
-    public void Log(int messageNum)
+    public void Log(int messageNum, int dataA = -1, int dataB = -1, int dataC = -1)
     {
         if(IsHost)
         {
-            LogHost(messageNum);
+            LogHost(messageNum, dataA, dataB, dataC);
         }
         else
         {
-            LogClientServerRpc(messageNum);
+            LogClientServerRpc(messageNum, dataA, dataB, dataC);
         }
     }
 
     [Unity.Netcode.ServerRpc(RequireOwnership = false)]
-    public void LogClientServerRpc(int messageNum)
+    public void LogClientServerRpc(int messageNum, int dataA = -1, int dataB = -1, int dataC = -1)
     {
-        LogData logData = new LogData(messageNum, false);
+        LogData logData = new LogData(messageNum, false, dataA, dataB, dataC);
         logList.Add(logData);
     }
 
-    public void LogHost(int messageNum)
+    public void LogHost(int messageNum, int dataA = -1, int dataB = -1, int dataC = -1)
     {
-        LogData logData = new LogData(messageNum, true);
+        LogData logData = new LogData(messageNum, true, dataA, dataB, dataC);
         logList.Add(logData);
     }
     
