@@ -4,7 +4,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Unity.VisualScripting;
 
 public class ItemPhaseManager : MonoBehaviour
 {
@@ -24,7 +23,11 @@ public class ItemPhaseManager : MonoBehaviour
     [SerializeField] private GameObject inventoryItemPrefab; // 所有アイテム表示用のプレハブ
     [SerializeField] private Sprite[] itemIcons; // 各アイテムのアイコン
     [SerializeField] private Sprite[] itemDescriptions; // 各アイテムの説明
-    
+
+    // PopupCanvasのPopupParent参照
+    [SerializeField] private Transform popupParentTransform; // PopupCanvasのPopupParentを割り当てる
+    [SerializeField] private GameObject itemDescriptionPopupPrefab; // アイテムを表示させるプレファブ
+
     // Toggleオブジェクトを管理するリスト
     private List<GameObject> toggleList = new List<GameObject>();
     [SerializeField] private Color toggleOnColor = Color.green; // トグルがオンの時の色
@@ -65,7 +68,7 @@ public class ItemPhaseManager : MonoBehaviour
     {
         Debug.Log("アイテムフェーズ開始");
         // DistributeItem();
-        TestGetAllItem();//アイテムテスト用
+        TestGetAllItem(); // アイテムテスト用
         SortToggles(); // トグルのボタンをソート
         itemDisplayPanel.gameObject.SetActive(true); // アイテムディスプレイを表示
         confirmButton.gameObject.SetActive(true); // 決定ボタンを表示
@@ -73,12 +76,12 @@ public class ItemPhaseManager : MonoBehaviour
 
     public void UpdateInventoryUI()
     {
-        UpdateInventory(myItems,myInventoryPanel); // 自分の所有アイテムの表示を更新
+        UpdateInventory(myItems, myInventoryPanel); // 自分の所有アイテムの表示を更新
         UpdateInventory(otherItems, otherInventoryPanel); // 相手の所有アイテムの表示を更新
     }
     
     // 表示するアイテムを更新するメソッド
-    private void UpdateInventory(bool [] items, Transform panel)
+    private void UpdateInventory(bool[] items, Transform panel)
     {
         // 既存のアイコンをクリア
         foreach (Transform child in panel)
@@ -87,11 +90,11 @@ public class ItemPhaseManager : MonoBehaviour
         }
         
         // 所有しているアイテムのアイコンを表示
-        for(int i = 0;i < ITEM_NUM;i++)
+        for(int i = 0; i < ITEM_NUM; i++)
         {
             if (items[i])
             {
-                CreateInventoryItem(i,panel);
+                CreateInventoryItem(i, panel);
             }
         }
     }
@@ -114,6 +117,16 @@ public class ItemPhaseManager : MonoBehaviour
         itemButton.onClick.AddListener(() => ShowItemDescription(inventoryItem, itemIdx)); 
     }
 
+    private void ToggleDescriptionPopup(int itemIdx)
+    {
+        // 現在開いているポップアップがあれば閉じる
+        if (ItemLongPressHandler.currentActivePopup != null)
+        {
+            Destroy(ItemLongPressHandler.currentActivePopup);
+            ItemLongPressHandler.currentActivePopup = null;
+        }
+    }
+    
     private void ShowItemDescription(GameObject item, int itemIdx)
     {
         Image itemDescription = itemDescriptionPanel.GetComponent<Image>();
@@ -132,11 +145,11 @@ public class ItemPhaseManager : MonoBehaviour
     private void OnConfirmButtonClicked()
     {
         Debug.Log("決定ボタンがクリックされた");
-        GameObject soundobj=Instantiate(SoundObject);
+        GameObject soundobj = Instantiate(SoundObject);
         soundobj.GetComponent<PlaySound>().PlaySE(confirmSound);
         foreach (int itemIdx in selectedItems)
         {
-            networkSystem.ChangeItems(itemIdx,false);
+            networkSystem.ChangeItems(itemIdx, false);
         }
 
         networkSystem.ChangeItemSelects(selectedItems.ToArray());
@@ -155,7 +168,7 @@ public class ItemPhaseManager : MonoBehaviour
         selectedItems.Clear(); // 選択していたアイテムをクリア
         itemDisplayPanel.gameObject.SetActive(false);
         confirmButton.gameObject.SetActive(false);
-        //networkSystem.ToggleReady();
+        // networkSystem.ToggleReady();
     }
 
     // プレイヤーにアイテムを配布するメソッド
@@ -176,8 +189,8 @@ public class ItemPhaseManager : MonoBehaviour
             // 未所有のアイテムリストからランダムに選び、プレイヤーへ配る
             int randomIdx = UnityEngine.Random.Range(0, unownedItems.Count);
             int distributedItemIdx = unownedItems[randomIdx];
-            networkSystem.ChangeItems(distributedItemIdx,true);
-            Debug.Log($"アイテム{distributedItemIdx+1}:を配布");
+            networkSystem.ChangeItems(distributedItemIdx, true);
+            Debug.Log($"アイテム{distributedItemIdx + 1}:を配布");
 
             // アイテム選択用トグルを作成
             CreateToggle(distributedItemIdx);
@@ -187,7 +200,7 @@ public class ItemPhaseManager : MonoBehaviour
             Debug.Log("全てのアイテムを所有中");
         }
     }
-
+    
     // アイテムの使用・不使用を選択できるトグルを作成するメソッド
     private void CreateToggle(int itemIdx)
     {
@@ -203,7 +216,7 @@ public class ItemPhaseManager : MonoBehaviour
         // Toggleコンポーネントとテキストの設定
         Toggle toggle = toggleObj.GetComponent<Toggle>();
         TextMeshProUGUI toggleText = toggleObj.GetComponentInChildren<TextMeshProUGUI>();
-        toggleText.text = $"{itemIdx+1}"; // ソート時に使用するため設定
+        toggleText.text = $"{itemIdx + 1}"; // ソート時に使用するため設定
         Color transparentColor = toggleText.color;
         transparentColor.a = 0f; // アルファ値を0にして透明にする
         toggleText.color = transparentColor;
@@ -220,11 +233,26 @@ public class ItemPhaseManager : MonoBehaviour
         toggle.onValueChanged.AddListener((isOn) =>
         {
             backgroundImage.color = isOn ? toggleOnColor : toggleOffColor;
-            OnToggleValueChanged(isOn, itemIdx);
+            OnToggleValueChanged(isOn, itemIdx, toggleObj);
         });
 
         // Toggleをリストに追加
         toggleList.Add(toggleObj);
+
+        // ItemLongPressHandlerを初期化
+        ItemLongPressHandler longPressHandler = toggleObj.GetComponent<ItemLongPressHandler>();
+        if (longPressHandler != null)
+        {
+            longPressHandler.Initialize(
+                itemDescriptions[itemIdx],
+                itemDescriptionPopupPrefab,
+                popupParentTransform
+            );
+        }
+        else
+        {
+            Debug.LogWarning("ItemLongPressHandlerがトグルプレハブにアタッチされていません。");
+        }
     }
 
     // Toggleのボタンを昇順に並び変えるメソッド(これがないとボタンが作成された順に並ぶ)
@@ -245,14 +273,22 @@ public class ItemPhaseManager : MonoBehaviour
         }
     }
 
-    private void OnToggleValueChanged(bool isOn, int itemIdx)
+    private void OnToggleValueChanged(bool isOn, int itemIdx, GameObject toggleObj)
     {
+        ItemLongPressHandler longPressHandler = toggleObj.GetComponent<ItemLongPressHandler>();
+        if (longPressHandler != null && longPressHandler.HasLongPressed)
+        {
+            // 長押しが検出されていた場合、トグルの状態変更を無視
+            longPressHandler.HasLongPressed = false;
+            return;
+        }
+
         if (isOn)
         {
             if (!selectedItems.Contains(itemIdx))
             {
-                Debug.Log($"アイテム{itemIdx} を選択");
-                GameObject soundobj=Instantiate(SoundObject);
+                Debug.Log($"アイテム{itemIdx + 1} を選択");
+                GameObject soundobj = Instantiate(SoundObject);
                 soundobj.GetComponent<PlaySound>().PlaySE(decideSound);
                 selectedItems.Add(itemIdx);
             }
@@ -261,16 +297,16 @@ public class ItemPhaseManager : MonoBehaviour
         {
             if (selectedItems.Contains(itemIdx))
             {
-                Debug.Log($"アイテム{itemIdx} の選択を解除");
-                GameObject soundobj=Instantiate(SoundObject);
+                Debug.Log($"アイテム{itemIdx + 1} の選択を解除");
+                GameObject soundobj = Instantiate(SoundObject);
                 soundobj.GetComponent<PlaySound>().PlaySE(cancelSound);
                 selectedItems.Remove(itemIdx);
             }
         }
-        //networkSystem.ChangeItemSelects(selectedItems.ToArray());
+        // networkSystem.ChangeItemSelects(selectedItems.ToArray());
     }
 
-    //テスト用
+    // テスト用
     private void TestGetAllItem()
     {
         // 未所有のアイテムをリストへ追加
@@ -285,8 +321,8 @@ public class ItemPhaseManager : MonoBehaviour
         
         foreach(int id in unownedItems)
         {
-            networkSystem.ChangeItems(id,true);
-            Debug.Log($"アイテム{id+1}:を配布");
+            networkSystem.ChangeItems(id, true);
+            Debug.Log($"アイテム{id + 1}:を配布");
             
             // アイテム選択用トグルを作成
             CreateToggle(id);
@@ -299,28 +335,28 @@ public class ItemPhaseManager : MonoBehaviour
         switch(itemIdx)
         {
             case 0:
-
-            break;
+                // アイテム0の効果
+                break;
 
             case 1:
-                networkSystem.questionController.isGetDiff=true;
-            break;
+                networkSystem.questionController.isGetDiff = true;
+                break;
 
             case 2:
-
-            break;
+                // アイテム2の効果
+                break;
 
             case 3:
-
-            break;
+                // アイテム3の効果
+                break;
 
             case 4:
-
-            break;
+                // アイテム4の効果
+                break;
 
             case 5:
-                networkSystem.questionController.isThreeSelect=true;
-            break;
+                networkSystem.questionController.isThreeSelect = true;
+                break;
         }
     }
 }
