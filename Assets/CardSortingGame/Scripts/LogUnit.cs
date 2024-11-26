@@ -6,47 +6,64 @@ using UnityEngine.UI;
 public class LogUnit
 {
     private LogMenuController logMenuController;
+    public TabType tabType;
     public bool isMyLog;
     public GameObject logObject;
     public Sprite logSprite;
 
     /*
-    0: エリクサー
-    1: オーブ
-    2: オーブ効果
-    3: ミラー
-    4: レンズ
+    0: エリクサー *
+    1: オーブ * 
+    2: オーブ効果 
+    3: ミラー *
+    4: レンズ * 
     5: レンズ効果
-    6: 天秤
-    7: 天秤効果大
-    8: 天秤効果小
-    9: 失敗
+    6: 天秤 *
+    7: 天秤効果大 *
+    8: 天秤効果小 *
+    9: 失敗 *
     10: 詠唱
     11: 質問
-    12: 質問(エリクサー)
+    12: (質問)エリクサー
     13: 質問(鎖)
-    14: 質問結果(エリクサー)
-    15: 質問結果(右)
-    16: 質問結果(左)
-    17: 鎖
+    14: 質問結果(エリクサー) *
+    15: 質問結果(右) *
+    16: 質問結果(左) *
+    17: 鎖 *
     */
 
-    public LogUnit(bool isMyLog, int messageNum)
+    public LogUnit(TabType tabType, bool isMyLog, int messageNum)
     {
         logMenuController = Object.FindObjectOfType<LogMenuController>();
-        this.isMyLog = isMyLog;
-        if(this.isMyLog)
+        this.tabType = tabType;
+        
+        Sprite sprite;
+        GameObject prefab;
+        if(isMyLog)
         {
-            if(logMenuController == null) Debug.Log("controller is null");
-            if(logMenuController.myLogPrefab == null) Debug.Log("prefab is null");
-            if(logMenuController.content == null) Debug.Log("content is null");
-            logObject = Object.Instantiate(logMenuController.myLogPrefab, logMenuController.content.transform.parent);
-            logObject.transform.Find("Image").GetComponent<Image>().sprite = logMenuController.myLogSprites[messageNum];
+            sprite = logMenuController.myLogSprites[messageNum];
+            prefab = logMenuController.myLogPrefab;
         }
         else
         {
-            logObject = Object.Instantiate(logMenuController.opponentLogPrefab, logMenuController.content.transform.parent);
-            logObject.transform.Find("Image").GetComponent<Image>().sprite = logMenuController.opponentLogSprites[messageNum];
+            sprite = logMenuController.opponentLogSprites[messageNum];
+            prefab = logMenuController.opponentLogPrefab;
+        }
+
+        if(tabType == TabType.All)
+        {
+            logObject = Object.Instantiate(prefab, logMenuController.allLogMenu.transform);
+            logObject.transform.Find("Image").GetComponent<Image>().sprite = sprite;
+        }
+        else if(tabType == TabType.Myself)
+        {
+            logObject = Object.Instantiate(prefab, logMenuController.myLogMenu.transform);
+            logObject.transform.Find("Image").GetComponent<Image>().sprite = sprite;
+        }
+        else if(tabType == TabType.Opponent)
+        {
+            logObject = Object.Instantiate(prefab, logMenuController.oppLogMenu.transform);
+            logObject.transform.Find("Image").GetComponent<Image>().sprite = sprite;
         }
     }
 

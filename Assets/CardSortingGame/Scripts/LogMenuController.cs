@@ -4,6 +4,8 @@ using TMPro;
 using System.Collections;
 using System.Collections.Generic;
 
+public enum TabType { All, Myself, Opponent }
+
 public class LogMenuController : MonoBehaviour
 {
     public Button myTabButton, opponentTabButton, closeButton;
@@ -11,14 +13,15 @@ public class LogMenuController : MonoBehaviour
     public List<LogUnit> myLogs = new List<LogUnit>();
     public List<LogUnit> opponentLogs = new List<LogUnit>();
 
-    [SerializeField] public GameObject content;
+    [SerializeField] public GameObject allLogMenu;
+    [SerializeField] public GameObject myLogMenu;
+    [SerializeField] public GameObject oppLogMenu;
     [SerializeField] public GameObject myLogPrefab;
     [SerializeField] public GameObject opponentLogPrefab;
 
     public Sprite[] myLogSprites = new Sprite[18];
     public Sprite[] opponentLogSprites = new Sprite[18];
-
-    public enum TabType { All, Myself, Opponent }
+    
     private TabType currentTab = TabType.All;
 
     [SerializeField] private RectTransform drawerPanel;
@@ -122,13 +125,19 @@ public class LogMenuController : MonoBehaviour
         switch(currentTab)
         {
             case TabType.All:
-                DisplayLogEntries(allLogs);
+                myLogMenu.SetActive(false);
+                oppLogMenu.SetActive(false);
+                allLogMenu.SetActive(true);
                 break;
             case TabType.Myself:
-                DisplayLogEntries(myLogs);
+                myLogMenu.SetActive(true);
+                oppLogMenu.SetActive(false);
+                allLogMenu.SetActive(false);
                 break;
             case TabType.Opponent:
-                DisplayLogEntries(opponentLogs);
+                myLogMenu.SetActive(false);
+                oppLogMenu.SetActive(true);
+                allLogMenu.SetActive(false);
                 break;
         }
     }

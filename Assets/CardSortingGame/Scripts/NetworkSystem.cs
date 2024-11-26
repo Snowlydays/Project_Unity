@@ -307,13 +307,13 @@ public class NetworkSystem : NetworkBehaviour
 
         if(logData.logIsHost == IsHost)
         {
-            logMenuController.allLogs.Add(new LogUnit(true, logData.messageNum));
-            logMenuController.myLogs.Add(new LogUnit(true, logData.messageNum));
+            logMenuController.allLogs.Add(new LogUnit(TabType.All, true, logData.messageNum));
+            logMenuController.myLogs.Add(new LogUnit(TabType.Myself, true, logData.messageNum));
         }
         else
         {
-            logMenuController.allLogs.Add(new LogUnit(false, logData.messageNum));
-            logMenuController.opponentLogs.Add(new LogUnit(false, logData.messageNum));
+            logMenuController.opponentLogs.Add(new LogUnit(TabType.All, false, logData.messageNum));
+            logMenuController.opponentLogs.Add(new LogUnit(TabType.Opponent, false, logData.messageNum));
         }
     }
     
