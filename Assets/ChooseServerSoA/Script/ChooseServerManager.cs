@@ -27,6 +27,7 @@ public class ChooseServerManager : NetworkBehaviour
     GameObject joinButton;
     private GameObject connectPanel;
     private Button roomJoinButtonComponent;
+    public GameObject connectionErrorImage;
     
     private const string PASSWORD_CHARS = 
         "0123456789abcdefghijklmnopqrstuvwxyz";
@@ -56,6 +57,8 @@ public class ChooseServerManager : NetworkBehaviour
         waitObj = GameObject.Find("ConnectWaiting");
         joinButton = GameObject.Find("RoomJoinButton");
         connectPanel = GameObject.Find("ConnectPanel");
+        connectionErrorImage = connectPanel.transform.Find("ConnectionErrorImage").gameObject;
+        connectionErrorImage.SetActive(false);
 
         if (joinButton != null)
         {
@@ -181,6 +184,7 @@ public class ChooseServerManager : NetworkBehaviour
             if(joinCode==""){
                 return;
             }
+            connectionErrorImage.SetActive(false);
             clientstart=true;
             try {
                 Debug.Log($"Joining... (code: {joinCode})");
@@ -199,6 +203,7 @@ public class ChooseServerManager : NetworkBehaviour
                 Debug.Log("接続に失敗しました!");
                 clientstart=false;
                 codeText.text="入室に失敗しました";
+                connectionErrorImage.SetActive(true);
             }
         }
     }
