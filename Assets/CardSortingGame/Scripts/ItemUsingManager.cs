@@ -97,7 +97,7 @@ public class ItemUsingManager : MonoBehaviour
         GameObject textArea = inputText.transform.Find("TextArea").gameObject;
         GameObject placeholder = textArea.transform.Find("Placeholder").gameObject;
         TextMeshProUGUI placeholderText = placeholder.GetComponent<TextMeshProUGUI>();
-        placeholderText.text = $"1からまで{NetworkSystem.cardNum}までの値を入れてください";
+        placeholderText.text = $"1から{NetworkSystem.cardNum}までの数字を入力してください。";
         
         ItemSixBG.SetActive(false);
         ItemOneBG.SetActive(false);
