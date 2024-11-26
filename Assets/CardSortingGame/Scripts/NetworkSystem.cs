@@ -310,17 +310,21 @@ public class NetworkSystem : NetworkBehaviour
     public void OnNetLogChanged(NetworkListEvent<LogData> changeEvent)
     {
         Debug.Log("ログ追加");
-        LogData logData = changeEvent.Value;
+        LogData logData = logList[logList.Count - 1];
 
+        if(logData.messageNum == 14)
+        {
+            Debug.Log(logData.dataA.ToString() + " " + logData.dataB.ToString() + " " + logData.dataC.ToString());
+        }
         if(logData.logIsHost == IsHost)
         {
-            logMenuController.allLogs.Add(new LogUnit(TabType.All, true, logData.messageNum));
-            logMenuController.myLogs.Add(new LogUnit(TabType.Myself, true, logData.messageNum));
+            logMenuController.allLogs.Add(new LogUnit(TabType.All, true, logData.messageNum, logData.dataA, logData.dataB, logData.dataC));
+            logMenuController.myLogs.Add(new LogUnit(TabType.Myself, true, logData.messageNum, logData.dataA, logData.dataB, logData.dataC));
         }
         else
         {
-            logMenuController.opponentLogs.Add(new LogUnit(TabType.All, false, logData.messageNum));
-            logMenuController.opponentLogs.Add(new LogUnit(TabType.Opponent, false, logData.messageNum));
+            logMenuController.allLogs.Add(new LogUnit(TabType.All, false, logData.messageNum, logData.dataA, logData.dataB, logData.dataC));
+            logMenuController.opponentLogs.Add(new LogUnit(TabType.Opponent, false, logData.messageNum, logData.dataA, logData.dataB, logData.dataC));
         }
     }
     
