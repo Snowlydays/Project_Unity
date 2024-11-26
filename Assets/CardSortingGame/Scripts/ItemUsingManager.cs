@@ -270,9 +270,10 @@ public class ItemUsingManager : MonoBehaviour
             //リストからアイテム3をremoveして終了
             myusethree=false;
             mylist.Remove(2);
+            networkSystem.animationController.CreateMyThreeItem(2);
+            yield return new WaitForSeconds(3.5f);
             networkSystem.informationManager.AddInformationText($"{itemNameDict[3]}の効果: アイテムを奪えなかった");
             Debug.Log($"{itemNameDict[3]}の効果: アイテムを奪えなかった");
-            yield break;
         }
         
         if(mynum<=0 && otherusethree==true){
@@ -280,6 +281,10 @@ public class ItemUsingManager : MonoBehaviour
             //リストからアイテム3をremoveして終了
             otherusethree=false;
             otherlist.Remove(2);
+            networkSystem.animationController.CreateOtherThreeItem(2);
+            yield return new WaitForSeconds(3.5f);
+            networkSystem.informationManager.AddInformationText($"{itemNameDict[3]}の効果: アイテムは奪われなかった");
+            Debug.Log($"{itemNameDict[3]}の効果: アイテムは奪われなかった");
             yield break;
         }
 
@@ -322,40 +327,50 @@ public class ItemUsingManager : MonoBehaviour
 
         if(mygetitem!=-1 & othergetitem==-1){
             //自分だけ使うパターン
-            if(mygetitem!=2){
                 networkSystem.animationController.CreateMyThreeItem(mygetitem);
                 yield return new WaitForSeconds(3.5f);
+            if(mygetitem!=2){
                 networkSystem.informationManager.AddInformationText($"{itemNameDict[3]}の効果: 相手の{itemNameDict[mygetitem]}を奪った。");
                 Debug.Log($"{itemNameDict[3]}の効果: 相手の{itemNameDict[mygetitem]}を奪った。");
+            }else{
+                networkSystem.informationManager.AddInformationText($"{itemNameDict[3]}の効果: アイテムを奪えなかった");
+                Debug.Log($"{itemNameDict[3]}の効果: アイテムを奪えなかった");
             }
         }
 
         if(mygetitem==-1 & othergetitem!=-1){
             //相手だけ使うパターン
-            if(othergetitem!=2){
                 networkSystem.animationController.CreateOtherThreeItem(othergetitem);
                 yield return new WaitForSeconds(3.5f);
+            if(othergetitem!=2){
                 networkSystem.informationManager.AddInformationText($"{itemNameDict[3]}の効果: 相手に{itemNameDict[othergetitem]}を奪われた。");
                 Debug.Log($"{itemNameDict[3]}の効果: 相手に{itemNameDict[othergetitem]}を奪われた。");
+            }else{
+                networkSystem.informationManager.AddInformationText($"{itemNameDict[3]}の効果: アイテムは奪われなかった");
+                Debug.Log($"{itemNameDict[3]}の効果: アイテムは奪われなかった");
             }
         }
 
         if(mygetitem!=-1 & othergetitem!=-1){
             //両方使うパターン
-            if(mygetitem!=2 & othergetitem!=2){
                 networkSystem.animationController.CreateMyThreeItem(mygetitem,-300f);
                 networkSystem.animationController.CreateOtherThreeItem(othergetitem,300f);
                 yield return new WaitForSeconds(3.5f);
+            if(mygetitem!=2 & othergetitem!=2){
+                //両方成功
                 networkSystem.informationManager.AddInformationText($"{itemNameDict[3]}の効果: 相手の{itemNameDict[mygetitem]}を奪った。");
                 Debug.Log($"{itemNameDict[3]}の効果: 相手の{itemNameDict[mygetitem]}を奪った。");
                 networkSystem.informationManager.AddInformationText($"{itemNameDict[3]}の効果: 相手に{itemNameDict[othergetitem]}を奪われた。");
                 Debug.Log($"{itemNameDict[3]}の効果: 相手に{itemNameDict[othergetitem]}を奪われた。");
             }
-        }
-
-        if(mygetitem==2){
-            networkSystem.informationManager.AddInformationText($"{itemNameDict[3]}の効果: アイテムを奪えなかった");
-            Debug.Log($"{itemNameDict[3]}の効果: アイテムを奪えなかった");
+            if(mygetitem==2 & othergetitem==2){
+                //両方失敗
+                networkSystem.informationManager.AddInformationText($"{itemNameDict[3]}の効果: アイテムを奪えなかった");
+                Debug.Log($"{itemNameDict[3]}の効果: アイテムを奪えなかった");
+                networkSystem.informationManager.AddInformationText($"{itemNameDict[3]}の効果: アイテムは奪われなかった");
+                Debug.Log($"{itemNameDict[3]}の効果: アイテムは奪われなかった");
+            }
+            //片方成功で片方失敗のパターンは仕組み上ありえないので未実装
         }
 
         //アイテム3アニメーションから3.5秒後にログ表示、ログを1.5秒程度見せてから次へ
