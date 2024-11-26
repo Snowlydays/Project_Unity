@@ -25,9 +25,12 @@ public class ChooseServerManager : NetworkBehaviour
 
     GameObject waitObj;
     GameObject joinButton;
+    GameObject backButton;
     private GameObject connectPanel;
     private Button roomJoinButtonComponent;
-    
+    private Button backButtonComponent;
+    public GameObject connectionErrorImage;
+
     private const string PASSWORD_CHARS = 
         "0123456789abcdefghijklmnopqrstuvwxyz";
 
@@ -56,11 +59,23 @@ public class ChooseServerManager : NetworkBehaviour
         waitObj = GameObject.Find("ConnectWaiting");
         joinButton = GameObject.Find("RoomJoinButton");
         connectPanel = GameObject.Find("ConnectPanel");
+        backButton = GameObject.Find("BackButton");
+        connectionErrorImage = connectPanel.transform.Find("ConnectionErrorImage").gameObject;
+        connectionErrorImage.SetActive(false);
 
         if (joinButton != null)
         {
             roomJoinButtonComponent = joinButton.GetComponent<Button>();
             if (roomJoinButtonComponent != null)roomJoinButtonComponent.onClick.AddListener(OnRoomJoinButtonClicked);
+        }
+        if (backButton != null)
+        {
+            backButtonComponent = backButton.GetComponent<Button>();
+            if (backButtonComponent != null)
+            {
+                backButtonComponent.onClick.AddListener(OnBackButtonClicked);
+                Debug.Log("Listener added to BackButton.");
+            }
         }
         
         GameObject codeTextObject = GameObject.Find("JoinCodeText");//sceneからjoincodeを表示するテキストを取得
@@ -92,6 +107,16 @@ public class ChooseServerManager : NetworkBehaviour
             connectPanel.SetActive(true);
             GameObject soundobj=Instantiate(SoundObject);
             soundobj.GetComponent<PlaySound>().PlaySE(decideSound);
+        }
+    }
+    
+    public void OnBackButtonClicked()
+    {
+        if (connectPanel != null)
+        {
+            connectPanel.SetActive(false);
+            GameObject soundobj=Instantiate(SoundObject);
+            soundobj.GetComponent<PlaySound>().PlaySE(cancelSound);
         }
     }
     
@@ -157,7 +182,7 @@ public class ChooseServerManager : NetworkBehaviour
                 allocation.ConnectionData
                 );*/
 
-                //Debug.Log(joinCode);
+                Debug.Log(joinCode);
 
                 codeText.text=$"{joinCode}";
 
@@ -181,6 +206,7 @@ public class ChooseServerManager : NetworkBehaviour
             if(joinCode==""){
                 return;
             }
+            connectionErrorImage.SetActive(false);
             clientstart=true;
             try {
                 Debug.Log($"Joining... (code: {joinCode})");
@@ -199,6 +225,7 @@ public class ChooseServerManager : NetworkBehaviour
                 Debug.Log("接続に失敗しました!");
                 clientstart=false;
                 codeText.text="入室に失敗しました";
+                connectionErrorImage.SetActive(true);
             }
         }
     }
