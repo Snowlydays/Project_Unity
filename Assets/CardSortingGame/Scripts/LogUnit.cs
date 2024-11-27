@@ -97,7 +97,8 @@ public class LogUnit
         {
             if(dataA <= 0 || dataB <= 0 || dataC <= 0)
             {
-                Debug.LogError("引数が正しくありません");
+                return;
+                // Debug.LogError("引数が正しくありません");
             }
             Transform text14L = image.transform.Find("Sprite14TextL");
             Transform text14M = image.transform.Find("Sprite14TextM");
