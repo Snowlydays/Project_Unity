@@ -310,12 +310,12 @@ public class NetworkSystem : NetworkBehaviour
     public void OnNetLogChanged(NetworkListEvent<LogData> changeEvent)
     {
         Debug.Log("ログ追加");
-        LogData logData = logList[logList.Count - 1];
+        LogData logData = changeEvent.Value;
 
-        if(logData.messageNum == 14)
-        {
-            Debug.Log(logData.dataA.ToString() + " " + logData.dataB.ToString() + " " + logData.dataC.ToString());
-        }
+        // if(logData.messageNum == 14)
+        // {
+        //     Debug.Log(logData.dataA.ToString() + " " + logData.dataB.ToString() + " " + logData.dataC.ToString());
+        // }
         if(logData.logIsHost == IsHost)
         {
             logMenuController.allLogs.Add(new LogUnit(TabType.All, true, logData.messageNum, logData.dataA, logData.dataB, logData.dataC));
@@ -757,6 +757,11 @@ public class NetworkSystem : NetworkBehaviour
     [Unity.Netcode.ServerRpc(RequireOwnership = false)]
     public void LogClientServerRpc(int messageNum, int dataA = -1, int dataB = -1, int dataC = -1)
     {
+        Debug.Log("hoge");
+        if(messageNum == 14)
+        {
+            Debug.Log(dataA.ToString() + " " + dataB.ToString() + " " + dataC.ToString());
+        }
         LogData logData = new LogData(messageNum, false, dataA, dataB, dataC);
         logList.Add(logData);
     }

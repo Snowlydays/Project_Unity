@@ -66,7 +66,7 @@ public class LogMenuController : MonoBehaviour
 
         drawerPanel.anchoredPosition = new Vector2(-drawerPanel.rect.width, drawerPanel.anchoredPosition.y);
         networkSystem = FindObjectOfType<NetworkSystem>();
-        Debug();
+        // Debug();
     }
 
     void Debug()
