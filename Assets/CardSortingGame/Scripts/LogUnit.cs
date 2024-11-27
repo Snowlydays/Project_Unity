@@ -36,6 +36,7 @@ public class LogUnit
 
     public LogUnit(TabType tabType, bool isMyLog, int messageNum, int dataA = -1, int dataB = -1, int dataC = -1)
     {
+        Debug.Log($"{messageNum} {dataA} {dataB} {dataC}");
         if((tabType == TabType.Myself && !isMyLog) || (tabType == TabType.Opponent && isMyLog))
         {
             Debug.LogError("ログを追加しようとしているタブが違います");
@@ -71,6 +72,7 @@ public class LogUnit
             if(dataA < 0)
             {
                 Debug.LogError("引数が正しくありません");
+                return;
             }
             Transform text2 = image.transform.Find("Sprite2Text");
             text2.GetComponent<TextMeshProUGUI>().text = dataA.ToString();
@@ -80,6 +82,7 @@ public class LogUnit
             if(dataA < 0)
             {
                 Debug.LogError("引数が正しくありません");
+                return;
             }
             Transform text5 = image.transform.Find("Sprite5Text");
             text5.GetComponent<TextMeshProUGUI>().text = dataA.ToString();
@@ -89,6 +92,7 @@ public class LogUnit
             if(dataA < 0)
             {
                 Debug.LogError("引数が正しくありません");
+                return;
             }
             Transform text78 = image.transform.Find("Sprite78Text");
             text78.GetComponent<TextMeshProUGUI>().text = dataA.ToString();
@@ -97,8 +101,8 @@ public class LogUnit
         {
             if(dataA <= 0 || dataB <= 0 || dataC <= 0)
             {
+                Debug.LogError("引数が正しくありません");
                 return;
-                // Debug.LogError("引数が正しくありません");
             }
             Transform text14L = image.transform.Find("Sprite14TextL");
             Transform text14M = image.transform.Find("Sprite14TextM");

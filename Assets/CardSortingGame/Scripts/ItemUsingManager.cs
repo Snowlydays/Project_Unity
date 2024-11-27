@@ -331,8 +331,8 @@ public class ItemUsingManager : MonoBehaviour
                 networkSystem.animationController.CreateMyThreeItem(mygetitem);
                 yield return new WaitForSeconds(3.5f);
             if(mygetitem!=2){
-                networkSystem.informationManager.AddInformationText($"{itemNameDict[3]}の効果: 相手の{itemNameDict[mygetitem]}を奪った。");
-                Debug.Log($"{itemNameDict[3]}の効果: 相手の{itemNameDict[mygetitem]}を奪った。");
+                networkSystem.informationManager.AddInformationText($"{itemNameDict[3]}の効果: 相手の{itemNameDict[mygetitem+1]}を奪った。");
+                Debug.Log($"{itemNameDict[3]}の効果: 相手の{itemNameDict[mygetitem+1]}を奪った。");
             }else{
                 networkSystem.informationManager.AddInformationText($"{itemNameDict[3]}の効果: アイテムを奪えなかった");
                 Debug.Log($"{itemNameDict[3]}の効果: アイテムを奪えなかった");
@@ -344,8 +344,8 @@ public class ItemUsingManager : MonoBehaviour
                 networkSystem.animationController.CreateOtherThreeItem(othergetitem);
                 yield return new WaitForSeconds(3.5f);
             if(othergetitem!=2){
-                networkSystem.informationManager.AddInformationText($"{itemNameDict[3]}の効果: 相手に{itemNameDict[othergetitem]}を奪われた。");
-                Debug.Log($"{itemNameDict[3]}の効果: 相手に{itemNameDict[othergetitem]}を奪われた。");
+                networkSystem.informationManager.AddInformationText($"{itemNameDict[3]}の効果: 相手に{itemNameDict[othergetitem+1]}を奪われた。");
+                Debug.Log($"{itemNameDict[3]}の効果: 相手に{itemNameDict[othergetitem+1]}を奪われた。");
             }else{
                 networkSystem.informationManager.AddInformationText($"{itemNameDict[3]}の効果: アイテムは奪われなかった");
                 Debug.Log($"{itemNameDict[3]}の効果: アイテムは奪われなかった");
@@ -359,10 +359,10 @@ public class ItemUsingManager : MonoBehaviour
                 yield return new WaitForSeconds(3.5f);
             if(mygetitem!=2 & othergetitem!=2){
                 //両方成功
-                networkSystem.informationManager.AddInformationText($"{itemNameDict[3]}の効果: 相手の{itemNameDict[mygetitem]}を奪った。");
-                Debug.Log($"{itemNameDict[3]}の効果: 相手の{itemNameDict[mygetitem]}を奪った。");
-                networkSystem.informationManager.AddInformationText($"{itemNameDict[3]}の効果: 相手に{itemNameDict[othergetitem]}を奪われた。");
-                Debug.Log($"{itemNameDict[3]}の効果: 相手に{itemNameDict[othergetitem]}を奪われた。");
+                networkSystem.informationManager.AddInformationText($"{itemNameDict[3]}の効果: 相手の{itemNameDict[mygetitem+1]}を奪った。");
+                Debug.Log($"{itemNameDict[3]}の効果: 相手の{itemNameDict[mygetitem+1]}を奪った。");
+                networkSystem.informationManager.AddInformationText($"{itemNameDict[3]}の効果: 相手に{itemNameDict[othergetitem+1]}を奪われた。");
+                Debug.Log($"{itemNameDict[3]}の効果: 相手に{itemNameDict[othergetitem+1]}を奪われた。");
             }
             if(mygetitem==2 & othergetitem==2){
                 //両方失敗

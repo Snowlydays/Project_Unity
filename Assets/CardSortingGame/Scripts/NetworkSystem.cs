@@ -70,7 +70,7 @@ public class NetworkSystem : NetworkBehaviour
     private NetworkList<bool> netClientItems;
 
     // ログのNetworkList
-    private NetworkList<LogData> logList;
+    private NetworkList<int> logList;
     
     // アイテムのNetworkList(使用順などもわかるもの)
     private NetworkList<int> netHostItemSelects;
@@ -98,7 +98,7 @@ public class NetworkSystem : NetworkBehaviour
     public MainSystemScript mainSystemScript;
 
     public Sprite attackSprite;
-
+    
     // ローカルプレイヤーの準備状態が変わった時に発火するイベント
     public event Action<bool> OnLocalReadyStateChanged;
     
@@ -109,7 +109,7 @@ public class NetworkSystem : NetworkBehaviour
         netClientCard = new NetworkList<int>();
         netHostItems = new NetworkList<bool>();
         netClientItems = new NetworkList<bool>();
-        logList = new NetworkList<LogData>();
+        logList = new NetworkList<int>();
         netHostItemSelects = new NetworkList<int>();
         netClientItemSelects = new NetworkList<int>();
     }
@@ -254,7 +254,7 @@ public class NetworkSystem : NetworkBehaviour
                 OnNetHostCardChanged(new NetworkListEvent<int>());
             }
         }
-
+        
         Debug.Log("NetworkSystemの初期化完了");
     }
 
@@ -307,24 +307,24 @@ public class NetworkSystem : NetworkBehaviour
         itemPhaseManager.UpdateInventoryUI();
     }
 
-    public void OnNetLogChanged(NetworkListEvent<LogData> changeEvent)
+    public void OnNetLogChanged(NetworkListEvent<int> changeEvent)
     {
+        if (logList.Count < 5) return;
         Debug.Log("ログ追加");
-        LogData logData = changeEvent.Value;
 
         // if(logData.messageNum == 14)
         // {
         //     Debug.Log(logData.dataA.ToString() + " " + logData.dataB.ToString() + " " + logData.dataC.ToString());
         // }
-        if(logData.logIsHost == IsHost)
+        if((logList[0] == 0 ? false : true) == IsHost)
         {
-            logMenuController.allLogs.Add(new LogUnit(TabType.All, true, logData.messageNum, logData.dataA, logData.dataB, logData.dataC));
-            logMenuController.myLogs.Add(new LogUnit(TabType.Myself, true, logData.messageNum, logData.dataA, logData.dataB, logData.dataC));
+            logMenuController.allLogs.Add(new LogUnit(TabType.All, true, logList[1], logList[2], logList[3], logList[4]));
+            logMenuController.myLogs.Add(new LogUnit(TabType.Myself, true, logList[1], logList[2], logList[3], logList[4]));
         }
         else
         {
-            logMenuController.allLogs.Add(new LogUnit(TabType.All, false, logData.messageNum, logData.dataA, logData.dataB, logData.dataC));
-            logMenuController.opponentLogs.Add(new LogUnit(TabType.Opponent, false, logData.messageNum, logData.dataA, logData.dataB, logData.dataC));
+            logMenuController.allLogs.Add(new LogUnit(TabType.All, false, logList[1], logList[2], logList[3], logList[4]));
+            logMenuController.opponentLogs.Add(new LogUnit(TabType.Opponent, false, logList[1], logList[2], logList[3], logList[4]));
         }
     }
     
@@ -757,19 +757,24 @@ public class NetworkSystem : NetworkBehaviour
     [Unity.Netcode.ServerRpc(RequireOwnership = false)]
     public void LogClientServerRpc(int messageNum, int dataA = -1, int dataB = -1, int dataC = -1)
     {
+        if(logList.Count == 5) logList.Clear();
         Debug.Log("hoge");
-        if(messageNum == 14)
-        {
-            Debug.Log(dataA.ToString() + " " + dataB.ToString() + " " + dataC.ToString());
-        }
-        LogData logData = new LogData(messageNum, false, dataA, dataB, dataC);
-        logList.Add(logData);
+        Debug.Log(dataA.ToString() + " " + dataB.ToString() + " " + dataC.ToString());
+        logList.Add(0);
+        logList.Add(messageNum);
+        logList.Add(dataA);
+        logList.Add(dataB);
+        logList.Add(dataC);
     }
 
     public void LogHost(int messageNum, int dataA = -1, int dataB = -1, int dataC = -1)
     {
-        LogData logData = new LogData(messageNum, true, dataA, dataB, dataC);
-        logList.Add(logData);
+        if(logList.Count == 5) logList.Clear();
+        logList.Add(1);
+        logList.Add(messageNum);
+        logList.Add(dataA);
+        logList.Add(dataB);
+        logList.Add(dataC);
     }
     
     //netItemSelectsの中身を変更するメソッド群(引数にarrayを入れることでそのarrayの中身通りに変更する)
