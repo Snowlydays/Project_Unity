@@ -62,6 +62,7 @@ public class AnimationController : MonoBehaviour
         animobj=Instantiate(itemThreeMyObject);
         animobj.transform.SetParent(canvas.transform);
         animobj.GetComponent<RectTransform>().anchoredPosition=new Vector3(posx,0f,0f);
+        animobj.transform.localScale=new Vector3(1f,1f,1f);
         animobj.GetComponent<AnimationController>().newSprite=itemSprites[newitem];
     }
 
@@ -79,6 +80,7 @@ public class AnimationController : MonoBehaviour
         animobj=Instantiate(itemDefaultObject);
         animobj.transform.SetParent(canvas.transform);
         animobj.GetComponent<RectTransform>().anchoredPosition=new Vector3(posx,0f,0f);
+        animobj.transform.localScale=new Vector3(1f,1f,1f);
         animobj.GetComponent<Image>().overrideSprite=itemSprites[newitem];
     }
 

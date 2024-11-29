@@ -306,12 +306,17 @@ public class QutstionController : MonoBehaviour
         networkSystem.Log(12);
         GameObject[] Cards ={leftCard,middleCard,rightCard};
 
-        Cards.OrderBy(e => e.transform.position.x);//x座標の昇順に並び替え 仮
+        Debug.Log($"left:{Cards[0].name} middle:{Cards[1].name} right:{Cards[2].name}");
+
+        Array.Sort(Cards,(a,b) => (int)a.transform.position.x - (int)b.transform.position.x);//x座標の昇順に並び替え
+
         
         string leftName = Cards[0].name, middleName = Cards[1].name, rightName = Cards[2].name;
         Debug.Log("left:"+leftName + " middle:"+middleName + " right:"+rightName);
         
-        int[] array={leftName[leftName.Length - 1],middleName[middleName.Length - 1],rightName[rightName.Length - 1]};
+        int[] array={int.Parse(leftName[leftName.Length - 1].ToString()),
+        int.Parse(middleName[middleName.Length - 1].ToString()),
+        int.Parse(rightName[rightName.Length - 1].ToString())};
         
         string left="",middle="",right="";
 
