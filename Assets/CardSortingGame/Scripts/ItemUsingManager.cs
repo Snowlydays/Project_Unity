@@ -126,46 +126,7 @@ public class ItemUsingManager : MonoBehaviour
         mylist = new List<int>(myItems);
         otherlist = new List<int>(otherItems);
 
-        /*Debug.Log("自分のアイテム");
-        if(mylist.Count>0){
-            foreach(int item in mylist)
-            {
-                Debug.Log($"アイテム{item+1}");
-            }
-        }else{
-            Debug.Log("自分はアイテムを選択していません");
-        }
-        Debug.Log("相手のアイテム");
-        if(otherlist.Count>0){
-            foreach(int item in otherlist)
-            {
-                Debug.Log($"アイテム{item+1}");
-            }
-        }else{
-            Debug.Log("相手はアイテムを選択していません");
-        }*/
-
         yield return StartCoroutine(ItemThreeCheckAndUse());//アイテム3効果を処理する部分
-
-        /*Debug.Log("アイテム3処理後");
-        Debug.Log("自分のアイテム");
-        if(mylist.Count>0){
-            foreach(int item in mylist)
-            {
-                Debug.Log($"アイテム{item+1}");
-            }
-        }else{
-            Debug.Log("自分はアイテムを選択していません");
-        }
-        Debug.Log("相手のアイテム");
-        if(otherlist.Count>0){
-            foreach(int item in otherlist)
-            {
-                Debug.Log($"アイテム{item+1}");
-            }
-        }else{
-            Debug.Log("相手はアイテムを選択していません");
-        }*/
 
         yield return StartCoroutine(ItemFourCheckAndUse());//相手がアイテム4を使っているかどうかと実行処理
 
@@ -371,7 +332,7 @@ public class ItemUsingManager : MonoBehaviour
                 networkSystem.informationManager.AddInformationText($"{itemNameDict[3]}の効果: アイテムは奪われなかった");
                 Debug.Log($"{itemNameDict[3]}の効果: アイテムは奪われなかった");
             }
-            //片方成功で片方失敗のパターンは仕組み上ありえないので未実装
+            //片方成功で片方失敗はありえないので省略
         }
 
         //アイテム3アニメーションから3.5秒後にログ表示、ログを1.5秒程度見せてから次へ
