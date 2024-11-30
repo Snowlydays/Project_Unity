@@ -92,7 +92,7 @@ public class ItemUsingManager : MonoBehaviour
 
         inputField = GameObject.Find("InputText").GetComponent<TMP_InputField>();
 
-        itemUseCanvas = GameObject.Find("ItemCanvas");
+        itemUseCanvas = GameObject.Find("CanvasMask");
 
         GameObject inputText = ItemSixBG.transform.Find("InputText").gameObject;
         GameObject textArea = inputText.transform.Find("TextArea").gameObject;
