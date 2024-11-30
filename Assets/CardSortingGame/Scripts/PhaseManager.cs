@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine.UI;
+using TMPro;
 
 public class PhaseManager : MonoBehaviour
 {
@@ -23,10 +24,15 @@ public class PhaseManager : MonoBehaviour
 
     GameObject canvas;
 
+    public static GameObject roundText;
+    public static int round = 0;
+
     private void Start()
     {
         networkSystem = FindObjectOfType<NetworkSystem>();
         logMenuController = FindObjectOfType<LogMenuController>();
+        roundText = GameObject.Find("RoundText");
+        ProgressRound();
         canvas = GameObject.Find("Canvas");
     }
 
@@ -99,5 +105,10 @@ public class PhaseManager : MonoBehaviour
             // 攻撃トグルのリセット
             networkSystem.ToggleAttackedReset();
         }
+    }
+
+    public static void ProgressRound()
+    {
+        roundText.GetComponent<TextMeshProUGUI>().text = "ラウンド " + (++round).ToString();
     }
 }

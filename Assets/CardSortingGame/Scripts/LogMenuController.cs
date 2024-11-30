@@ -21,6 +21,7 @@ public class LogMenuController : MonoBehaviour
 
     public Sprite[] myLogSprites = new Sprite[18];
     public Sprite[] opponentLogSprites = new Sprite[18];
+    public Sprite round;
     
     private TabType currentTab = TabType.All;
 
