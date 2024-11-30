@@ -63,7 +63,6 @@ public class PhaseManager : MonoBehaviour
         networkSystem.ChangeHostWaitingServerRPC(0);
         networkSystem.ChangeClientWaitingServerRPC(0);
 
-        GameObject animobj;
         switch (newPhase)
         {
             case InitialPhase:
