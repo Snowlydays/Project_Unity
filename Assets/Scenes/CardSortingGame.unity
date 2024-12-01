@@ -1211,6 +1211,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6f292943196d449aac7658f43c11597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mycard:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  mySlots:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   readyButton: {fileID: 195278635}
   myCardPanel: {fileID: 399020500}
   otherCardPanel: {fileID: 644136873}
@@ -2769,7 +2781,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1397842340
 RectTransform:
   m_ObjectHideFlags: 0
