@@ -135,26 +135,16 @@ public class QutstionController : MonoBehaviour
     {
         if (myCardPanel != null && questionBG != null && cardPanel != null)
         {
-            // 親を questionBG に変更
             myCardPanel.SetParent(questionBG.transform, false);
-        
-            // RectTransform を取得
+            
+            // myCardPanel(交換用パネル)をcardPanel(比較用パネル)と同じ座標に移動
             RectTransform myRect = myCardPanel.GetComponent<RectTransform>();
             RectTransform cardRect = cardPanel.GetComponent<RectTransform>();
-        
-            // アンカーとピボットを cardPanel と同じに設定
             myRect.anchorMin = cardRect.anchorMin;
             myRect.anchorMax = cardRect.anchorMax;
             myRect.pivot = cardRect.pivot;
-        
-            // cardPanel と同じ座標に配置
             myRect.anchoredPosition = cardRect.anchoredPosition;
-        
-            // サイズを cardPanel と同じに設定
             myRect.sizeDelta = cardRect.sizeDelta;
-        
-            // 最前面に表示
-            myRect.SetAsLastSibling();
         }
     }
     
@@ -162,21 +152,15 @@ public class QutstionController : MonoBehaviour
     {
         if (myCardPanel != null && prevMyCardPanelData.prevParent != null)
         {
-            // 親を元に戻す
             myCardPanel.SetParent(prevMyCardPanelData.prevParent, false);
-        
-            // RectTransform を取得
-            RectTransform rect = myCardPanel.GetComponent<RectTransform>();
-        
+            
             // 元の設定に戻す
+            RectTransform rect = myCardPanel.GetComponent<RectTransform>();
             rect.anchorMin = prevMyCardPanelData.anchorMin;
             rect.anchorMax = prevMyCardPanelData.anchorMax;
             rect.pivot = prevMyCardPanelData.pivot;
             rect.anchoredPosition = prevMyCardPanelData.anchoredPosition;
             rect.sizeDelta = prevMyCardPanelData.sizeDelta;
-        
-            // 表示順序を元に戻す
-            rect.SetAsLastSibling();
         }
     }
 
@@ -188,7 +172,6 @@ public class QutstionController : MonoBehaviour
         }
         else
         {
-            // 通常フェーズではメインのCanvasを親とする
             Canvas mainCanvas = FindObjectOfType<Canvas>();
             if (mainCanvas != null)
             {
@@ -215,22 +198,22 @@ public class QutstionController : MonoBehaviour
             // 攻撃時のスプライトに変更
             GameObject soundobj=Instantiate(SoundObject);
             soundobj.GetComponent<PlaySound>().PlaySE(decideSound);
-            instruction.gameObject.SetActive(false);
             questionBGImage.sprite = attackingQuestionBGSprite;
             spellButtonImage.sprite = attackingSpellButtonSprite;
-            myCardPanel.gameObject.SetActive(true);
-            cardPanel.gameObject.SetActive(false);
+            instruction.gameObject.SetActive(false);
+            myCardPanel.gameObject.SetActive(true); // 交換用パネルを表示させる
+            cardPanel.gameObject.SetActive(false); // 比較用パネルを非表示にする
         }
         else
         {
             // 通常時のスプライトに戻す
             GameObject soundobj=Instantiate(SoundObject);
             soundobj.GetComponent<PlaySound>().PlaySE(cancelSound);
-            instruction.gameObject.SetActive(true);
             questionBGImage.sprite = questionQuestionBGSprite;
             spellButtonImage.sprite = questionSpellButtonSprite;
-            myCardPanel.gameObject.SetActive(false);
-            cardPanel.gameObject.SetActive(true);
+            instruction.gameObject.SetActive(true);
+            myCardPanel.gameObject.SetActive(false); // 交換用パネルを非表示にする
+            cardPanel.gameObject.SetActive(true); // 比較用パネルを表示させる
         }
         
         // ガイドの変更
@@ -338,11 +321,14 @@ public class QutstionController : MonoBehaviour
             selectedCards.Clear();
 
             // クローンカードのUIを削除
+            cardPanel.gameObject.SetActive(true); // 攻撃時にカードパネルが非表示だと削除できないため、ここで必ずtrueになるように調整
             GameObject[] clonedCards = GameObject.FindGameObjectsWithTag("ClonedCard");
             foreach (GameObject card in clonedCards) Destroy(card);
 
             // 背景のパネルを非表示に
-            instruction.gameObject.SetActive(true); // 攻撃時にsetActiveがfalseになっている場合でも、初期値に戻す
+            myCardPanel.gameObject.SetActive(true);
+            instruction.gameObject.SetActive(true);
+            BackParentMyCardPanel(); // 交換用のパネルmyCardPanelを元のキャンバスへ戻す
             questionBG.SetActive(false);
             cardPanel.GameObject().SetActive(false);
             
@@ -351,10 +337,7 @@ public class QutstionController : MonoBehaviour
 
             // 3枚選択トグルを初期化
             isThreeSelect=false;
-
-            myCardPanel.gameObject.SetActive(true);
-            BackParentMyCardPanel();
-
+            
             // 通常フェーズへ戻るためにreadyをトグルする
             networkSystem.ToggleReady();
         }
