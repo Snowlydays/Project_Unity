@@ -11,11 +11,13 @@ public class CardSlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
 
     public AudioClip cardSound;
     public GameObject cardSoundObject;
+    private NetworkSystem networkSystem;
     
     void Awake()
     {
         slotImage = GetComponent<Image>();
         canvas = FindObjectOfType<Canvas>();
+        networkSystem = FindObjectOfType<NetworkSystem>();
     }
 
     // ドロップ時の処理
@@ -65,8 +67,9 @@ public class CardSlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
     // カードをスロットにスムーズに移動させるコルーチン
     private IEnumerator MoveCardToSlot(Transform card, Transform slot)
     {
+        Transform curParent = networkSystem.questionController.GetCurrentParent();
         // カードの親をCanvasに設定
-        card.SetParent(canvas.transform, true);
+        card.SetParent(curParent, true);
 
         // 開始位置と終了位置
         Vector3 startPos = card.position;
@@ -78,7 +81,7 @@ public class CardSlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
         while (currentTime < animationTime)
         {
             float progress = currentTime / animationTime;
-            // progress = Mathf.SmoothStep(0f, 1f, progress);
+            progress = Mathf.SmoothStep(0f, 1f, progress);
             card.position = Vector3.Lerp(startPos, endPos, progress);
             currentTime += Time.deltaTime;
             yield return null;

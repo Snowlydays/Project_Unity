@@ -14,9 +14,9 @@ public class MainSystemScript : MonoBehaviour
     private CardsManager cardsManager;
 
     private static readonly int CARD_NUM = NetworkSystem.cardNum;
-    private GameObject[] mycard = new GameObject[CARD_NUM];//自分の手札
+    public GameObject[] mycard = new GameObject[CARD_NUM];//自分の手札
     private GameObject[] othercard = new GameObject[CARD_NUM];//相手の手札
-    private GameObject[] mySlots = new GameObject[CARD_NUM]; // スロットを保持する配列
+    public GameObject[] mySlots = new GameObject[CARD_NUM]; // スロットを保持する配列
     private GameObject[] otherSlots = new GameObject[CARD_NUM]; // スロットを保持する配列
     
     [SerializeField] public Button readyButton; // 準備完了ボタン
@@ -45,7 +45,7 @@ public class MainSystemScript : MonoBehaviour
         return mycard;
     }
 
-    public GameObject[] GetmySlots()
+    public GameObject[] GetMySlots()
     {
         return mySlots;
     }

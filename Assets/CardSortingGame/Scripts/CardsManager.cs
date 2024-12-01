@@ -116,7 +116,7 @@ public class CardsManager : MonoBehaviour
         // アニメーションを開始
         StartCoroutine(MoveCard(card, targetPosition));
 
-        // 選択状態を示すために色を変更（必要に応じて）
+        // 選択状態を示すために色を変更
         card.GetComponent<Image>().color = Color.yellow;
     }
 
@@ -135,7 +135,7 @@ public class CardsManager : MonoBehaviour
             originalCardPositions.Remove(card);
         }
 
-        // 色を元に戻す（必要に応じて）
+        // 色を元に戻す
         card.GetComponent<Image>().color = Color.white;
     }
 
@@ -187,8 +187,6 @@ public class CardsManager : MonoBehaviour
     // printデバッグ用関数
     public void printMyCards()
     {
-        //GameObject txtObj = GameObject.Find("OderOfCards(Debug)");
-        //TextMeshProUGUI txt = txtObj.GetComponent<TextMeshProUGUI>();
         Debug.Log("All card numbers:");
         string output = "";
         foreach (var card in myCards)
