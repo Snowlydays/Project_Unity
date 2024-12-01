@@ -110,5 +110,8 @@ public class PhaseManager : MonoBehaviour
     public static void ProgressRound()
     {
         roundText.GetComponent<TextMeshProUGUI>().text = "ラウンド " + (++round).ToString();
+        new LogUnit(TabType.All, true, -1, round);
+        new LogUnit(TabType.Myself, true, -1, round);
+        new LogUnit(TabType.Opponent, true, -1, round);
     }
 }
