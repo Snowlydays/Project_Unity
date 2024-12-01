@@ -8,32 +8,6 @@ using Unity.Collections;
 using Random = UnityEngine.Random;
 using UnityEngine.SceneManagement;
 
-public struct LogData : INetworkSerializable, IEquatable<LogData>
-{
-    public int messageNum;
-    public bool logIsHost;
-    public int dataA;
-    public int dataB;
-    public int dataC;
-    
-    public LogData(int messageNum, bool logIsHost, int dataA = -1, int dataB = -1, int dataC = -1)
-    {
-        this.messageNum = messageNum;
-        this.logIsHost = logIsHost;
-        this.dataA = dataA;
-        this.dataB = dataB;
-        this.dataC = dataC;
-    }
-    public bool Equals(LogData other)
-    {
-        return messageNum == other.messageNum && logIsHost == other.logIsHost;
-    }
-    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
-    {
-        serializer.SerializeValue(ref messageNum);
-        serializer.SerializeValue(ref logIsHost);
-    }
-}
 public class NetworkSystem : NetworkBehaviour
 {
     // フェーズごとの数字を変数で管理
@@ -170,6 +144,7 @@ public class NetworkSystem : NetworkBehaviour
             Debug.Log($"フェーズが {newParam} になりました。");
             phaseManager.HandlePhaseChange(newParam);
             mainSystemScript.ChangeGuideImage(newParam);
+            if(newParam == initialPhase) PhaseManager.ProgressRound();
         };
 
         netHostReady.OnValueChanged += (bool oldParam, bool newParam) =>

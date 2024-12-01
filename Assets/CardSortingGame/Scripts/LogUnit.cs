@@ -6,6 +6,7 @@ using TMPro;
 
 /*
 LogMenuContorollerに登録されているログUIの番号
+例外としてラウンド表示は-1
 0: エリクサー
 1: オーブ 
 2: オーブ効果 *
@@ -39,7 +40,7 @@ public class LogUnit
         Debug.Log($"{messageNum} {dataA} {dataB} {dataC}");
         if((tabType == TabType.Myself && !isMyLog) || (tabType == TabType.Opponent && isMyLog))
         {
-            Debug.LogError("ログを追加しようとしているタブが違います");
+            if(messageNum > 0) Debug.LogError("ログを追加しようとしているタブが違います");
         }
 
         logMenuController = Object.FindObjectOfType<LogMenuController>();
@@ -48,7 +49,12 @@ public class LogUnit
         // 使うスプライトとプレファブを決定
         Sprite sprite;
         GameObject prefab;
-        if(isMyLog)
+        if(messageNum == -1)
+        {
+            sprite = logMenuController.roundLogSprite;
+            prefab = logMenuController.roundLogPrefab;
+        }
+        else if(isMyLog)
         {
             sprite = logMenuController.myLogSprites[messageNum];
             prefab = logMenuController.myLogPrefab;
@@ -112,6 +118,16 @@ public class LogUnit
             text14[dataA - 1].GetComponent<TextMeshProUGUI>().text = "L";
             text14[dataB - 1].GetComponent<TextMeshProUGUI>().text = "M";
             text14[dataC - 1].GetComponent<TextMeshProUGUI>().text = "R";
+        }
+        else if(messageNum == -1)
+        {
+            if(dataA < 1)
+            {
+                Debug.LogError("引数が正しくありません");
+                return;
+            }
+            Transform roundNumText = image.transform.Find("RoundNumText");
+            roundNumText.GetComponent<TextMeshProUGUI>().text = dataA.ToString(); 
         }
     }
 }
