@@ -12,8 +12,9 @@ using TMPro;
 public class QutstionController : MonoBehaviour
 {
     GameObject questionBG;
-    private Transform cardPanel; // UIカードを配置するパネル
     
+    private Transform cardPanel; // UIカードを配置するパネル
+    [SerializeField] public Transform attackCardPanel; // 攻撃時の自分のカードを配置するパネル(交換可能)
     private List<GameObject> selectedCards = new List<GameObject>();  // 選択されたカードのリスト
     private Color originalColor = Color.white;  // デフォルトのカードの色
     private Color selectedColor = Color.yellow; // 選択されたカードの色
