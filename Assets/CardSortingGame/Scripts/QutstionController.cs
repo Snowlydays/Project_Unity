@@ -12,9 +12,20 @@ using TMPro;
 public class QutstionController : MonoBehaviour
 {
     GameObject questionBG;
-    
-    private Transform cardPanel; // UIカードを配置するパネル
-    [SerializeField] public Transform attackCardPanel; // 攻撃時の自分のカードを配置するパネル(交換可能)
+
+    private Transform cardPanel; // 比較の際のUIカードを配置するパネル
+    private Transform myCardPanel;
+    private struct MyCardPanelData
+    {
+        public Transform prevParent;
+        public Vector2 anchoredPosition;
+        public Vector2 sizeDelta;
+        public Vector2 anchorMin;
+        public Vector2 anchorMax;
+        public Vector2 pivot;
+    }
+    private MyCardPanelData prevMyCardPanelData;
+
     private List<GameObject> selectedCards = new List<GameObject>();  // 選択されたカードのリスト
     private Color originalColor = Color.white;  // デフォルトのカードの色
     private Color selectedColor = Color.yellow; // 選択されたカードの色
@@ -60,8 +71,19 @@ public class QutstionController : MonoBehaviour
         
         questionBG = GameObject.Find("QuestioningBG");
         cardPanel = GameObject.Find("QuestionCardPanel").transform;
+        myCardPanel = FindObjectOfType<MainSystemScript>().myCardPanel;
+        
+        // myCardPanelのデータを構造体に保存(後で復元する用)
+        RectTransform rect = myCardPanel.GetComponent<RectTransform>();
+        prevMyCardPanelData.prevParent = myCardPanel.parent;
+        prevMyCardPanelData.anchoredPosition = rect.anchoredPosition;
+        prevMyCardPanelData.sizeDelta = rect.sizeDelta;
+        prevMyCardPanelData.anchorMin = rect.anchorMin;
+        prevMyCardPanelData.anchorMax = rect.anchorMax;
+        prevMyCardPanelData.pivot = rect.pivot;
+        
         instruction = GameObject.Find("Text").GetComponent<TextMeshProUGUI>(); // 案内テキストを取得
-        questionBG.SetActive(false);// 非表示
+        questionBG.SetActive(false);
         
         // Imageコンポーネントを取得
         questionBGImage = questionBG.GetComponent<Image>();
@@ -87,6 +109,9 @@ public class QutstionController : MonoBehaviour
             
             cardPanel.GameObject().SetActive(true);
             cardsManager.PlaceCardsOnPanel(cardPanel,ToggleCardSelection, cardWidth, cardSpacing, paddingLeft, paddingRight);
+            
+            MoveParentMyCardPanel();
+            myCardPanel.gameObject.SetActive(false);
         }else{
             //質問ができない場合はアイテム効果系bool変数を無効化してToggleReadyする。
             Debug.Log("相手のアイテム4の効果で質問ができない");
@@ -106,6 +131,78 @@ public class QutstionController : MonoBehaviour
         }
     }
 
+    void MoveParentMyCardPanel()
+    {
+        if (myCardPanel != null && questionBG != null && cardPanel != null)
+        {
+            // 親を questionBG に変更
+            myCardPanel.SetParent(questionBG.transform, false);
+        
+            // RectTransform を取得
+            RectTransform myRect = myCardPanel.GetComponent<RectTransform>();
+            RectTransform cardRect = cardPanel.GetComponent<RectTransform>();
+        
+            // アンカーとピボットを cardPanel と同じに設定
+            myRect.anchorMin = cardRect.anchorMin;
+            myRect.anchorMax = cardRect.anchorMax;
+            myRect.pivot = cardRect.pivot;
+        
+            // cardPanel と同じ座標に配置
+            myRect.anchoredPosition = cardRect.anchoredPosition;
+        
+            // サイズを cardPanel と同じに設定
+            myRect.sizeDelta = cardRect.sizeDelta;
+        
+            // 最前面に表示
+            myRect.SetAsLastSibling();
+        }
+    }
+    
+    void BackParentMyCardPanel()
+    {
+        if (myCardPanel != null && prevMyCardPanelData.prevParent != null)
+        {
+            // 親を元に戻す
+            myCardPanel.SetParent(prevMyCardPanelData.prevParent, false);
+        
+            // RectTransform を取得
+            RectTransform rect = myCardPanel.GetComponent<RectTransform>();
+        
+            // 元の設定に戻す
+            rect.anchorMin = prevMyCardPanelData.anchorMin;
+            rect.anchorMax = prevMyCardPanelData.anchorMax;
+            rect.pivot = prevMyCardPanelData.pivot;
+            rect.anchoredPosition = prevMyCardPanelData.anchoredPosition;
+            rect.sizeDelta = prevMyCardPanelData.sizeDelta;
+        
+            // 表示順序を元に戻す
+            rect.SetAsLastSibling();
+        }
+    }
+
+    public Transform GetCurrentParent()
+    {
+        if (questionBG.activeSelf)
+        {
+            return questionBG.transform;
+        }
+        else
+        {
+            // 通常フェーズではメインのCanvasを親とする
+            Canvas mainCanvas = FindObjectOfType<Canvas>();
+            if (mainCanvas != null)
+            {
+                return mainCanvas.transform;
+            }
+            else
+            {
+                Debug.LogError("Canvasがシーン内に見つかりません。");
+                return null;
+            }
+        }
+    }
+    
+    
     void OnSpellButtonClicked()
     {
         Debug.Log("スペルボタン クリック");
@@ -121,6 +218,8 @@ public class QutstionController : MonoBehaviour
             instruction.gameObject.SetActive(false);
             questionBGImage.sprite = attackingQuestionBGSprite;
             spellButtonImage.sprite = attackingSpellButtonSprite;
+            myCardPanel.gameObject.SetActive(true);
+            cardPanel.gameObject.SetActive(false);
         }
         else
         {
@@ -130,6 +229,8 @@ public class QutstionController : MonoBehaviour
             instruction.gameObject.SetActive(true);
             questionBGImage.sprite = questionQuestionBGSprite;
             spellButtonImage.sprite = questionSpellButtonSprite;
+            myCardPanel.gameObject.SetActive(false);
+            cardPanel.gameObject.SetActive(true);
         }
         
         // ガイドの変更
@@ -173,7 +274,6 @@ public class QutstionController : MonoBehaviour
     void DeselectCard(GameObject card)
     {
         // カードの選択を解除し、色を元に戻す
-
         GameObject soundobj=Instantiate(SoundObject);
         soundobj.GetComponent<PlaySound>().PlaySE(cancelSound);
         selectedCards.Remove(card);
@@ -251,6 +351,9 @@ public class QutstionController : MonoBehaviour
 
             // 3枚選択トグルを初期化
             isThreeSelect=false;
+
+            myCardPanel.gameObject.SetActive(true);
+            BackParentMyCardPanel();
 
             // 通常フェーズへ戻るためにreadyをトグルする
             networkSystem.ToggleReady();
