@@ -9,9 +9,16 @@ public class TitleAnimScript : MonoBehaviour
 
     float time=0f;
 
+    public GameObject soundManager;
+
     void Start()
     {
         middley=GetComponent<RectTransform>().anchoredPosition.y;
+
+        if(GameObject.Find("SoundManager")==null){
+            GameObject obj=Instantiate(soundManager);
+            obj.name = soundManager.name;
+        }
     }
 
     // Update is called once per frame
