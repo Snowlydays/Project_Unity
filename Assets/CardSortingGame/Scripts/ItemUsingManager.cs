@@ -126,7 +126,11 @@ public class ItemUsingManager : MonoBehaviour
         mylist = new List<int>(myItems);
         otherlist = new List<int>(otherItems);
 
+        networkSystem.itemWindowManager.SetWindowIcons(mylist.ToArray());
+
         yield return StartCoroutine(ItemThreeCheckAndUse());//アイテム3効果を処理する部分
+
+        networkSystem.itemWindowManager.SetWindowIcons(mylist.ToArray());
 
         yield return StartCoroutine(ItemFourCheckAndUse());//相手がアイテム4を使っているかどうかと実行処理
 

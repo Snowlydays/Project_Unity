@@ -72,6 +72,7 @@ public class NetworkSystem : NetworkBehaviour
     public InformationManager informationManager;
     public AnimationController animationController;
     public MainSystemScript mainSystemScript;
+    public ItemWindowManager itemWindowManager;
 
     public Sprite attackSprite;
     
@@ -137,6 +138,7 @@ public class NetworkSystem : NetworkBehaviour
         informationManager = FindObjectOfType<InformationManager>();
         animationController = FindObjectOfType<AnimationController>();
         mainSystemScript = FindObjectOfType<MainSystemScript>();
+        itemWindowManager = FindObjectOfType<ItemWindowManager>();
         
         // イベント追加
         Debug.Log("NetworkSystem.OnNetworkSpawn");
