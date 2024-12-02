@@ -38,6 +38,7 @@ public class MainSystemScript : MonoBehaviour
     public GameObject SoundObject;
     
     [SerializeField] private Sprite[] numberSprites = new Sprite[10]; // 数字のスプライト(0-9まで)
+    [SerializeField] private Sprite[] alphabetSprites = new Sprite[5]; // アルファベットのスプライト(A-Zまでを添字0-4に対応)
     public int[] otherCardNumber = new int[CARD_NUM];
 
     public GameObject[] GetMyCards()
@@ -87,6 +88,7 @@ public class MainSystemScript : MonoBehaviour
 
             // スロット内にカードを配置
             mycard[i] = Instantiate(CardPrefab, mySlots[i].transform);
+            mycard[i].GetComponent<Image>().sprite = alphabetSprites[i];
             mycard[i].GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
             
             // DraggableCard スクリプトを取得してドラッグ"可能"に設定

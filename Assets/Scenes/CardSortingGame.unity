@@ -1543,6 +1543,12 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c3424979734854ffcbca01ee888a464c, type: 3}
   - {fileID: 21300000, guid: 058e7226d97284604925a83a83fa188a, type: 3}
   - {fileID: 21300000, guid: 1cb363df00aaf473cb94e1edbfe5ab73, type: 3}
+  alphabetSprites:
+  - {fileID: 21300000, guid: 2bab48ccab3734c19b453cce7903ff47, type: 3}
+  - {fileID: 21300000, guid: 76c98cad876fe4ec6a9afdb20a427b27, type: 3}
+  - {fileID: 21300000, guid: e57e417985eb84505bbc7986b8763957, type: 3}
+  - {fileID: 21300000, guid: 30998fd91b3044c3cbdcda3caa7fd447, type: 3}
+  - {fileID: 21300000, guid: 92689472c318c4a1d866ccfcd5efbefd, type: 3}
   otherCardNumber: 0000000000000000000000000000000000000000
   cardWidth: 85
   cardSpacing: 12.5
