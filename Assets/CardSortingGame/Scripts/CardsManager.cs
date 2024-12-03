@@ -19,7 +19,9 @@ public class CardsManager : MonoBehaviour
 
     private float selectionOffset = 30f; // 選択時の移動量
     private Dictionary<GameObject, Vector3> originalCardPositions = new Dictionary<GameObject, Vector3>(); // 選択されたカードとその元の位置を保持するディクショナリ
-    
+    public Dictionary<int, int> cardAlphabet = new Dictionary<int, int>(); //カードの番号とアルファベットの対応
+    public static string[] intToAlph = {"A", "B", "C", "D", "E"};
+
     void Start()
     {
         networkSystem = FindObjectOfType<NetworkSystem>();
@@ -29,11 +31,13 @@ public class CardsManager : MonoBehaviour
 
         int[] idx = GenRandomIdx(1, cardObjects.Length); // シャッフルインデックスを生成
         
+        cardAlphabet[-1] = 0;
         // カードをリストに登録
         for (int i = 0; i < cardObjects.Length; i++)
         {
             GameObject cardObject = cardObjects[i];
             CardClass card = new CardClass(cardObject, idx[i]);
+            cardAlphabet[idx[i]] = i;
             myCards.Add(card);
         }
     }

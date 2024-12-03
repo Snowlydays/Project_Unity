@@ -33,11 +33,8 @@ public class LogUnit
     public TabType tabType;
     public bool isMyLog;
     public GameObject logObject;
-    int dataA = -1;
-    int dataB = -1;
-    int dataC = -1;
 
-    string[] elixerText = new string[3];
+    private CardsManager cardsManager;
 
     public LogUnit(TabType tabType, bool isMyLog, int messageNum, int dataA = -1, int dataB = -1, int dataC = -1)
     {
@@ -46,10 +43,6 @@ public class LogUnit
         {
             if(messageNum > 0) Debug.LogError("ログを追加しようとしているタブが違います");
         }
-
-        this.dataA = dataA;
-        this.dataB = dataB;
-        this.dataC = dataC;
 
         logMenuController = Object.FindObjectOfType<LogMenuController>();
         this.tabType = tabType;
@@ -87,39 +80,51 @@ public class LogUnit
         else
         {
             Transform logTextTrans = image.transform.Find("LogText");
-            if(messageNum == 14) // エリクサーを使う場合は引数で左から順に1~3の順序を割り振る
+            cardsManager = Object.FindObjectOfType<CardsManager>();
+            if(messageNum == 5)
             {
-                if(dataA <= 0 || dataB <= 0 || dataC <= 0)
-                {
-                    Debug.LogError("引数が正しくありません");
-                    return;
-                }
-
-                elixerText[dataA - 1] = "L";
-                elixerText[dataB - 1] = "M";
-                elixerText[dataC - 1] = "R";
+                logTextTrans.GetComponent<TextMeshProUGUI>().text = $"カード{CardsManager.intToAlph[dataA]}と{CardsManager.intToAlph[dataB]}の差は{dataC}!";
             }
-            string[] logTexts = {
-                $"{ItemUsingManager.itemNameDict[6]}を使用した!",// 0
-                $"{ItemUsingManager.itemNameDict[1]}を使用した!",// 1
-                $"カードを{dataA}回動かした!",// 2
-                $"{ItemUsingManager.itemNameDict[3]}を使用した!",// 3
-                $"{ItemUsingManager.itemNameDict[2]}を使用した!",// 4
-                $"カードの差は{dataA}!",// 5
-                $"{ItemUsingManager.itemNameDict[5]}を使用した!",// 6
-                $"カードは{dataA + 1}以上!",// 7
-                $"カードは{dataA}以下!",// 8
-                $"うまく決まらなかった!",// 9
-                $"詠唱!",// 10
-                $"カードを2枚選択!",// 11
-                $"カードを3枚選択!",// 12
-                $"{ItemUsingManager.itemNameDict[4]}によって質問できない!",// 13
-                $"{elixerText[0]} > {elixerText[1]} > {elixerText[2]}の順番に大きい",// 14
-                $"右のカードの数字の方が大きい",// 15
-                $"左のカードの数字の方が大きい",// 16
-                $"{ItemUsingManager.itemNameDict[4]}を使用した!",// 3
-            };
-            logTextTrans.GetComponent<TextMeshProUGUI>().text = logTexts[messageNum];
+            else if(messageNum == 7)
+            {
+                logTextTrans.GetComponent<TextMeshProUGUI>().text = $"カード{CardsManager.intToAlph[dataA]}は{dataB + 1}以上!";
+            }
+            else if(messageNum == 8)
+            {
+                logTextTrans.GetComponent<TextMeshProUGUI>().text = $"カード{CardsManager.intToAlph[dataA]}は{dataB}以下!";
+            }
+            else if(messageNum == 14)
+            {
+                logTextTrans.GetComponent<TextMeshProUGUI>().text = $"{CardsManager.intToAlph[dataA]} > {CardsManager.intToAlph[dataB]} > {CardsManager.intToAlph[dataC]}の順番に大きい";
+            }
+            else if(messageNum == 15)
+            {
+                logTextTrans.GetComponent<TextMeshProUGUI>().text = $"カード{CardsManager.intToAlph[dataA]}よりカード{CardsManager.intToAlph[dataB]}の方が大きい";
+            }
+            else
+            {
+                string[] logTexts = {
+                    $"{ItemUsingManager.itemNameDict[6]}を使用した!",// 0
+                    $"{ItemUsingManager.itemNameDict[1]}を使用した!",// 1
+                    $"カードを{dataA}回動かした!",// 2
+                    $"{ItemUsingManager.itemNameDict[3]}を使用した!",// 3
+                    $"{ItemUsingManager.itemNameDict[2]}を使用した!",// 4
+                    $"",// 5
+                    $"{ItemUsingManager.itemNameDict[5]}を使用した!",// 6
+                    $"",// 7
+                    $"",// 8
+                    $"うまく決まらなかった!",// 9
+                    $"詠唱!",// 10
+                    $"カードを2枚選択!",// 11
+                    $"カードを3枚選択!",// 12
+                    $"{ItemUsingManager.itemNameDict[4]}によって質問できない!",// 13
+                    $"",// 14
+                    $"",// 15
+                    $"左のカードの数字の方が大きい",// 16
+                    $"{ItemUsingManager.itemNameDict[4]}を使用した!",// 3
+                };
+                logTextTrans.GetComponent<TextMeshProUGUI>().text = logTexts[messageNum];
+            }
         }
     }
 }

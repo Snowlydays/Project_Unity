@@ -364,29 +364,25 @@ public class QutstionController : MonoBehaviour
         string leftName = leftCard.name, rightName = rightCard.name;
         Debug.Log("left:"+leftName + " right:"+rightName);
 
-        //ここの処理の補足
-        //これで得られるのは数値ではなく、厳密には「先頭文字を文字コードで表したときの数値」
-        //文字コード表では基本的に1から9の順に文字コードの数値も大きくなるので、一応これでも成立する
         string informationText = "";
-        if(leftName[leftName.Length - 1] < rightName[rightName.Length - 1])
-        {
-            informationText = "右のカードの方が大きい";
-            networkSystem.Log(15);
-        }
-        else
-        {
-            informationText = "左のカードの方が大きい";
-            networkSystem.Log(16);
-        }
+        int leftNum = int.Parse(leftName[leftName.Length - 1].ToString());
+        int rightNum = int.Parse(rightName[rightName.Length - 1].ToString());
+        int leftAlph = cardsManager.cardAlphabet[leftNum];
+        int rightAlph = cardsManager.cardAlphabet[rightNum];
+
+        int mx = Math.Max(leftNum, rightNum);
+        int mn = Math.Min(leftNum, rightNum);
+        informationText = $"カード{CardsManager.intToAlph[cardsManager.cardAlphabet[mn]]}よりカード{CardsManager.intToAlph[cardsManager.cardAlphabet[mx]]}の方が大きい";
+        networkSystem.Log(15, cardsManager.cardAlphabet[mn], cardsManager.cardAlphabet[mx]);
         
         if(isGetDiff){
             //アイテム2の処理
             int Diff=0;
             Diff=Mathf.Abs(leftName[leftName.Length - 1] - rightName[rightName.Length - 1]);
 
-            Debug.Log($"{ItemUsingManager.itemNameDict[2]}の効果:カードの差は"+Diff.ToString()+"です");
-            networkSystem.Log(5, Diff); // レンズの効果
-            informationText = informationText + $"\n{ItemUsingManager.itemNameDict[2]}の効果:カードの差は" + Diff.ToString() + "です";
+            Debug.Log($"{ItemUsingManager.itemNameDict[2]}の効果:カード{CardsManager.intToAlph[leftAlph]}と{CardsManager.intToAlph[rightAlph]}の差は{Diff}です");
+            networkSystem.Log(5, leftAlph, rightAlph, Diff); // レンズの効果
+            informationText = informationText + $"{ItemUsingManager.itemNameDict[2]}の効果:カード{CardsManager.intToAlph[leftAlph]}と{CardsManager.intToAlph[rightAlph]}の差は{Diff}です";
 
             isGetDiff=false;
         }
@@ -407,66 +403,21 @@ public class QutstionController : MonoBehaviour
         string leftName = Cards[0].name, middleName = Cards[1].name, rightName = Cards[2].name;
         Debug.Log("left:"+leftName + " middle:"+middleName + " right:"+rightName);
         
-        int[] array={int.Parse(leftName[leftName.Length - 1].ToString()),
-        int.Parse(middleName[middleName.Length - 1].ToString()),
-        int.Parse(rightName[rightName.Length - 1].ToString())};
-        
-        string left="",middle="",right="";
+        int[] array = {
+            int.Parse(leftName[leftName.Length - 1].ToString()),
+            int.Parse(middleName[middleName.Length - 1].ToString()),
+            int.Parse(rightName[rightName.Length - 1].ToString())
+        };
 
-        int maxindex=Array.IndexOf(array,array.Max());
+        Array.Sort(array);
 
-        int leftOder = 0;
-        int middleOder = 0;
-        int rightOder = 0;
-        switch(maxindex)
-        {
-            case 0:
-                left="big";
-                leftOder = 1;
-            break;
-            case 1:
-                middle="big";
-                middleOder = 1;
-            break;
-            case 2:
-                right="big";
-                rightOder = 1;
-            break;
-        }
-
-        int minindex=Array.IndexOf(array,array.Min());
-
-        switch(minindex)
-        {
-            case 0:
-                left="small";
-                leftOder = 3;
-            break;
-            case 1:
-                middle="small";
-                middleOder = 3;
-            break;
-            case 2:
-                right="small";
-                rightOder = 3; 
-            break;
-        }
-
-        if(left==""){
-            left="middle";
-            leftOder = 2;
-        }else if(middle==""){
-            middle="middle";
-            middleOder = 2;
-        }else{
-            right="middle";
-            rightOder = 2;
-        }
-
-        Debug.Log($"{ItemUsingManager.itemNameDict[5]}の効果:"+"Left:"+left+" middle:"+middle+" right:"+right);
-        Debug.Log("log関数使用直前: " + leftOder.ToString() + " " + middleOder.ToString() + " " + rightOder.ToString());
-        networkSystem.Log(14, leftOder, middleOder, rightOder);
-        networkSystem.informationManager.AddQuestionResult($"{ItemUsingManager.itemNameDict[5]}の効果:"+"左:"+left+" 中:"+middle+" 右:"+right);
+        int leftAlph = cardsManager.cardAlphabet[array[2]];
+        int middleAlph = cardsManager.cardAlphabet[array[1]];
+        int rightAlph = cardsManager.cardAlphabet[array[0]];
+        networkSystem.Log(14, leftAlph, middleAlph, rightAlph);
+        networkSystem.informationManager.AddQuestionResult(
+            $"{CardsManager.intToAlph[leftAlph]} > {CardsManager.intToAlph[middleAlph]} > {CardsManager.intToAlph[rightAlph]}の順番に大きい"
+        );
         return 0;
     }
 }
