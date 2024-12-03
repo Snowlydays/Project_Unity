@@ -19,10 +19,6 @@ public class LogMenuController : MonoBehaviour
     [SerializeField] public GameObject myLogPrefab;
     [SerializeField] public GameObject opponentLogPrefab;
     [SerializeField] public GameObject roundLogPrefab;
-
-    public Sprite[] myLogSprites = new Sprite[18];
-    public Sprite[] opponentLogSprites = new Sprite[18];
-    public Sprite roundLogSprite;
     
     private TabType currentTab = TabType.All;
 

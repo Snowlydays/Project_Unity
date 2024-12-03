@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 
 /*
-LogMenuContorollerに登録されているログUIの番号
+ログテキストの番号(LogMenuContorollerに登録されていたログUIの番号を引き継ぎ)
 例外としてラウンド表示は-1
 0: エリクサー
 1: オーブ 
@@ -33,7 +33,11 @@ public class LogUnit
     public TabType tabType;
     public bool isMyLog;
     public GameObject logObject;
-    public Sprite logSprite;
+    int dataA = -1;
+    int dataB = -1;
+    int dataC = -1;
+
+    string[] elixerText = new string[3];
 
     public LogUnit(TabType tabType, bool isMyLog, int messageNum, int dataA = -1, int dataB = -1, int dataC = -1)
     {
@@ -43,83 +47,34 @@ public class LogUnit
             if(messageNum > 0) Debug.LogError("ログを追加しようとしているタブが違います");
         }
 
+        this.dataA = dataA;
+        this.dataB = dataB;
+        this.dataC = dataC;
+
         logMenuController = Object.FindObjectOfType<LogMenuController>();
         this.tabType = tabType;
         
         // 使うスプライトとプレファブを決定
-        Sprite sprite;
         GameObject prefab;
         if(messageNum == -1)
         {
-            sprite = logMenuController.roundLogSprite;
             prefab = logMenuController.roundLogPrefab;
         }
         else if(isMyLog)
         {
-            sprite = logMenuController.myLogSprites[messageNum];
             prefab = logMenuController.myLogPrefab;
         }
         else
         {
-            sprite = logMenuController.opponentLogSprites[messageNum];
             prefab = logMenuController.opponentLogPrefab;
         }
 
         // 親を指定してクローン
-        if(tabType == TabType.All) logObject = Object.Instantiate(prefab, logMenuController.allLogMenu.transform);
-        else if(tabType == TabType.Myself) logObject = Object.Instantiate(prefab, logMenuController.myLogMenu.transform);
-        else if(tabType == TabType.Opponent) logObject = Object.Instantiate(prefab, logMenuController.oppLogMenu.transform);
-        Transform image = logObject.transform.Find("Image");
-        image.GetComponent<Image>().sprite = sprite;
-
-        // 結果により変化するテキストの処理
-        if(messageNum == 2)
-        {
-            if(dataA < 0)
-            {
-                Debug.LogError("引数が正しくありません");
-                return;
-            }
-            Transform text2 = image.transform.Find("Sprite2Text");
-            text2.GetComponent<TextMeshProUGUI>().text = dataA.ToString();
-        }
-        else if(messageNum == 5)
-        {
-            if(dataA < 0)
-            {
-                Debug.LogError("引数が正しくありません");
-                return;
-            }
-            Transform text5 = image.transform.Find("Sprite5Text");
-            text5.GetComponent<TextMeshProUGUI>().text = dataA.ToString();
-        }
-        else if(messageNum == 7 || messageNum == 8)
-        {
-            if(dataA < 0)
-            {
-                Debug.LogError("引数が正しくありません");
-                return;
-            }
-            Transform text78 = image.transform.Find("Sprite78Text");
-            text78.GetComponent<TextMeshProUGUI>().text = dataA.ToString();
-        }
-        else if(messageNum == 14) // エリクサーを使う場合は引数で左から順に1~3の順序を割り振る
-        {
-            if(dataA <= 0 || dataB <= 0 || dataC <= 0)
-            {
-                Debug.LogError("引数が正しくありません");
-                return;
-            }
-            Transform text14L = image.transform.Find("Sprite14TextL");
-            Transform text14M = image.transform.Find("Sprite14TextM");
-            Transform text14R = image.transform.Find("Sprite14TextR");
-
-            Transform[] text14 = {text14L, text14M, text14R};
-            text14[dataA - 1].GetComponent<TextMeshProUGUI>().text = "L";
-            text14[dataB - 1].GetComponent<TextMeshProUGUI>().text = "M";
-            text14[dataC - 1].GetComponent<TextMeshProUGUI>().text = "R";
-        }
-        else if(messageNum == -1)
+        if(tabType == TabType.All) this.logObject = Object.Instantiate(prefab, logMenuController.allLogMenu.transform);
+        else if(tabType == TabType.Myself) this.logObject = Object.Instantiate(prefab, logMenuController.myLogMenu.transform);
+        else if(tabType == TabType.Opponent) this.logObject = Object.Instantiate(prefab, logMenuController.oppLogMenu.transform);
+        Transform image = this.logObject.transform.Find("Image");
+        if(messageNum == -1)
         {
             if(dataA < 1)
             {
@@ -128,6 +83,43 @@ public class LogUnit
             }
             Transform roundNumText = image.transform.Find("RoundNumText");
             roundNumText.GetComponent<TextMeshProUGUI>().text = dataA.ToString(); 
+        }
+        else
+        {
+            Transform logTextTrans = image.transform.Find("LogText");
+            if(messageNum == 14) // エリクサーを使う場合は引数で左から順に1~3の順序を割り振る
+            {
+                if(dataA <= 0 || dataB <= 0 || dataC <= 0)
+                {
+                    Debug.LogError("引数が正しくありません");
+                    return;
+                }
+
+                elixerText[dataA - 1] = "L";
+                elixerText[dataB - 1] = "M";
+                elixerText[dataC - 1] = "R";
+            }
+            string[] logTexts = {
+                $"{ItemUsingManager.itemNameDict[6]}を使用した!",// 0
+                $"{ItemUsingManager.itemNameDict[1]}を使用した!",// 1
+                $"カードを{dataA}回動かした!",// 2
+                $"{ItemUsingManager.itemNameDict[3]}を使用した!",// 3
+                $"{ItemUsingManager.itemNameDict[2]}を使用した!",// 4
+                $"カードの差は{dataA}!",// 5
+                $"{ItemUsingManager.itemNameDict[5]}を使用した!",// 6
+                $"カードは{dataA + 1}以上!",// 7
+                $"カードは{dataA}以下!",// 8
+                $"うまく決まらなかった!",// 9
+                $"詠唱!",// 10
+                $"カードを2枚選択!",// 11
+                $"カードを3枚選択!",// 12
+                $"{ItemUsingManager.itemNameDict[4]}によって質問できない!",// 13
+                $"{elixerText[0]} > {elixerText[1]} > {elixerText[2]}の順番に大きい",// 14
+                $"右のカードの数字の方が大きい",// 15
+                $"左のカードの数字の方が大きい",// 16
+                $"{ItemUsingManager.itemNameDict[4]}を使用した!",// 3
+            };
+            logTextTrans.GetComponent<TextMeshProUGUI>().text = logTexts[messageNum];
         }
     }
 }
