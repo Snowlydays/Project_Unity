@@ -534,17 +534,17 @@ public class ItemUsingManager : MonoBehaviour
 
         Debug.Log(cardname);
         int cardNumber=int.Parse(cardname[cardname.Length - 1].ToString());
-
+        int cardAlph = cardsManager.cardAlphabet[cardNumber];
         if(cardNumber>chooseNumber){
             //カードの値より入力した値が大きかった時
-            Debug.Log($"{itemNameDict[6]}の効果:カードの数値は{chooseNumber}より大きいです");
-            networkSystem.Log(7, chooseNumber);
-            networkSystem.informationManager.AddInformationText($"{itemNameDict[6]}の効果:選んだカードの数値は{chooseNumber}より大きいです");
+            Debug.Log($"{itemNameDict[6]}の効果:カード{CardsManager.intToAlph[cardNumber]}は{chooseNumber + 1}以上です");
+            networkSystem.Log(7, cardAlph, chooseNumber);
+            networkSystem.informationManager.AddInformationText($"{itemNameDict[6]}の効果:カード{CardsManager.intToAlph[cardNumber]}は{chooseNumber}以上です");
         }else{
             //入力した値がカードの値以下だった時
             Debug.Log($"{itemNameDict[6]}の効果:カードの数値は{chooseNumber}以下です");
-            networkSystem.Log(8, chooseNumber);
-            networkSystem.informationManager.AddInformationText($"{itemNameDict[6]}の効果:選んだカードの数値は{chooseNumber}以下です");
+            networkSystem.Log(8, cardAlph, chooseNumber);
+            networkSystem.informationManager.AddInformationText($"{itemNameDict[6]}の効果:カード{CardsManager.intToAlph[cardNumber]}は{chooseNumber}以下です");
         }
 
         foreach (GameObject card in clonedCards) Destroy(card);
