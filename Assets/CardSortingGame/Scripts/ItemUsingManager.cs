@@ -123,6 +123,7 @@ public class ItemUsingManager : MonoBehaviour
 
     IEnumerator StartItemUsePhaseIEnumerator()
     {
+        networkSystem.itemPhaseManager.UpdateInventoryUI(); // UIを更新
         mylist = new List<int>(myItems);
         otherlist = new List<int>(otherItems);
 

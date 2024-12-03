@@ -67,8 +67,8 @@ public class ItemPhaseManager : MonoBehaviour
     public void StartItemPhase()
     {
         Debug.Log("アイテムフェーズ開始");
-        //DistributeItem();
-        TestGetAllItem(); // アイテムテスト用
+        DistributeItem();
+        // TestGetAllItem(); // アイテムテスト用
         SortToggles(); // トグルのボタンをソート
         itemDisplayPanel.gameObject.SetActive(true); // アイテムディスプレイを表示
         confirmButton.gameObject.SetActive(true); // 決定ボタンを表示
@@ -183,7 +183,7 @@ public class ItemPhaseManager : MonoBehaviour
             }
         }
 
-        if (unownedItems.Count > 0)
+        if (0 < unownedItems.Count && (ITEM_NUM-unownedItems.Count) < 3)
         {
             // 未所有のアイテムリストからランダムに選び、プレイヤーへ配る
             int randomIdx = UnityEngine.Random.Range(0, unownedItems.Count);
@@ -196,7 +196,7 @@ public class ItemPhaseManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("全てのアイテムを所有中");
+            Debug.Log("アイテムはこれ以上持てません。");
         }
     }
     
