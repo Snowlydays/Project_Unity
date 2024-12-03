@@ -1868,6 +1868,7 @@ MonoBehaviour:
   decideSound: {fileID: 8300000, guid: ee50a08976b8c4329b7e3ddc170296cc, type: 3}
   cancelSound: {fileID: 8300000, guid: c9eb5b79b814b44be9550b25e97b128a, type: 3}
   SoundObject: {fileID: 8952582336682380940, guid: 5e86fc38c315040b0949fc764056978c, type: 3}
+  soundManager: {fileID: 6410526852453478635, guid: f429d2a6288ce49a0a651537920faa95, type: 3}
 --- !u!114 &1186468159
 MonoBehaviour:
   m_ObjectHideFlags: 0

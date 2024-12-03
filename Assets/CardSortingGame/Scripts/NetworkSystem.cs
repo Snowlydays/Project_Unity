@@ -55,6 +55,8 @@ public class NetworkSystem : NetworkBehaviour
     public static int[] hostCard = new int[cardNum];//カード配列取得用変数
     public static int[] clientCard = new int[cardNum];
 
+    public bool Ended=false;
+
     public static int phase = 0;
     public static bool hostReady = false;
     public static bool clientReady = false;
@@ -70,6 +72,7 @@ public class NetworkSystem : NetworkBehaviour
     public InformationManager informationManager;
     public AnimationController animationController;
     public MainSystemScript mainSystemScript;
+    public ItemWindowManager itemWindowManager;
 
     public Sprite attackSprite;
     
@@ -135,6 +138,7 @@ public class NetworkSystem : NetworkBehaviour
         informationManager = FindObjectOfType<InformationManager>();
         animationController = FindObjectOfType<AnimationController>();
         mainSystemScript = FindObjectOfType<MainSystemScript>();
+        itemWindowManager = FindObjectOfType<ItemWindowManager>();
         
         // イベント追加
         Debug.Log("NetworkSystem.OnNetworkSpawn");
@@ -441,14 +445,14 @@ public class NetworkSystem : NetworkBehaviour
             ChangeClientWaitingServerRPC(0);
         }
     }
-
-    public void DisconnectServer(){
-        //サーバー切断用メソッド
-        //NetworkManager.Singleton.Shutdown();
-        /*if (NetworkManager.Singleton != null)
-        {
-            Destroy(NetworkManager.Singleton);
-        }*/
+    
+    public void EndGame(){
+        //降参用メソッド
+        if(IsHost){
+            ToMoveSceneEndServerRpc("Scenes/ResultsScenes/LoseScene","Scenes/ResultsScenes/WinScene");
+        }else{
+            ToMoveSceneEndServerRpc("Scenes/ResultsScenes/WinScene","Scenes/ResultsScenes/LoseScene");
+        }
     }
 
     //networkSystem.animationController.CreatePhaseLogo(questionSprite);
@@ -489,7 +493,6 @@ public class NetworkSystem : NetworkBehaviour
             Debug.Log("両プレイヤーのカードが昇順: 引き分け");
             // 引き分けの処理を実装
             ToMoveSceneClientRpc("Scenes/ResultsScenes/DrawScene");
-            DisconnectServer();
             SceneManager.LoadScene("Scenes/ResultsScenes/DrawScene");
         }
         else if (hostAsc)
@@ -497,7 +500,6 @@ public class NetworkSystem : NetworkBehaviour
             Debug.Log("ホストのカードが昇順: ホストの勝利");
             // ホストの勝利処理を実装
             ToMoveSceneClientRpc("Scenes/ResultsScenes/LoseScene");
-            DisconnectServer();
             SceneManager.LoadScene("Scenes/ResultsScenes/WinScene");
         }
         else if (clientAsc)
@@ -505,7 +507,6 @@ public class NetworkSystem : NetworkBehaviour
             Debug.Log("クライアントのカードが昇順: クライアントの勝利");
             // クライアントの勝利処理を実装
             ToMoveSceneClientRpc("Scenes/ResultsScenes/WinScene");
-            DisconnectServer();
             SceneManager.LoadScene("Scenes/ResultsScenes/LoseScene");
         }
         else
@@ -544,7 +545,17 @@ public class NetworkSystem : NetworkBehaviour
     public void ToMoveSceneClientRpc(string scenename)
     { 
         SceneManager.LoadScene(scenename);
-        DisconnectServer();
+    }
+
+    [Unity.Netcode.ServerRpc(RequireOwnership = false)]
+    public void ToMoveSceneEndServerRpc(string scenenameA,string scenenameB)
+    { 
+        //相手が先に降参したら、その後自分が降参できないようにする。
+        if(!Ended){
+            Ended=true;
+            ToMoveSceneClientRpc(scenenameB);
+            SceneManager.LoadScene(scenenameA);
+        }
     }
 
     private bool CheckAscending(int[] cards)

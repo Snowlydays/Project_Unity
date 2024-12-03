@@ -10,6 +10,8 @@ public class PlaySound : MonoBehaviour
 
     bool soundplayed=false;
 
+    public static float volume;//全PlaySoundスクリプトが共有する変数なのでstatic化
+
     void Start(){
         DontDestroyOnLoad(this.gameObject);//シーンを跨ぐと効果音などが途切れるのを防止
     }
@@ -17,6 +19,7 @@ public class PlaySound : MonoBehaviour
     public void PlaySE(AudioClip se)
     {
         audioSource = GetComponent<AudioSource>();
+        audioSource.volume=volume;
         audioSource.PlayOneShot(se);
         soundplayed=true;
     }

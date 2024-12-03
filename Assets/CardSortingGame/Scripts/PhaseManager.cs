@@ -63,13 +63,13 @@ public class PhaseManager : MonoBehaviour
         networkSystem.ChangeHostWaitingServerRPC(0);
         networkSystem.ChangeClientWaitingServerRPC(0);
 
-        GameObject animobj;
         switch (newPhase)
         {
             case InitialPhase:
                 networkSystem.informationManager.ShowQuestionResult();
                 networkSystem.mainSystemScript.readyButton.gameObject.GetComponent<Animator>().SetBool("blStarted", false);
                 AttackAction();
+                networkSystem.itemWindowManager.DisappearWindow();
                 break;
 
             case ItemPhase:
@@ -86,6 +86,7 @@ public class PhaseManager : MonoBehaviour
 
             case ItemUsingPhase:
                 networkSystem.itemUsingManager.StartItemUsePhase();
+                networkSystem.itemWindowManager.AppearWindow();
                 break;
         }
     }

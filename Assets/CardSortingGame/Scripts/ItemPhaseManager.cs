@@ -67,8 +67,8 @@ public class ItemPhaseManager : MonoBehaviour
     public void StartItemPhase()
     {
         Debug.Log("アイテムフェーズ開始");
-        DistributeItem();
-        // TestGetAllItem(); // アイテムテスト用
+        //DistributeItem();
+        TestGetAllItem(); // アイテムテスト用
         SortToggles(); // トグルのボタンをソート
         itemDisplayPanel.gameObject.SetActive(true); // アイテムディスプレイを表示
         confirmButton.gameObject.SetActive(true); // 決定ボタンを表示

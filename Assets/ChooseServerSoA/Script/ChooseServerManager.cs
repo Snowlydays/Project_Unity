@@ -37,6 +37,7 @@ public class ChooseServerManager : NetworkBehaviour
     public AudioClip decideSound;
     public AudioClip cancelSound;
     public GameObject SoundObject;
+    public GameObject soundManager;
 
     public static string GeneratePassword( int length )
     {
@@ -62,6 +63,11 @@ public class ChooseServerManager : NetworkBehaviour
         backButton = GameObject.Find("BackButton");
         connectionErrorImage = connectPanel.transform.Find("ConnectionErrorImage").gameObject;
         connectionErrorImage.SetActive(false);
+
+        if(GameObject.Find("SoundManager")==null){
+            GameObject obj=Instantiate(soundManager);
+            obj.name = soundManager.name;
+        }
 
         if (joinButton != null)
         {
@@ -130,13 +136,9 @@ public class ChooseServerManager : NetworkBehaviour
         Debug.Log("テスト");
 
         if(clientstart){
-            GameObject titleobj = GameObject.Find("TitleBGM");
-            if(titleobj!=null)Destroy(titleobj);
             NetworkManager.Singleton.SceneManager.LoadScene("CardSortingGame", LoadSceneMode.Single);
         }else{
             if(NetworkManager.Singleton.ConnectedClients.Count > 1){
-                GameObject titleobj = GameObject.Find("TitleBGM");
-                if(titleobj!=null)Destroy(titleobj);
                 waitObj.SetActive(false);
                 NetworkManager.Singleton.SceneManager.LoadScene("CardSortingGame", LoadSceneMode.Single);
             }
