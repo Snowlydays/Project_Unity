@@ -272,7 +272,6 @@ public class NetworkSystem : NetworkBehaviour
             if (IsHost) itemPhaseManager.myItems[i] = netHostItems[i];
             else itemPhaseManager.otherItems[i] = netHostItems[i];
         }
-        itemPhaseManager.UpdateInventoryUI();
     }
 
     private void OnNetClientItemChanged(NetworkListEvent<bool> changeEvent)
@@ -283,7 +282,6 @@ public class NetworkSystem : NetworkBehaviour
             if (IsHost) itemPhaseManager.otherItems[i] = netClientItems[i]; 
             else itemPhaseManager.myItems[i] = netClientItems[i]; 
         }
-        itemPhaseManager.UpdateInventoryUI();
     }
 
     public void OnNetLogChanged(NetworkListEvent<int> changeEvent)
