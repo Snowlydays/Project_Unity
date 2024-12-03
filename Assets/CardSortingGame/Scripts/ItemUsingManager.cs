@@ -153,30 +153,32 @@ public class ItemUsingManager : MonoBehaviour
 
     IEnumerator ItemFourCheckAndUse(){
         if(mylist.Contains(3) && otherlist.Contains(3)){
-            networkSystem.questionController.isNotQuestion=true;
+            // networkSystem.questionController.isNotQuestion=true;
+            networkSystem.questionController.isNotAttack=true;
             networkSystem.animationController.CreateDefaultItem(3,-300f);
             networkSystem.animationController.CreateDefaultOtherItem(3,300f);
             yield return new WaitForSeconds(1.8f);
-            networkSystem.informationManager.AddInformationText($"{itemNameDict[4]}の効果: 相手は質問できない");
-            Debug.Log($"{itemNameDict[3]}の効果: 相手は質問できない");
-            networkSystem.informationManager.AddInformationText($"{itemNameDict[4]}の効果: 自分の質問が封じられた。");
-            Debug.Log($"{itemNameDict[3]}の効果: 自分の質問が封じられた。");
+            networkSystem.informationManager.AddInformationText($"{itemNameDict[4]}の効果: 相手は詠唱できない");
+            Debug.Log($"{itemNameDict[3]}の効果: 相手は詠唱できない");
+            networkSystem.informationManager.AddInformationText($"{itemNameDict[4]}の効果: 自分の詠唱が封じられた。");
+            Debug.Log($"{itemNameDict[3]}の効果: 自分の詠唱が封じられた。");
             yield break;
         }
         if(mylist.Contains(3)){
             networkSystem.animationController.CreateDefaultItem(3);
             yield return new WaitForSeconds(1.8f);
-            networkSystem.informationManager.AddInformationText($"{itemNameDict[4]}の効果: 相手は質問できない");
-            Debug.Log($"{itemNameDict[3]}の効果: 相手は質問できない");
+            networkSystem.informationManager.AddInformationText($"{itemNameDict[4]}の効果: 相手は詠唱できない");
+            Debug.Log($"{itemNameDict[3]}の効果: 相手は詠唱できない");
             yield break;
         }
         if(otherlist.Contains(3)){
             //もし相手がアイテム4を持っていたら、質問不可能bool値をtrueにする。
             networkSystem.animationController.CreateDefaultOtherItem(3);
-            networkSystem.questionController.isNotQuestion=true;
+            // networkSystem.questionController.isNotQuestion=true;
+            networkSystem.questionController.isNotAttack=true;
             yield return new WaitForSeconds(1.8f);
-            networkSystem.informationManager.AddInformationText($"{itemNameDict[4]}の効果: 自分の質問が封じられた。");
-            Debug.Log($"{itemNameDict[3]}の効果: 自分の質問が封じられた。");
+            networkSystem.informationManager.AddInformationText($"{itemNameDict[4]}の効果: 自分の詠唱が封じられた。");
+            Debug.Log($"{itemNameDict[3]}の効果: 自分の詠唱が封じられた。");
             yield break;
         }
     }

@@ -40,6 +40,7 @@ public class QutstionController : MonoBehaviour
     public bool isGetDiff = false;
     public bool isThreeSelect = false;
     public bool isNotQuestion = false;
+    public bool isNotAttack = false;
     
     private TextMeshProUGUI instruction;
     
@@ -189,6 +190,8 @@ public class QutstionController : MonoBehaviour
     void OnSpellButtonClicked()
     {
         Debug.Log("スペルボタン クリック");
+        if (isNotAttack) return;
+        
         isAttacking = !isAttacking;
         networkSystem.ToggleAttacked();
 
@@ -334,6 +337,9 @@ public class QutstionController : MonoBehaviour
             
             // 攻撃トグルを初期化
             isAttacking = false;
+            
+            // 詠唱不可トグルを初期化
+            isNotAttack = false;
 
             // 3枚選択トグルを初期化
             isThreeSelect=false;
