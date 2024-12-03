@@ -73,10 +73,12 @@ public class MainSystemScript : MonoBehaviour
         if(networkSystem != null)networkSystem.OnLocalReadyStateChanged += UpdateButtonImage;
         
         // パネルのサイズ調整
+        Vector3 scale = new Vector3(0.91f, 0.91f, 1f);
         RectTransform myCardPanelRect = myCardPanel.GetComponent<RectTransform>();
         RectTransform otherCardPanelRect = otherCardPanel.GetComponent<RectTransform>();
         cardsManager.AdjustPanelSize(myCardPanelRect,cardWidth,cardSpacing,paddingLeft,paddingRight);
         cardsManager.AdjustPanelSize(otherCardPanelRect,cardWidth,cardSpacing,paddingLeft,paddingRight);
+        otherCardPanelRect.localScale = scale;
         
         // 自分のスロット、カード生成
         for (int i = 0; i < CARD_NUM; i++)
