@@ -18,27 +18,39 @@ public class SoundManager : MonoBehaviour
     void Start()
     {
         myAudio=GetComponent<AudioSource>();
-        SceneManager.sceneLoaded += OnSceneLoaded;
+        //cookieから音量設定を取得、なければデフォルト値にする
+        float BGMvalue=Helper.GetCookieValue("BGM");
+        if(BGMvalue==-1f){
+            BGMvolume=0.5f;
+        }else{
+            BGMvolume=BGMvalue;
+        }
+        float SFXvalue=Helper.GetCookieValue("SFX");
+        if(SFXvalue==-1f){
+            SFXvolume=1f;
+        }else{
+            SFXvolume=SFXvalue;
+        }
+        ChangeBGMvolume(BGMvolume);
+        ChangeSFXvolume(SFXvolume);
         nowPlayBGM=TitleBGM;
         myAudio.clip=nowPlayBGM;
         myAudio.Play();
-        //何らかの手段(例えばcookieなど)で音量設定を保存できるとなお良いかも
-        BGMvolume=0.5f;
-        SFXvolume=1f;
-        ChangeBGMvolume(BGMvolume);
-        ChangeSFXvolume(SFXvolume);
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     public void ChangeBGMvolume(float volume){
-        //BGMの音量を変更するメソッド
+        //BGMの音量を変更するメソッド。同時にcookieに保存する
         BGMvolume=volume;
         myAudio.volume=BGMvolume;
+        Helper.SetCookie("BGM",BGMvolume);
     }
 
     public void ChangeSFXvolume(float volume){
-        //効果音全般の音量を変更するメソッド
+        //効果音全般の音量を変更するメソッド。同時にcookieに保存する
         SFXvolume=volume;
         PlaySound.volume=SFXvolume;
+        Helper.SetCookie("SFX",SFXvolume);
     }
 
     void OnSceneLoaded( Scene scene, LoadSceneMode mode )
