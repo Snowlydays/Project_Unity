@@ -39,6 +39,8 @@ public class ChooseServerManager : NetworkBehaviour
     public GameObject SoundObject;
     public GameObject soundManager;
 
+    public GameObject loadObject;
+
     public static string GeneratePassword( int length )
     {
         var sb  = new System.Text.StringBuilder( length );
@@ -89,6 +91,7 @@ public class ChooseServerManager : NetworkBehaviour
         
         waitObj.SetActive(false);
         connectPanel.SetActive(false);
+        loadObject.SetActive(false);
     }
 
     async void Start(){
@@ -140,6 +143,7 @@ public class ChooseServerManager : NetworkBehaviour
         }else{
             if(NetworkManager.Singleton.ConnectedClients.Count > 1){
                 waitObj.SetActive(false);
+                loadObject.SetActive(true);
                 NetworkManager.Singleton.SceneManager.LoadScene("CardSortingGame", LoadSceneMode.Single);
             }
         }
@@ -221,6 +225,8 @@ public class ChooseServerManager : NetworkBehaviour
                 NetworkManager.Singleton.StartClient();
 
                 codeText.text="接続中です...";
+
+                loadObject.SetActive(true);
             }
             catch (RelayServiceException e) {
                 Debug.LogException(e);

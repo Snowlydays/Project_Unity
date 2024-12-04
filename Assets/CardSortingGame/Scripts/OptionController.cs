@@ -19,8 +19,7 @@ public class OptionController : MonoBehaviour
 
     private NetworkSystem networkSystem;
     
-    float movedY;//オプションタブの移動先y座標を決める部分
-    //ここの値を変えるだけでタブが滑らかに移動する
+    float movedY;
 
     SoundManager soundManager;
     
