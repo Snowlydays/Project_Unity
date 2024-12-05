@@ -381,7 +381,7 @@ public class QutstionController : MonoBehaviour
 
             Debug.Log($"{ItemUsingManager.itemNameDict[2]}の効果:カード{CardsManager.intToAlph[leftAlph]}と{CardsManager.intToAlph[rightAlph]}の差は{Diff}です");
             networkSystem.Log(LogUnit.LensEffect, leftAlph, rightAlph, Diff); // レンズの効果
-            informationText = informationText + $"{ItemUsingManager.itemNameDict[2]}の効果:カード{CardsManager.intToAlph[leftAlph]}と{CardsManager.intToAlph[rightAlph]}の差は{Diff}です";
+            informationText += $"\n{ItemUsingManager.itemNameDict[2]}の効果:カード{CardsManager.intToAlph[leftAlph]}と{CardsManager.intToAlph[rightAlph]}の差は{Diff}です";
 
             isGetDiff=false;
         }
