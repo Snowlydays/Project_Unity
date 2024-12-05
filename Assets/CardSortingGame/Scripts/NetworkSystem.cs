@@ -89,6 +89,8 @@ public class NetworkSystem : NetworkBehaviour
         logList = new NetworkList<int>();
         netHostItemSelects = new NetworkList<int>();
         netClientItemSelects = new NetworkList<int>();
+        PhaseManager.round = 0; // ラウンド数を初期化
+        PhaseManager.ProgressRound();
     }
     
     public override void OnDestroy()
@@ -289,10 +291,6 @@ public class NetworkSystem : NetworkBehaviour
         if (logList.Count < 5) return;
         Debug.Log("ログ追加");
 
-        // if(logData.messageNum == 14)
-        // {
-        //     Debug.Log(logData.dataA.ToString() + " " + logData.dataB.ToString() + " " + logData.dataC.ToString());
-        // }
         if((logList[0] == 0 ? false : true) == IsHost)
         {
             logMenuController.allLogs.Add(new LogUnit(TabType.All, true, logList[1], logList[2], logList[3], logList[4]));
@@ -513,15 +511,15 @@ public class NetworkSystem : NetworkBehaviour
             if (hostAttacked)
             {
                 Debug.Log("攻撃失敗！");
-                LogHost(10); // 詠唱ログ
-                LogHost(9); // 攻撃失敗ログ
+                LogHost(LogUnit.Attacking); // 詠唱ログ
+                LogHost(LogUnit.AttackFailed); // 攻撃失敗ログ
                 informationManager.AddInformationText("攻撃失敗！");
                 AddInformationTextClientRpc("相手が攻撃に失敗しました");
             }
             if (clientAttacked)
             {
-                LogClientServerRpc(10); // 詠唱ログ
-                LogClientServerRpc(9); // 攻撃失敗ログ
+                LogClientServerRpc(LogUnit.Attacking); // 詠唱ログ
+                LogClientServerRpc(LogUnit.AttackFailed); // 攻撃失敗ログ
                 informationManager.AddInformationText("相手が攻撃に失敗しました");
                 AddInformationTextClientRpc("攻撃失敗！");
             }
@@ -742,8 +740,6 @@ public class NetworkSystem : NetworkBehaviour
     public void LogClientServerRpc(int messageNum, int dataA = -1, int dataB = -1, int dataC = -1)
     {
         if(logList.Count == 5) logList.Clear();
-        Debug.Log("hoge");
-        Debug.Log(dataA.ToString() + " " + dataB.ToString() + " " + dataC.ToString());
         logList.Add(0);
         logList.Add(messageNum);
         logList.Add(dataA);

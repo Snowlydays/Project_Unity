@@ -178,6 +178,7 @@ public class ItemUsingManager : MonoBehaviour
             networkSystem.questionController.isNotAttack=true;
             yield return new WaitForSeconds(1.8f);
             networkSystem.informationManager.AddInformationText($"{itemNameDict[4]}の効果: 自分の詠唱が封じられた。");
+            networkSystem.Log(LogUnit.AttackLimited);
             Debug.Log($"{itemNameDict[3]}の効果: 自分の詠唱が封じられた。");
             yield break;
         }
@@ -191,22 +192,22 @@ public class ItemUsingManager : MonoBehaviour
             switch(item+1)
             {
                 case 1:
-                networkSystem.Log(1);
+                networkSystem.Log(LogUnit.OrbUsed);
                 break;
                 case 2:
-                networkSystem.Log(4);
+                networkSystem.Log(LogUnit.LensUsed);
                 break;
                 case 3:
-                networkSystem.Log(3);
+                networkSystem.Log(LogUnit.MirrorUsed);
                 break;
                 case 4:
-                networkSystem.Log(17);
+                networkSystem.Log(LogUnit.ChainUsed);
                 break;
                 case 5:
-                networkSystem.Log(0);
+                networkSystem.Log(LogUnit.BalanceUsed);
                 break;
                 case 6:
-                networkSystem.Log(6);
+                networkSystem.Log(LogUnit.ElixerUsed);
                 break;
             }
             if(item!=3)networkSystem.animationController.CreateDefaultItem(item);
@@ -281,7 +282,7 @@ public class ItemUsingManager : MonoBehaviour
             //その後奪った相手のアイテムをremove
             if(mygetitem!=2){
                 mylist[mylist.IndexOf(2)]=mygetitem;
-                networkSystem.Log(3);//ログ適応
+                networkSystem.Log(LogUnit.MirrorUsed);//ログ適応
             }
             otherlist.Remove(mygetitem);
         }
@@ -473,13 +474,13 @@ public class ItemUsingManager : MonoBehaviour
         {
             networkSystem.informationManager.AddInformationText($"{itemNameDict[1]}の効果: 選んだ{initialIndex + 1}番目のカードは{finalIndex + 1}番目まで移動しました。");
             Debug.Log($"{itemNameDict[1]}の効果: 選んだ{initialIndex + 1}番目のカードは{finalIndex + 1}番目まで移動しました。");
-            networkSystem.Log(2, Math.Abs(initialIndex - finalIndex));
+            networkSystem.Log(LogUnit.OrbEffect, Math.Abs(initialIndex - finalIndex));
         }
         else
         {
             networkSystem.informationManager.AddInformationText($"{itemNameDict[1]}の効果: 選んだ{initialIndex + 1}番目のカードは移動しませんでした。");
             Debug.Log($"{itemNameDict[1]}の効果: 選んだ{initialIndex + 1}番目のカードは移動しませんでした。");
-            networkSystem.Log(2, Math.Abs(initialIndex - finalIndex));
+            networkSystem.Log(LogUnit.OrbEffect, Math.Abs(initialIndex - finalIndex));
         }
         
         foreach (GameObject card in clonedCards) Destroy(card);
@@ -535,16 +536,24 @@ public class ItemUsingManager : MonoBehaviour
         Debug.Log(cardname);
         int cardNumber=int.Parse(cardname[cardname.Length - 1].ToString());
         int cardAlph = cardsManager.cardAlphabet[cardNumber];
-        if(cardNumber>chooseNumber){
+        if(cardNumber > chooseNumber)
+        {
             //カードの値より入力した値が大きかった時
             Debug.Log($"{itemNameDict[6]}の効果:カード{CardsManager.intToAlph[cardNumber]}は{chooseNumber + 1}以上です");
-            networkSystem.Log(7, cardAlph, chooseNumber);
-            networkSystem.informationManager.AddInformationText($"{itemNameDict[6]}の効果:カード{CardsManager.intToAlph[cardNumber]}は{chooseNumber}以上です");
-        }else{
-            //入力した値がカードの値以下だった時
+            networkSystem.Log(LogUnit.ElixerEffectMore, cardAlph, chooseNumber);
+            networkSystem.informationManager.AddInformationText($"{itemNameDict[6]}の効果:カードの数字{CardsManager.intToAlph[cardAlph]}は{chooseNumber}より大きい");
+        }
+        else if(cardNumber == chooseNumber)
+        {
+            //カードの値と入力した値が等しかった時
+            networkSystem.Log(LogUnit.ElixerEffectEqual, cardAlph, chooseNumber);
+            networkSystem.informationManager.AddInformationText($"{itemNameDict[6]}の効果:カードの数字{CardsManager.intToAlph[cardAlph]}は{chooseNumber}と等しい");
+        }
+        else{
+            //入力した値がカードの値より小さかった時
             Debug.Log($"{itemNameDict[6]}の効果:カードの数値は{chooseNumber}以下です");
-            networkSystem.Log(8, cardAlph, chooseNumber);
-            networkSystem.informationManager.AddInformationText($"{itemNameDict[6]}の効果:カード{CardsManager.intToAlph[cardNumber]}は{chooseNumber}以下です");
+            networkSystem.Log(LogUnit.ElixerEffectLess, cardAlph, chooseNumber);
+            networkSystem.informationManager.AddInformationText($"{itemNameDict[6]}の効果:カードの数字{CardsManager.intToAlph[cardAlph]}は{chooseNumber}より小さい");
         }
 
         foreach (GameObject card in clonedCards) Destroy(card);

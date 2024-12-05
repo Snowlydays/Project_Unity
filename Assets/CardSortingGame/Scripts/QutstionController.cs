@@ -116,8 +116,7 @@ public class QutstionController : MonoBehaviour
         }else{
             //質問ができない場合はアイテム効果系bool変数を無効化してToggleReadyする。
             Debug.Log("相手のアイテム4の効果で質問ができない");
-            networkSystem.Log(13);
-            networkSystem.informationManager.AddInformationText($"相手の{ItemUsingManager.itemNameDict[4]}の効果により質問できません!");
+            networkSystem.informationManager.AddInformationText($"相手の{ItemUsingManager.itemNameDict[4]}の効果により詠唱できません!");
             // 攻撃トグルを初期化
             isAttacking = false;
 
@@ -355,7 +354,7 @@ public class QutstionController : MonoBehaviour
     
     int CompareCards(GameObject leftCard, GameObject rightCard)
     {
-        networkSystem.Log(11);
+        // networkSystem.Log(LogUnit.NomalQuestion);
         if(leftCard.transform.position.x > rightCard.transform.position.x)
         {
             (leftCard, rightCard) = (rightCard, leftCard);
@@ -372,8 +371,8 @@ public class QutstionController : MonoBehaviour
 
         int mx = Math.Max(leftNum, rightNum);
         int mn = Math.Min(leftNum, rightNum);
-        informationText = $"カード{CardsManager.intToAlph[cardsManager.cardAlphabet[mn]]}よりカード{CardsManager.intToAlph[cardsManager.cardAlphabet[mx]]}の方が大きい";
-        networkSystem.Log(15, cardsManager.cardAlphabet[mn], cardsManager.cardAlphabet[mx]);
+        informationText = $"カードの数字は {CardsManager.intToAlph[cardsManager.cardAlphabet[mn]]} < {CardsManager.intToAlph[cardsManager.cardAlphabet[mx]]}";
+        networkSystem.Log(LogUnit.NomalResult, cardsManager.cardAlphabet[mn], cardsManager.cardAlphabet[mx]);
         
         if(isGetDiff){
             //アイテム2の処理
@@ -381,7 +380,7 @@ public class QutstionController : MonoBehaviour
             Diff=Mathf.Abs(leftName[leftName.Length - 1] - rightName[rightName.Length - 1]);
 
             Debug.Log($"{ItemUsingManager.itemNameDict[2]}の効果:カード{CardsManager.intToAlph[leftAlph]}と{CardsManager.intToAlph[rightAlph]}の差は{Diff}です");
-            networkSystem.Log(5, leftAlph, rightAlph, Diff); // レンズの効果
+            networkSystem.Log(LogUnit.LensEffect, leftAlph, rightAlph, Diff); // レンズの効果
             informationText = informationText + $"{ItemUsingManager.itemNameDict[2]}の効果:カード{CardsManager.intToAlph[leftAlph]}と{CardsManager.intToAlph[rightAlph]}の差は{Diff}です";
 
             isGetDiff=false;
@@ -392,7 +391,7 @@ public class QutstionController : MonoBehaviour
 
     int CompareThreeCards(GameObject leftCard, GameObject middleCard, GameObject rightCard)
     {
-        networkSystem.Log(12);
+        // networkSystem.Log(LogUnit.BalanceQuestion);
         GameObject[] Cards ={leftCard,middleCard,rightCard};
 
         Debug.Log($"left:{Cards[0].name} middle:{Cards[1].name} right:{Cards[2].name}");
@@ -411,12 +410,12 @@ public class QutstionController : MonoBehaviour
 
         Array.Sort(array);
 
-        int leftAlph = cardsManager.cardAlphabet[array[2]];
+        int leftAlph = cardsManager.cardAlphabet[array[0]];
         int middleAlph = cardsManager.cardAlphabet[array[1]];
-        int rightAlph = cardsManager.cardAlphabet[array[0]];
-        networkSystem.Log(14, leftAlph, middleAlph, rightAlph);
+        int rightAlph = cardsManager.cardAlphabet[array[2]];
+        networkSystem.Log(LogUnit.BalanceResult, leftAlph, middleAlph, rightAlph);
         networkSystem.informationManager.AddQuestionResult(
-            $"{CardsManager.intToAlph[leftAlph]} > {CardsManager.intToAlph[middleAlph]} > {CardsManager.intToAlph[rightAlph]}の順番に大きい"
+            $"カードの数字は {CardsManager.intToAlph[leftAlph]} < {CardsManager.intToAlph[middleAlph]} < {CardsManager.intToAlph[rightAlph]}"
         );
         return 0;
     }
