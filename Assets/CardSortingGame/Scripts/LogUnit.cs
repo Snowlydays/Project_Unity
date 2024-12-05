@@ -20,8 +20,8 @@ public class LogUnit
     public static readonly int LensUsed = 4;
     public static readonly int LensEffect = 5;
     public static readonly int BalanceUsed = 6;
-    public static readonly int ElixerEffectBig = 7;
-    public static readonly int ElixerEffectSmall = 8;
+    public static readonly int ElixerEffectMore = 7;
+    public static readonly int ElixerEffectLess = 8;
     public static readonly int AttackFailed = 9;
     public static readonly int Attacking = 10;
     public static readonly int NomalQuestion = 11;
@@ -29,6 +29,7 @@ public class LogUnit
     public static readonly int AttackLimited= 13;
     public static readonly int BalanceResult= 14;
     public static readonly int NomalResult= 15;
+    public static readonly int ElixerEffectEqual = 7;
     public static readonly int ChainUsed = 17;
 
 
@@ -81,13 +82,17 @@ public class LogUnit
             {
                 logTextTrans.GetComponent<TextMeshProUGUI>().text = $"カード{CardsManager.intToAlph[dataA]}と{CardsManager.intToAlph[dataB]}の差は{dataC}!";
             }
-            else if(messageNum == ElixerEffectBig)
+            else if(messageNum == ElixerEffectMore)
             {
-                logTextTrans.GetComponent<TextMeshProUGUI>().text = $"カード{CardsManager.intToAlph[dataA]}は{dataB + 1}以上!";
+                logTextTrans.GetComponent<TextMeshProUGUI>().text = $"カード{CardsManager.intToAlph[dataA]}の数字は{dataB}より大きい!";
             }
-            else if(messageNum == ElixerEffectSmall)
+            else if(messageNum == ElixerEffectEqual)
             {
-                logTextTrans.GetComponent<TextMeshProUGUI>().text = $"カード{CardsManager.intToAlph[dataA]}は{dataB}以下!";
+                logTextTrans.GetComponent<TextMeshProUGUI>().text = $"カード{CardsManager.intToAlph[dataA]}の数字は{dataB}と等しい!";
+            }
+            else if(messageNum == ElixerEffectLess)
+            {
+                logTextTrans.GetComponent<TextMeshProUGUI>().text = $"カード{CardsManager.intToAlph[dataA]}の数字は{dataB}より小さい!";
             }
             else if(messageNum == BalanceResult)
             {

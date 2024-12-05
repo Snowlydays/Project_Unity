@@ -536,16 +536,24 @@ public class ItemUsingManager : MonoBehaviour
         Debug.Log(cardname);
         int cardNumber=int.Parse(cardname[cardname.Length - 1].ToString());
         int cardAlph = cardsManager.cardAlphabet[cardNumber];
-        if(cardNumber>chooseNumber){
+        if(cardNumber > chooseNumber)
+        {
             //カードの値より入力した値が大きかった時
             Debug.Log($"{itemNameDict[6]}の効果:カード{CardsManager.intToAlph[cardNumber]}は{chooseNumber + 1}以上です");
-            networkSystem.Log(LogUnit.ElixerEffectBig, cardAlph, chooseNumber);
-            networkSystem.informationManager.AddInformationText($"{itemNameDict[6]}の効果:カード{CardsManager.intToAlph[cardNumber]}は{chooseNumber}以上です");
-        }else{
-            //入力した値がカードの値以下だった時
+            networkSystem.Log(LogUnit.ElixerEffectMore, cardAlph, chooseNumber);
+            networkSystem.informationManager.AddInformationText($"{itemNameDict[6]}の効果:カードの数字{CardsManager.intToAlph[cardAlph]}は{chooseNumber}より大きい");
+        }
+        else if(cardNumber == chooseNumber)
+        {
+            //カードの値と入力した値が等しかった時
+            networkSystem.Log(LogUnit.ElixerEffectEqual, cardAlph, chooseNumber);
+            networkSystem.informationManager.AddInformationText($"{itemNameDict[6]}の効果:カードの数字{CardsManager.intToAlph[cardAlph]}は{chooseNumber}と等しい");
+        }
+        else{
+            //入力した値がカードの値より小さかった時
             Debug.Log($"{itemNameDict[6]}の効果:カードの数値は{chooseNumber}以下です");
-            networkSystem.Log(LogUnit.ElixerEffectSmall, cardAlph, chooseNumber);
-            networkSystem.informationManager.AddInformationText($"{itemNameDict[6]}の効果:カード{CardsManager.intToAlph[cardNumber]}は{chooseNumber}以下です");
+            networkSystem.Log(LogUnit.ElixerEffectLess, cardAlph, chooseNumber);
+            networkSystem.informationManager.AddInformationText($"{itemNameDict[6]}の効果:カードの数字{CardsManager.intToAlph[cardAlph]}は{chooseNumber}より小さい");
         }
 
         foreach (GameObject card in clonedCards) Destroy(card);
