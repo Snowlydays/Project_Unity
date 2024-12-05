@@ -354,7 +354,7 @@ public class QutstionController : MonoBehaviour
     
     int CompareCards(GameObject leftCard, GameObject rightCard)
     {
-        networkSystem.Log(LogUnit.NomalQuestion);
+        // networkSystem.Log(LogUnit.NomalQuestion);
         if(leftCard.transform.position.x > rightCard.transform.position.x)
         {
             (leftCard, rightCard) = (rightCard, leftCard);
@@ -391,7 +391,7 @@ public class QutstionController : MonoBehaviour
 
     int CompareThreeCards(GameObject leftCard, GameObject middleCard, GameObject rightCard)
     {
-        networkSystem.Log(LogUnit.BalanceQuestion);
+        // networkSystem.Log(LogUnit.BalanceQuestion);
         GameObject[] Cards ={leftCard,middleCard,rightCard};
 
         Debug.Log($"left:{Cards[0].name} middle:{Cards[1].name} right:{Cards[2].name}");
