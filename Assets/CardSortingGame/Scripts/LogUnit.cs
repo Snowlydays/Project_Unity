@@ -13,23 +13,23 @@ public class LogUnit
 
     private CardsManager cardsManager;
 
-    public const int ElixerUsed = 0;
-    public const int OrbUsed = 1;
-    public const int OrbEffect = 2;
-    public const int MirrorUsed = 3;
-    public const int LensUsed = 4;
-    public const int LensEffect = 5;
-    public const int BalanceUsed = 6;
-    public const int ElixerEffectBig = 7;
-    public const int ElixerEffectSmall = 8;
-    public const int AttackFailed = 9;
-    public const int Attacking = 10;
-    public const int NomalQuestion = 11;
-    public const int BalanceQuestion = 12;
-    public const int AttackLimited= 13;
-    public const int BalanceResult= 14;
-    public const int NomalResult= 15;
-    public const int ChainUsed = 17;
+    public static readonly int ElixerUsed = 0;
+    public static readonly int OrbUsed = 1;
+    public static readonly int OrbEffect = 2;
+    public static readonly int MirrorUsed = 3;
+    public static readonly int LensUsed = 4;
+    public static readonly int LensEffect = 5;
+    public static readonly int BalanceUsed = 6;
+    public static readonly int ElixerEffectBig = 7;
+    public static readonly int ElixerEffectSmall = 8;
+    public static readonly int AttackFailed = 9;
+    public static readonly int Attacking = 10;
+    public static readonly int NomalQuestion = 11;
+    public static readonly int BalanceQuestion = 12;
+    public static readonly int AttackLimited= 13;
+    public static readonly int BalanceResult= 14;
+    public static readonly int NomalResult= 15;
+    public static readonly int ChainUsed = 17;
 
 
     public LogUnit(TabType tabType, bool isMyLog, int messageNum, int dataA = -1, int dataB = -1, int dataC = -1)
