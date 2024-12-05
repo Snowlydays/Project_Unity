@@ -24,15 +24,12 @@ public class PhaseManager : MonoBehaviour
 
     GameObject canvas;
 
-    public static GameObject roundText;
     public static int round = 0;
 
     private void Start()
     {
         networkSystem = FindObjectOfType<NetworkSystem>();
         logMenuController = FindObjectOfType<LogMenuController>();
-        roundText = GameObject.Find("RoundText");
-        ProgressRound();
         canvas = GameObject.Find("Canvas");
     }
 
@@ -110,7 +107,7 @@ public class PhaseManager : MonoBehaviour
 
     public static void ProgressRound()
     {
-        roundText.GetComponent<TextMeshProUGUI>().text = "ラウンド " + (++round).ToString();
+        round++;
         new LogUnit(TabType.All, true, -1, round);
         new LogUnit(TabType.Myself, true, -1, round);
         new LogUnit(TabType.Opponent, true, -1, round);

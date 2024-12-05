@@ -89,6 +89,8 @@ public class NetworkSystem : NetworkBehaviour
         logList = new NetworkList<int>();
         netHostItemSelects = new NetworkList<int>();
         netClientItemSelects = new NetworkList<int>();
+        PhaseManager.round = 0; // ラウンド数を初期化
+        PhaseManager.ProgressRound();
     }
     
     public override void OnDestroy()
