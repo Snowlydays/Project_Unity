@@ -178,6 +178,7 @@ public class ItemUsingManager : MonoBehaviour
             networkSystem.questionController.isNotAttack=true;
             yield return new WaitForSeconds(1.8f);
             networkSystem.informationManager.AddInformationText($"{itemNameDict[4]}の効果: 自分の詠唱が封じられた。");
+            networkSystem.Log(LogUnit.AttackLimited);
             Debug.Log($"{itemNameDict[3]}の効果: 自分の詠唱が封じられた。");
             yield break;
         }

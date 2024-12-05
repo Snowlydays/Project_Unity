@@ -116,8 +116,7 @@ public class QutstionController : MonoBehaviour
         }else{
             //質問ができない場合はアイテム効果系bool変数を無効化してToggleReadyする。
             Debug.Log("相手のアイテム4の効果で質問ができない");
-            networkSystem.Log(LogUnit.AttackLimited);
-            networkSystem.informationManager.AddInformationText($"相手の{ItemUsingManager.itemNameDict[4]}の効果により質問できません!");
+            networkSystem.informationManager.AddInformationText($"相手の{ItemUsingManager.itemNameDict[4]}の効果により詠唱できません!");
             // 攻撃トグルを初期化
             isAttacking = false;
 
@@ -372,7 +371,7 @@ public class QutstionController : MonoBehaviour
 
         int mx = Math.Max(leftNum, rightNum);
         int mn = Math.Min(leftNum, rightNum);
-        informationText = $"カード{CardsManager.intToAlph[cardsManager.cardAlphabet[mn]]}よりカード{CardsManager.intToAlph[cardsManager.cardAlphabet[mx]]}の方が大きい";
+        informationText = $"カードの数字は {CardsManager.intToAlph[cardsManager.cardAlphabet[mn]]} < {CardsManager.intToAlph[cardsManager.cardAlphabet[mx]]}";
         networkSystem.Log(LogUnit.NomalResult, cardsManager.cardAlphabet[mn], cardsManager.cardAlphabet[mx]);
         
         if(isGetDiff){
@@ -411,12 +410,12 @@ public class QutstionController : MonoBehaviour
 
         Array.Sort(array);
 
-        int leftAlph = cardsManager.cardAlphabet[array[2]];
+        int leftAlph = cardsManager.cardAlphabet[array[0]];
         int middleAlph = cardsManager.cardAlphabet[array[1]];
-        int rightAlph = cardsManager.cardAlphabet[array[0]];
+        int rightAlph = cardsManager.cardAlphabet[array[2]];
         networkSystem.Log(LogUnit.BalanceResult, leftAlph, middleAlph, rightAlph);
         networkSystem.informationManager.AddQuestionResult(
-            $"{CardsManager.intToAlph[leftAlph]} > {CardsManager.intToAlph[middleAlph]} > {CardsManager.intToAlph[rightAlph]}の順番に大きい"
+            $"カードの数字は {CardsManager.intToAlph[leftAlph]} < {CardsManager.intToAlph[middleAlph]} < {CardsManager.intToAlph[rightAlph]}"
         );
         return 0;
     }

@@ -91,11 +91,11 @@ public class LogUnit
             }
             else if(messageNum == BalanceResult)
             {
-                logTextTrans.GetComponent<TextMeshProUGUI>().text = $"{CardsManager.intToAlph[dataA]} > {CardsManager.intToAlph[dataB]} > {CardsManager.intToAlph[dataC]}の順番に大きい";
+                logTextTrans.GetComponent<TextMeshProUGUI>().text = $"カードの数字は {CardsManager.intToAlph[dataA]} < {CardsManager.intToAlph[dataB]} < {CardsManager.intToAlph[dataC]}";
             }
             else if(messageNum == NomalResult)
             {
-                logTextTrans.GetComponent<TextMeshProUGUI>().text = $"カード{CardsManager.intToAlph[dataA]}よりカード{CardsManager.intToAlph[dataB]}の方が大きい";
+                logTextTrans.GetComponent<TextMeshProUGUI>().text = $"カードの数字は {CardsManager.intToAlph[dataA]} < {CardsManager.intToAlph[dataB]}";
             }
             else
             {
@@ -110,7 +110,7 @@ public class LogUnit
                     {Attacking, $"詠唱!"},// 10
                     {NomalQuestion, $"カードを2枚選択!"},// 11
                     {BalanceQuestion, $"カードを3枚選択!"},// 12
-                    {AttackLimited, $"{ItemUsingManager.itemNameDict[4]}によって質問できない!"},// 13
+                    {AttackLimited, $"相手の{ItemUsingManager.itemNameDict[4]}によって詠唱できない!"},// 13
                     {ChainUsed, $"{ItemUsingManager.itemNameDict[4]}を使用した!"},// 3
                 };
                 logTextTrans.GetComponent<TextMeshProUGUI>().text = logTexts[messageNum];
