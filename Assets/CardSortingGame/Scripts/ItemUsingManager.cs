@@ -203,10 +203,10 @@ public class ItemUsingManager : MonoBehaviour
                 networkSystem.Log(17);
                 break;
                 case 5:
-                networkSystem.Log(0);
+                networkSystem.Log(6);
                 break;
                 case 6:
-                networkSystem.Log(6);
+                networkSystem.Log(0);
                 break;
             }
             if(item!=3)networkSystem.animationController.CreateDefaultItem(item);

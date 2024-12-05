@@ -4,29 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-/*
-ログテキストの番号(LogMenuContorollerに登録されていたログUIの番号を引き継ぎ)
-例外としてラウンド表示は-1
-0: エリクサー
-1: オーブ 
-2: オーブ効果 *
-3: ミラー
-4: レンズ
-5: レンズ効果 *
-6: 天秤
-7: 天秤効果大 *
-8: 天秤効果小 *
-9: 失敗
-10: 詠唱
-11: 質問
-12: (質問)エリクサー
-13: 質問(鎖)
-14: 質問結果(エリクサー) *
-15: 質問結果(右)
-16: 質問結果(左)
-17: 鎖
-*/
-
 public class LogUnit
 {
     private LogMenuController logMenuController;
@@ -35,6 +12,25 @@ public class LogUnit
     public GameObject logObject;
 
     private CardsManager cardsManager;
+
+    public const int ElixerUsed = 0;
+    public const int OrbUsed = 1;
+    public const int OrbEffect = 2;
+    public const int MirrorUsed = 3;
+    public const int LensUsed = 4;
+    public const int LensEffect = 5;
+    public const int BalanceUsed = 6;
+    public const int ElixerEffectBig = 7;
+    public const int ElixerEffectSmall = 8;
+    public const int AttackFailed = 9;
+    public const int Attacking = 10;
+    public const int NomalQuestion = 11;
+    public const int BalanceQuestion = 12;
+    public const int AttackLimited= 13;
+    public const int BalanceResult= 14;
+    public const int NomalResult= 15;
+    public const int ChainUsed = 17;
+
 
     public LogUnit(TabType tabType, bool isMyLog, int messageNum, int dataA = -1, int dataB = -1, int dataC = -1)
     {
@@ -81,47 +77,41 @@ public class LogUnit
         {
             Transform logTextTrans = image.transform.Find("LogText");
             cardsManager = Object.FindObjectOfType<CardsManager>();
-            if(messageNum == 5)
+            if(messageNum == LensEffect)
             {
                 logTextTrans.GetComponent<TextMeshProUGUI>().text = $"カード{CardsManager.intToAlph[dataA]}と{CardsManager.intToAlph[dataB]}の差は{dataC}!";
             }
-            else if(messageNum == 7)
+            else if(messageNum == ElixerEffectBig)
             {
                 logTextTrans.GetComponent<TextMeshProUGUI>().text = $"カード{CardsManager.intToAlph[dataA]}は{dataB + 1}以上!";
             }
-            else if(messageNum == 8)
+            else if(messageNum == ElixerEffectSmall)
             {
                 logTextTrans.GetComponent<TextMeshProUGUI>().text = $"カード{CardsManager.intToAlph[dataA]}は{dataB}以下!";
             }
-            else if(messageNum == 14)
+            else if(messageNum == BalanceResult)
             {
                 logTextTrans.GetComponent<TextMeshProUGUI>().text = $"{CardsManager.intToAlph[dataA]} > {CardsManager.intToAlph[dataB]} > {CardsManager.intToAlph[dataC]}の順番に大きい";
             }
-            else if(messageNum == 15)
+            else if(messageNum == NomalResult)
             {
                 logTextTrans.GetComponent<TextMeshProUGUI>().text = $"カード{CardsManager.intToAlph[dataA]}よりカード{CardsManager.intToAlph[dataB]}の方が大きい";
             }
             else
             {
-                string[] logTexts = {
-                    $"{ItemUsingManager.itemNameDict[6]}を使用した!",// 0
-                    $"{ItemUsingManager.itemNameDict[1]}を使用した!",// 1
-                    $"カードを{dataA}回動かした!",// 2
-                    $"{ItemUsingManager.itemNameDict[3]}を使用した!",// 3
-                    $"{ItemUsingManager.itemNameDict[2]}を使用した!",// 4
-                    $"",// 5
-                    $"{ItemUsingManager.itemNameDict[5]}を使用した!",// 6
-                    $"",// 7
-                    $"",// 8
-                    $"うまく決まらなかった!",// 9
-                    $"詠唱!",// 10
-                    $"カードを2枚選択!",// 11
-                    $"カードを3枚選択!",// 12
-                    $"{ItemUsingManager.itemNameDict[4]}によって質問できない!",// 13
-                    $"",// 14
-                    $"",// 15
-                    $"左のカードの数字の方が大きい",// 16
-                    $"{ItemUsingManager.itemNameDict[4]}を使用した!",// 3
+                Dictionary<int, string> logTexts = new Dictionary<int, string> {
+                    {ElixerUsed, $"{ItemUsingManager.itemNameDict[6]}を使用した!"},
+                    {OrbUsed, $"{ItemUsingManager.itemNameDict[1]}を使用した!"},// 1
+                    {OrbEffect, $"カードを{dataA}回動かした!"},// 2
+                    {MirrorUsed, $"{ItemUsingManager.itemNameDict[3]}を使用した!"},// 3
+                    {LensUsed, $"{ItemUsingManager.itemNameDict[2]}を使用した!"},// 4
+                    {BalanceUsed, $"{ItemUsingManager.itemNameDict[5]}を使用した!"},// 6
+                    {AttackFailed, $"うまく決まらなかった!"},// 9
+                    {Attacking, $"詠唱!"},// 10
+                    {NomalQuestion, $"カードを2枚選択!"},// 11
+                    {BalanceQuestion, $"カードを3枚選択!"},// 12
+                    {AttackLimited, $"{ItemUsingManager.itemNameDict[4]}によって質問できない!"},// 13
+                    {ChainUsed, $"{ItemUsingManager.itemNameDict[4]}を使用した!"},// 3
                 };
                 logTextTrans.GetComponent<TextMeshProUGUI>().text = logTexts[messageNum];
             }
