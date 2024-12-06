@@ -16,8 +16,8 @@ public class InformationManager : MonoBehaviour
     public void AddInformationText(string str)
     {
         if(informationText.text.Length > 3 && informationText.text.Substring(informationText.text.Length - 3, 3) == "..." && str.Substring(str.Length - 3, 3) == "...") return;
-        if(informationText.text != "") informationText.text = informationText.text + "\n";
-        informationText.text = informationText.text + str;
+        if(informationText.text != "") informationText.text += "\n";
+        informationText.text += str;
 
         //枠外に出るのを防止するためある程度改行していたら上から1行消す
         if(CountText("\n",informationText.text)>=3){
@@ -38,8 +38,8 @@ public class InformationManager : MonoBehaviour
     
     public void AddQuestionResult(string str)
     {
-        if(questionResult != "") questionResult = questionResult + "\n";
-        questionResult = questionResult + str;
+        if(questionResult != "") questionResult += "\n";
+        questionResult += str;
     }
 
     // 文字列から指定の文字が何回出てくるか調べるメソッド

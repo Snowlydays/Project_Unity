@@ -29,13 +29,13 @@ public class LogUnit
     public static readonly int AttackLimited= 13;
     public static readonly int BalanceResult= 14;
     public static readonly int NomalResult= 15;
-    public static readonly int ElixerEffectEqual = 7;
+    public static readonly int ElixerEffectEqual = 16;
     public static readonly int ChainUsed = 17;
 
 
     public LogUnit(TabType tabType, bool isMyLog, int messageNum, int dataA = -1, int dataB = -1, int dataC = -1)
     {
-        Debug.Log($"{messageNum} {dataA} {dataB} {dataC}");
+        Debug.Log($"LogUnit初期化デバッグ: {messageNum} {dataA} {dataB} {dataC}");
         if((tabType == TabType.Myself && !isMyLog) || (tabType == TabType.Opponent && isMyLog))
         {
             if(messageNum > 0) Debug.LogError("ログを追加しようとしているタブが違います");
@@ -78,36 +78,30 @@ public class LogUnit
         {
             Transform logTextTrans = image.transform.Find("LogText");
             cardsManager = Object.FindObjectOfType<CardsManager>();
-            if(messageNum == LensEffect)
+            if(dataC >= 0)
             {
-                logTextTrans.GetComponent<TextMeshProUGUI>().text = $"カード{CardsManager.intToAlph[dataA]}と{CardsManager.intToAlph[dataB]}の差は{dataC}!";
+                Dictionary<int, string> logTexts = new Dictionary<int, string> {
+                    {LensEffect, $"カード{CardsManager.intToAlph[dataA]}と{CardsManager.intToAlph[dataB]}の差は{dataC}!"},
+                    {BalanceResult, $"カードの数字は {CardsManager.intToAlph[dataA]} < {CardsManager.intToAlph[dataB]} < {CardsManager.intToAlph[dataC]}"}
+                };
+                logTextTrans.GetComponent<TextMeshProUGUI>().text = logTexts[messageNum];
             }
-            else if(messageNum == ElixerEffectMore)
+            else if(dataB >= 0)
             {
-                logTextTrans.GetComponent<TextMeshProUGUI>().text = $"カード{CardsManager.intToAlph[dataA]}の数字は{dataB}より大きい!";
-            }
-            else if(messageNum == ElixerEffectEqual)
-            {
-                logTextTrans.GetComponent<TextMeshProUGUI>().text = $"カード{CardsManager.intToAlph[dataA]}の数字は{dataB}と等しい!";
-            }
-            else if(messageNum == ElixerEffectLess)
-            {
-                logTextTrans.GetComponent<TextMeshProUGUI>().text = $"カード{CardsManager.intToAlph[dataA]}の数字は{dataB}より小さい!";
-            }
-            else if(messageNum == BalanceResult)
-            {
-                logTextTrans.GetComponent<TextMeshProUGUI>().text = $"カードの数字は {CardsManager.intToAlph[dataA]} < {CardsManager.intToAlph[dataB]} < {CardsManager.intToAlph[dataC]}";
-            }
-            else if(messageNum == NomalResult)
-            {
-                logTextTrans.GetComponent<TextMeshProUGUI>().text = $"カードの数字は {CardsManager.intToAlph[dataA]} < {CardsManager.intToAlph[dataB]}";
+                Dictionary<int, string> logTexts = new Dictionary<int, string> {
+                    {OrbEffect, $"カード{CardsManager.intToAlph[dataA]}を{dataB}回動かした!"},
+                    {ElixerEffectMore, $"カード{CardsManager.intToAlph[dataA]}の数字は{dataB}より大きい!"},
+                    {ElixerEffectEqual, $"カード{CardsManager.intToAlph[dataA]}の数字は{dataB}と等しい!"},
+                    {ElixerEffectLess, $"カード{CardsManager.intToAlph[dataA]}の数字は{dataB}より小さい!"},
+                    {NomalResult, $"カードの数字は {CardsManager.intToAlph[dataA]} < {CardsManager.intToAlph[dataB]}"},
+                };
+                logTextTrans.GetComponent<TextMeshProUGUI>().text = logTexts[messageNum];
             }
             else
             {
                 Dictionary<int, string> logTexts = new Dictionary<int, string> {
                     {ElixerUsed, $"{ItemUsingManager.itemNameDict[6]}を使用した!"},
                     {OrbUsed, $"{ItemUsingManager.itemNameDict[1]}を使用した!"},// 1
-                    {OrbEffect, $"カードを{dataA}回動かした!"},// 2
                     {MirrorUsed, $"{ItemUsingManager.itemNameDict[3]}を使用した!"},// 3
                     {LensUsed, $"{ItemUsingManager.itemNameDict[2]}を使用した!"},// 4
                     {BalanceUsed, $"{ItemUsingManager.itemNameDict[5]}を使用した!"},// 6

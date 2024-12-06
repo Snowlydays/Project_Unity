@@ -470,17 +470,18 @@ public class ItemUsingManager : MonoBehaviour
         int distanceMoved = finalIndex - initialIndex;
 
         // 移動方向と移動量をinfoTextでプレイヤーへ通知
+        int cardAlph = cardsManager.cardAlphabet[cardNum];
         if(distanceMoved != 0)
         {
-            networkSystem.informationManager.AddInformationText($"{itemNameDict[1]}の効果: 選んだ{initialIndex + 1}番目のカードは{finalIndex + 1}番目まで移動しました。");
-            Debug.Log($"{itemNameDict[1]}の効果: 選んだ{initialIndex + 1}番目のカードは{finalIndex + 1}番目まで移動しました。");
-            networkSystem.Log(LogUnit.OrbEffect, Math.Abs(initialIndex - finalIndex));
+            networkSystem.informationManager.AddInformationText($"{itemNameDict[1]}の効果:カード{CardsManager.intToAlph[cardAlph]}は{finalIndex + 1}番目まで移動しました。");
+            Debug.Log($"{itemNameDict[1]}の効果:カード{CardsManager.intToAlph[cardAlph]}は{finalIndex + 1}番目まで移動しました。");
+            networkSystem.Log(LogUnit.OrbEffect, cardAlph, Math.Abs(initialIndex - finalIndex));
         }
         else
         {
-            networkSystem.informationManager.AddInformationText($"{itemNameDict[1]}の効果: 選んだ{initialIndex + 1}番目のカードは移動しませんでした。");
-            Debug.Log($"{itemNameDict[1]}の効果: 選んだ{initialIndex + 1}番目のカードは移動しませんでした。");
-            networkSystem.Log(LogUnit.OrbEffect, Math.Abs(initialIndex - finalIndex));
+            networkSystem.informationManager.AddInformationText($"{itemNameDict[1]}の効果: カード{CardsManager.intToAlph[cardAlph]}は移動しませんでした。");
+            Debug.Log($"{itemNameDict[1]}の効果:カード{CardsManager.intToAlph[cardAlph]}は移動しませんでした。");
+            networkSystem.Log(LogUnit.OrbEffect, cardAlph, Math.Abs(initialIndex - finalIndex));
         }
         
         foreach (GameObject card in clonedCards) Destroy(card);
