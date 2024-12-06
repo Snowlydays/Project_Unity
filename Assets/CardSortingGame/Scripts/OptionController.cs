@@ -55,7 +55,7 @@ public class OptionController : MonoBehaviour
     }
 
     void OnOptionButtonClicked(){
-        movedY=50f;
+        movedY=0f;
         noClickObject.SetActive(true);
     }
 
