@@ -78,6 +78,8 @@ public class NetworkSystem : NetworkBehaviour
     
     // ローカルプレイヤーの準備状態が変わった時に発火するイベント
     public event Action<bool> OnLocalReadyStateChanged;
+
+    bool toEndGame=false;
     
     void Awake()
     {
@@ -141,6 +143,8 @@ public class NetworkSystem : NetworkBehaviour
         animationController = FindObjectOfType<AnimationController>();
         mainSystemScript = FindObjectOfType<MainSystemScript>();
         itemWindowManager = FindObjectOfType<ItemWindowManager>();
+
+        NetworkManager.Singleton.OnClientDisconnectCallback += DisconnectGame;
         
         // イベント追加
         Debug.Log("NetworkSystem.OnNetworkSpawn");
@@ -237,6 +241,12 @@ public class NetworkSystem : NetworkBehaviour
         }
         
         Debug.Log("NetworkSystemの初期化完了");
+    }
+
+    private void DisconnectGame(ulong clientId){
+        //相手が強制終了した等正当な手続きなく切断された時に自分を勝利画面に移行させる
+        //それ以外の場合では実行されない
+        if(!toEndGame)SceneManager.LoadScene("Scenes/ResultsScenes/WinScene");
     }
 
     private void OnNetHostCardChanged(NetworkListEvent<int> changeEvent)
@@ -444,6 +454,7 @@ public class NetworkSystem : NetworkBehaviour
     
     public void EndGame(){
         //降参用メソッド
+        toEndGame=true;
         if(IsHost){
             ToMoveSceneEndServerRpc("Scenes/ResultsScenes/LoseScene","Scenes/ResultsScenes/WinScene");
         }else{
@@ -484,6 +495,8 @@ public class NetworkSystem : NetworkBehaviour
         netIsHostAscending.Value = hostAsc;
         netIsClientAscending.Value = clientAsc;
 
+        toEndGame=true;
+
         if (hostAsc && clientAsc)
         {
             Debug.Log("両プレイヤーのカードが昇順: 引き分け");
@@ -508,6 +521,7 @@ public class NetworkSystem : NetworkBehaviour
         else
         {
             Debug.Log("どちらのプレイヤーもカードが昇順ではない");
+            toEndGame=false;
             if (hostAttacked)
             {
                 Debug.Log("攻撃失敗！");
@@ -540,6 +554,7 @@ public class NetworkSystem : NetworkBehaviour
     [Unity.Netcode.ClientRpc(RequireOwnership = false)]
     public void ToMoveSceneClientRpc(string scenename)
     { 
+        toEndGame=true;
         SceneManager.LoadScene(scenename);
     }
 
