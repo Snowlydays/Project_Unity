@@ -244,9 +244,9 @@ public class NetworkSystem : NetworkBehaviour
     }
 
     private void DisconnectGame(ulong clientId){
-        //相手が強制終了した等正当な手続きなく切断された時に自分を勝利画面に移行させる
+        //相手が強制終了した等正当な手続きなく切断された時に自分を引き分け画面に移行させる
         //それ以外の場合では実行されない
-        if(!toEndGame)SceneManager.LoadScene("Scenes/ResultsScenes/WinScene");
+        if(!toEndGame)SceneManager.LoadScene("Scenes/ResultsScenes/DrawScene");
     }
 
     private void OnNetHostCardChanged(NetworkListEvent<int> changeEvent)
