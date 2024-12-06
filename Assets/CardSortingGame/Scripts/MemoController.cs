@@ -166,6 +166,7 @@ public class MemoController : MonoBehaviour
     private void Start()
     {
         var rect = m_image.gameObject.GetComponent<RectTransform>().rect;
+        m_image.color=new Vector4(1f,1f,1f,1f);
         m_texture = new Texture2D((int)rect.width, (int)rect.height, TextureFormat.RGBA32, false);
         m_image.texture = m_texture;
 
