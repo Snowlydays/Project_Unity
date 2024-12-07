@@ -149,7 +149,7 @@ public class MainSystemScript : MonoBehaviour
         Debug.Log("readyButton clicked");
         if(NetworkSystem.phase==0){
             networkSystem.ToggleReady();
-            readyButton.gameObject.GetComponent<Animator>().SetBool("blStarted", true);
+            //readyButton.gameObject.GetComponent<Animator>().SetBool("blStarted", true);
             GameObject soundobj=Instantiate(SoundObject);
             soundobj.GetComponent<PlaySound>().PlaySE(confirmSound);
         }

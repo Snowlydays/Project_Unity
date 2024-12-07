@@ -19,4 +19,10 @@ public class ChooseManager : MonoBehaviour
     {
         Debug.Log("ランダムマッチは未実装です");
     }
+
+    public void ToBackTitle(){
+        GameObject soundobj=Instantiate(SoundObject);
+        soundobj.GetComponent<PlaySound>().PlaySE(decideSound);
+        SceneManager.LoadScene("StartScene");
+    }
 }
