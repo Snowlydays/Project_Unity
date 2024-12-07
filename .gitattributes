@@ -2,3 +2,5 @@ Assets/TextMesh[[:space:]]Pro/Resources/Fonts[[:space:]]&[[:space:]]Materials/No
 Assets/TextMesh[[:space:]]Pro filter=lfs diff=lfs merge=lfs -text
 Assets/TextMesh[[:space:]]Pro/Resources/ filter=lfs diff=lfs merge=lfs -text
 Assets/TextMesh[[:space:]]Pro/Resources/Fonts[[:space:]]&[[:space:]]Materials/FZゴンタかな_SDF.asset filter=lfs diff=lfs merge=lfs -text
+Assets/TextMesh[[:space:]]Pro/Resources/Fonts[[:space:]]&[[:space:]]Materials/ZenKakuGothicAntique-Medium[[:space:]]SDF.asset filter=lfs diff=lfs merge=lfs -text
+Assets/TextMesh[[:space:]]Pro/Resources/Fonts[[:space:]]&[[:space:]]Materials/ZenKakuGothicAntique-Medium.ttf filter=lfs diff=lfs merge=lfs -text
