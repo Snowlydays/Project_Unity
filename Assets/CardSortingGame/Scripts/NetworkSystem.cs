@@ -77,6 +77,7 @@ public class NetworkSystem : NetworkBehaviour
     public AnimationController animationController;
     public MainSystemScript mainSystemScript;
     public ItemWindowManager itemWindowManager;
+    public TimerController timerController;
 
     public Sprite attackSprite;
     
@@ -168,7 +169,8 @@ public class NetworkSystem : NetworkBehaviour
         animationController = FindObjectOfType<AnimationController>();
         mainSystemScript = FindObjectOfType<MainSystemScript>();
         itemWindowManager = FindObjectOfType<ItemWindowManager>();
-        
+        timerController = FindObjectOfType<TimerController>();
+
         NetworkManager.Singleton.OnClientDisconnectCallback += DisconnectGame;
         
         // イベント追加
@@ -507,6 +509,8 @@ public class NetworkSystem : NetworkBehaviour
         while(animationController.animobj){
             yield return null;
         }
+
+        timerController.StartDrawBar();
 
         //以降の処理をホストに託す
         if(!IsHost){

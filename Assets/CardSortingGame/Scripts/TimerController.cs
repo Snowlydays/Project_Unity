@@ -1,44 +1,70 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using System;
+using UnityEditor;
+using Unity.Collections;
+using Random = UnityEngine.Random;
 
 public class TimerController : MonoBehaviour
 {
     // Start is called before the first frame update
-    public GameObject readyButton; // 準備完了ボタン
-    LineRenderer circleLine;
+    public GameObject circleObject,readyButton; // 制限時間バー
+    Image circleImage,buttonImage;
+    public bool isCountNow=false;
+    float H,S,V,nowTime,buttonX,buttonY;
+    public float timerSec=60f;//計測する制限時間(秒)
+    [SerializeField] private Sprite CountingSprite;
+    [SerializeField] private Sprite notCountingSprite;
 
-    public float radius = 1f;
-    public int segments = 64;
-    public float width = 10f;
-    public float middlex=0f;
-    public float middley=0f;
+    NetworkSystem networkSystem;
 
     void Start()
     {
-        circleLine=readyButton.GetComponent<LineRenderer>();
-        circleLine.material = new Material(Shader.Find("Sprites/Default"));
-        circleLine.loop = true;
-        circleLine.useWorldSpace = false; // local space
+        networkSystem = FindObjectOfType<NetworkSystem>();
+        buttonImage = readyButton.GetComponent<Image>();
+        buttonX=readyButton.GetComponent<RectTransform>().anchoredPosition.x;
+        buttonY=readyButton.GetComponent<RectTransform>().anchoredPosition.y;
+        circleImage=circleObject.GetComponent<Image>();
+        circleObject.SetActive(false);
+        Color.RGBToHSV(circleImage.color, out H, out S, out V);
+        StartDrawBar();
     }
 
-    void FixedUpdate()
-    {
-        circleLine.widthMultiplier = width;
-        circleLine.positionCount = segments + 1;
-
-        float deltaTheta = (2f * Mathf.PI) / segments;
-        float theta = 0f;
-
-        for (int i = 0; i < segments + 1; i++)
-        {
-            float x = radius * Mathf.Cos(theta);
-            float y = radius * Mathf.Sin(theta);
-            Vector3 pos = new Vector3(x, y, -5f);
-            circleLine.SetPosition(i, pos);
-            theta += deltaTheta;
+    void FixedUpdate(){
+        if(isCountNow){
+            float timeScale=nowTime/timerSec;
+            circleImage.color=Color.HSVToRGB(H*timeScale, S, V);
+            circleImage.fillAmount=timeScale;
+            readyButton.GetComponent<RectTransform>().anchoredPosition=new Vector3(
+                buttonX+Random.Range(0, 10)*Mathf.Max(0f,(0.25f-timeScale)*4f),
+                buttonY+Random.Range(0, 10)*Mathf.Max(0f,(0.25f-timeScale)*4f),
+                0f
+            );
+            nowTime-=1f/50f;
+            if(nowTime<=0f){
+                networkSystem.mainSystemScript.OnReadyButtonClicked();
+                isCountNow=false;
+            }
         }
-        circleLine.startColor = Color.white;
-        circleLine.endColor = Color.white;
+    }
+
+    public void StartDrawBar(){
+        isCountNow=true;
+        nowTime=timerSec;
+        circleObject.SetActive(true);
+        buttonImage.sprite=CountingSprite;
+        readyButton.GetComponent<Button>().enabled=true;
+    }
+
+    public void EndDrawBar(){
+        isCountNow=false;
+        nowTime=0f;
+        buttonImage.sprite=notCountingSprite;
+        circleObject.SetActive(false);
+        readyButton.GetComponent<RectTransform>().anchoredPosition=new Vector3(buttonX,buttonY,0f);
+        readyButton.GetComponent<Button>().enabled=false;
+        
     }
 }

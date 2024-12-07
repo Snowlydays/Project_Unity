@@ -68,8 +68,8 @@ public class MainSystemScript : MonoBehaviour
         buttonImage = readyButton.GetComponent<Image>();
     
         // 初期状態の画像を設定
-        UpdateButtonImage(false);
-        if(networkSystem != null)networkSystem.OnLocalReadyStateChanged += UpdateButtonImage;
+        //UpdateButtonImage(false);
+        //if(networkSystem != null)networkSystem.OnLocalReadyStateChanged += UpdateButtonImage;
         
         readyButton.onClick.AddListener(OnReadyButtonClicked); // readyボタンにリスナーを追加
     }
@@ -142,16 +142,17 @@ public class MainSystemScript : MonoBehaviour
     }
 
     
-    void OnReadyButtonClicked()
+    public void OnReadyButtonClicked()
     {
         //phaseが0以外の時は機能しないように制限
         //演出中とかに押されると勝手に次のフェーズにいかれる恐れがあるため
         Debug.Log("readyButton clicked");
-        if(NetworkSystem.phase==0){
+        if(NetworkSystem.phase==0 && networkSystem.timerController.isCountNow){
             networkSystem.ToggleReady();
             //readyButton.gameObject.GetComponent<Animator>().SetBool("blStarted", true);
             GameObject soundobj=Instantiate(SoundObject);
             soundobj.GetComponent<PlaySound>().PlaySE(confirmSound);
+            networkSystem.timerController.EndDrawBar();
         }
     }
     

@@ -96,13 +96,12 @@ public class PhaseManager : MonoBehaviour
 
         if (hostAttacked || clientAttacked)
         {
-            if (networkSystem.IsHost)
-            {
             networkSystem.HandleAttackAction(hostAttacked,clientAttacked);
-            }
             
             // 攻撃トグルのリセット
             networkSystem.ToggleAttackedReset();
+        }else{
+            networkSystem.timerController.StartDrawBar();
         }
     }
 
