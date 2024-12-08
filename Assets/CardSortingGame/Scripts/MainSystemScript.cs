@@ -13,11 +13,11 @@ public class MainSystemScript : MonoBehaviour
     private NetworkSystem networkSystem;
     private CardsManager cardsManager;
 
-    private static readonly int CARD_NUM = NetworkSystem.cardNum;
-    public GameObject[] mycard = new GameObject[CARD_NUM];//自分の手札
-    private GameObject[] othercard = new GameObject[CARD_NUM];//相手の手札
-    public GameObject[] mySlots = new GameObject[CARD_NUM]; // スロットを保持する配列
-    private GameObject[] otherSlots = new GameObject[CARD_NUM]; // スロットを保持する配列
+    // private static readonly int CARD_NUM = NetworkSystem.cardNum;
+    public GameObject[] mycard;//自分の手札
+    private GameObject[] othercard;//相手の手札
+    public GameObject[] mySlots; // スロットを保持する配列
+    private GameObject[] otherSlots; // スロットを保持する配列
     
     [SerializeField] public Button readyButton; // 準備完了ボタン
     [SerializeField] public Transform myCardPanel; // 自分のカードを配置するパネル
@@ -39,7 +39,7 @@ public class MainSystemScript : MonoBehaviour
     
     [SerializeField] private Sprite[] numberSprites = new Sprite[10]; // 数字のスプライト(0-9まで)
     [SerializeField] private Sprite[] alphabetSprites = new Sprite[5]; // アルファベットのスプライト(A-Zまでを添字0-4に対応)
-    public int[] otherCardNumber = new int[CARD_NUM];
+    public int[] otherCardNumber;
 
     public GameObject[] GetMyCards()
     {
@@ -50,17 +50,17 @@ public class MainSystemScript : MonoBehaviour
     {
         return mySlots;
     }
-
-    void Awake(){
-        networkSystem = FindObjectOfType<NetworkSystem>();
-        cardsManager = FindObjectOfType<CardsManager>();
-    }
-
+    
     // パネルのサイズを調整する用の変数
     [SerializeField] private float cardWidth;       // 各カードの幅
     [SerializeField] private float cardSpacing;      // カード間のスペース
     [SerializeField] private float paddingLeft;     // パネルの左余白
     [SerializeField] private float paddingRight;    // パネルの右余白
+    
+    void Awake(){
+        networkSystem = FindObjectOfType<NetworkSystem>();
+        cardsManager = FindObjectOfType<CardsManager>();
+    }
     
     void Start()
     {
@@ -72,6 +72,17 @@ public class MainSystemScript : MonoBehaviour
         UpdateButtonImage(false);
         if(networkSystem != null)networkSystem.OnLocalReadyStateChanged += UpdateButtonImage;
         
+        readyButton.onClick.AddListener(OnReadyButtonClicked); // readyボタンにリスナーを追加
+    }
+
+    public void InitializeCards()
+    {
+        mycard = new GameObject[NetworkSystem.cardNum];
+        othercard = new GameObject[NetworkSystem.cardNum];
+        mySlots = new GameObject[NetworkSystem.cardNum];
+        otherSlots = new GameObject[NetworkSystem.cardNum];
+        otherCardNumber = new int[NetworkSystem.cardNum];
+        
         // パネルのサイズ調整
         Vector3 scale = new Vector3(0.91f, 0.91f, 1f);
         RectTransform myCardPanelRect = myCardPanel.GetComponent<RectTransform>();
@@ -81,7 +92,7 @@ public class MainSystemScript : MonoBehaviour
         otherCardPanelRect.localScale = scale;
         
         // 自分のスロット、カード生成
-        for (int i = 0; i < CARD_NUM; i++)
+        for (int i = 0; i < mycard.Length; i++)
         {
             // スロット生成
             mySlots[i] = Instantiate(SlotPrefab, myCardPanel);
@@ -99,7 +110,7 @@ public class MainSystemScript : MonoBehaviour
         }
 
         // 相手のカード生成
-        for (int i = 0; i < CARD_NUM; i++)
+        for (int i = 0; i < othercard.Length; i++)
         {
             // スロット生成
             otherSlots[i] = Instantiate(SlotPrefab, otherCardPanel);
@@ -114,13 +125,11 @@ public class MainSystemScript : MonoBehaviour
             DraggableCard draggable = othercard[i].GetComponent<DraggableCard>();
             draggable.isDraggable = false;
         }
-        
-        readyButton.onClick.AddListener(OnReadyButtonClicked); // readyボタンにリスナーを追加
     }
-
+    
     public void UpdateOtherCardUI()
     {
-        for (int i = 0; i < CARD_NUM; i++)
+        for (int i = 0; i < othercard.Length; i++)
         {
             Image cardsImage = othercard[i].GetComponent<Image>();
             cardsImage.sprite = numberSprites[otherCardNumber[i]];
