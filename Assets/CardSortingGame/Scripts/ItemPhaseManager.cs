@@ -39,7 +39,7 @@ public class ItemPhaseManager : MonoBehaviour
     public AudioClip cancelSound;
     public AudioClip confirmSound;
     public GameObject SoundObject;
-    
+
     void Awake()
     {
         networkSystem = FindObjectOfType<NetworkSystem>();
@@ -47,6 +47,7 @@ public class ItemPhaseManager : MonoBehaviour
         otherInventoryPanel = GameObject.Find("OtherInventoryPanel").transform;
         itemDescriptionPanel = GameObject.Find("ItemDescription");
     }
+
     void Start()
     {
         // 非表示
@@ -79,30 +80,35 @@ public class ItemPhaseManager : MonoBehaviour
         UpdateInventory(myItems, myInventoryPanel); // 自分の所有アイテムの表示を更新
         UpdateInventory(otherItems, otherInventoryPanel); // 相手の所有アイテムの表示を更新
     }
-    
+
     // 表示するアイテムを更新するメソッド
+// 表示するアイテムを更新するメソッド
     private void UpdateInventory(bool[] items, Transform panel)
     {
-        // 既存のアイコンをクリア
-        foreach (Transform child in panel)
+        // すべてのスロットをクリア
+        foreach (Transform slot in panel)
         {
-            Destroy(child.gameObject);
+            foreach (Transform child in slot)Destroy(child.gameObject);
         }
         
-        // 所有しているアイテムのアイコンを表示
-        for(int i = 0; i < ITEM_NUM; i++)
+        // 所持しているアイテムをスロットに配置
+        int slotIndex = 0;
+        for (int i = 0; i < items.Length && slotIndex < panel.childCount; i++)
         {
             if (items[i])
             {
-                CreateInventoryItem(i, panel);
+                Transform slot = panel.GetChild(slotIndex);
+                CreateInventoryItem(i,slot);
+                slotIndex++;
             }
         }
     }
 
-    private void CreateInventoryItem(int itemIdx, Transform panel)
+
+    private void CreateInventoryItem(int itemIdx, Transform parent)
     {
-        // プレハブをインスタンス化して、inventoryPanelの子として配置
-        GameObject inventoryItem = Instantiate(inventoryItemPrefab, panel);
+        // プレハブをインスタンス化して、parentの子として配置
+        GameObject inventoryItem = Instantiate(inventoryItemPrefab, parent);
 
         // RectTransformを設定
         RectTransform rectTransform = inventoryItem.GetComponent<RectTransform>();
@@ -114,7 +120,7 @@ public class ItemPhaseManager : MonoBehaviour
 
         inventoryItem.AddComponent<Button>();
         Button itemButton = inventoryItem.GetComponent<Button>();
-        itemButton.onClick.AddListener(() => ShowItemDescription(inventoryItem, itemIdx)); 
+        itemButton.onClick.AddListener(() => ShowItemDescription(inventoryItem, itemIdx));
     }
 
     private void ToggleDescriptionPopup(int itemIdx)
@@ -126,11 +132,11 @@ public class ItemPhaseManager : MonoBehaviour
             ItemLongPressHandler.currentActivePopup = null;
         }
     }
-    
+
     private void ShowItemDescription(GameObject item, int itemIdx)
     {
         Image itemDescription = itemDescriptionPanel.GetComponent<Image>();
-        if(itemDescription.sprite == itemDescriptions[itemIdx])
+        if (itemDescription.sprite == itemDescriptions[itemIdx])
         {
             itemDescription.sprite = null;
             itemDescription.color = new Color(0f, 0f, 0f, 0f);
@@ -164,7 +170,7 @@ public class ItemPhaseManager : MonoBehaviour
                 Destroy(toggleObj);
             }
         }
-        
+
         selectedItems.Clear(); // 選択していたアイテムをクリア
         itemDisplayPanel.gameObject.SetActive(false);
         confirmButton.gameObject.SetActive(false);
@@ -183,7 +189,7 @@ public class ItemPhaseManager : MonoBehaviour
             }
         }
 
-        if (0 < unownedItems.Count && (ITEM_NUM-unownedItems.Count) < 3)
+        if (0 < unownedItems.Count && (ITEM_NUM - unownedItems.Count) < 3)
         {
             // 未所有のアイテムリストからランダムに選び、プレイヤーへ配る
             int randomIdx = UnityEngine.Random.Range(0, unownedItems.Count);
@@ -199,7 +205,7 @@ public class ItemPhaseManager : MonoBehaviour
             Debug.Log("アイテムはこれ以上持てません。");
         }
     }
-    
+
     // アイテムの使用・不使用を選択できるトグルを作成するメソッド
     private void CreateToggle(int itemIdx)
     {
@@ -223,7 +229,7 @@ public class ItemPhaseManager : MonoBehaviour
         // Toggleの背景Imageを取得
         Image backgroundImage = toggleObj.GetComponentInChildren<Image>();
         backgroundImage.color = toggle.isOn ? toggleOnColor : toggleOffColor;
-        
+
         // Imageコンポーネントにアイコンを設定
         Image itemImage = toggleObj.GetComponent<Image>();
         itemImage.sprite = itemIcons[itemIdx];
@@ -312,12 +318,12 @@ public class ItemPhaseManager : MonoBehaviour
                 unownedItems.Add(i);
             }
         }
-        
-        foreach(int id in unownedItems)
+
+        foreach (int id in unownedItems)
         {
             networkSystem.ChangeItems(id, true);
             Debug.Log($"アイテム{id + 1}:を配布");
-            
+
             // アイテム選択用トグルを作成
             CreateToggle(id);
         }
