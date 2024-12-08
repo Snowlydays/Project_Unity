@@ -160,6 +160,8 @@ public class ChooseServerManager : NetworkBehaviour
             NetworkManager.Singleton.Shutdown();
             waitObj.SetActive(false);
             codeText.text="接続を中断しました";
+            CardNumManager cardNumManager = FindObjectOfType<CardNumManager>();
+            cardNumManager.ResetCardNum();
             GameObject soundobj=Instantiate(SoundObject);
             soundobj.GetComponent<PlaySound>().PlaySE(cancelSound);
         }

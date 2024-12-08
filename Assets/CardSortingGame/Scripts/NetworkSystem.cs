@@ -35,6 +35,10 @@ public class NetworkSystem : NetworkBehaviour
     public static int cardNum = 5;// 盤面上にあるカードの枚数
     private int ITEM_NUM = 6; // ゲーム内のアイテム数
 
+    // カード枚数のNetworkVariable
+    private bool isCardNumInitialized = false; // カード枚数の同期完了フラグ
+    private NetworkVariable<int> netCardNum;
+
     // カードのNetworkList
     private NetworkList<int> netHostCard;
     private NetworkList<int> netClientCard;
@@ -52,8 +56,8 @@ public class NetworkSystem : NetworkBehaviour
 
     //カードは要素数が変わることがないのでarray、アイテムは常に要素数が変化するのでlist管理
 
-    public static int[] hostCard = new int[cardNum];//カード配列取得用変数
-    public static int[] clientCard = new int[cardNum];
+    public static int[] hostCard;//カード配列取得用変数
+    public static int[] clientCard;
 
     public bool Ended=false;
 
@@ -83,6 +87,7 @@ public class NetworkSystem : NetworkBehaviour
     
     void Awake()
     {
+        Debug.Log("Awake");
         //各種NetworkList初期化
         netHostCard = new NetworkList<int>();
         netClientCard = new NetworkList<int>();
@@ -91,6 +96,9 @@ public class NetworkSystem : NetworkBehaviour
         logList = new NetworkList<int>();
         netHostItemSelects = new NetworkList<int>();
         netClientItemSelects = new NetworkList<int>();
+        netCardNum = new NetworkVariable<int>(0);
+        netCardNum.OnValueChanged += OnNetCardNumChanged;
+        
         PhaseManager.round = 0; // ラウンド数を初期化
         PhaseManager.roundText = GameObject.Find("RoundText");
         PhaseManager.ProgressRound();
@@ -116,13 +124,29 @@ public class NetworkSystem : NetworkBehaviour
         netIsClientAscending?.Dispose();
         netIsHostWaiting?.Dispose();
         netIsClientWaiting?.Dispose();
+        netCardNum?.Dispose();
     }
 
     public override void OnNetworkSpawn()
     {
+        Debug.Log("OnNetworkSpawn");
+        // ホスト側でカード枚数を設定
+        // netCardNumの値が変更されたら、StartCoroutineで処理を開始
+        if (IsServer)netCardNum.Value = cardNum;
+        else OnNetCardNumChanged(netCardNum.Value, netCardNum.Value);
+    }
+    
+    private void OnNetCardNumChanged(int oldValue, int newValue)
+    {
+        cardNum = newValue;
+        Debug.Log("cardNum; " + cardNum);
+        hostCard = new int[cardNum];
+        clientCard = new int[cardNum];
+        mainSystemScript = FindObjectOfType<MainSystemScript>();
+        mainSystemScript.InitializeCards(); // カード生成
         StartCoroutine(InitializeNetworkSystem());
     }
-
+    
     IEnumerator InitializeNetworkSystem()
     {
         // シーンを追加読み込み (非同期)
@@ -144,7 +168,7 @@ public class NetworkSystem : NetworkBehaviour
         animationController = FindObjectOfType<AnimationController>();
         mainSystemScript = FindObjectOfType<MainSystemScript>();
         itemWindowManager = FindObjectOfType<ItemWindowManager>();
-
+        
         NetworkManager.Singleton.OnClientDisconnectCallback += DisconnectGame;
         
         // イベント追加
