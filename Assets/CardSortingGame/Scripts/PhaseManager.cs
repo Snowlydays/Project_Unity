@@ -25,6 +25,7 @@ public class PhaseManager : MonoBehaviour
     GameObject canvas;
 
     public static int round = 0;
+    public static GameObject roundText;
 
     private void Start()
     {
@@ -108,6 +109,7 @@ public class PhaseManager : MonoBehaviour
     public static void ProgressRound()
     {
         round++;
+        roundText.GetComponent<TextMeshProUGUI>().text = round.ToString();
         new LogUnit(TabType.All, true, -1, round);
         new LogUnit(TabType.Myself, true, -1, round);
         new LogUnit(TabType.Opponent, true, -1, round);

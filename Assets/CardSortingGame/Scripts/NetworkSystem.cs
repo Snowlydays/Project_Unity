@@ -92,6 +92,7 @@ public class NetworkSystem : NetworkBehaviour
         netHostItemSelects = new NetworkList<int>();
         netClientItemSelects = new NetworkList<int>();
         PhaseManager.round = 0; // ラウンド数を初期化
+        PhaseManager.roundText = GameObject.Find("RoundText");
         PhaseManager.ProgressRound();
     }
     
