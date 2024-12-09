@@ -132,6 +132,8 @@ public class ChooseServerManager : NetworkBehaviour
             connectPanel.SetActive(false);
             GameObject soundobj=Instantiate(SoundObject);
             soundobj.GetComponent<PlaySound>().PlaySE(cancelSound);
+            joinCode = "";
+            inputField.text = "";
         }
     }
 
