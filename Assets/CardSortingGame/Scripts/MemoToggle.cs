@@ -2,16 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class MemoToggle : MonoBehaviour
 {
-    private GameObject memoBG;
-    private TextMeshProUGUI buttonText;
+    [SerializeField] private GameObject memoBG;
+    [SerializeField] private Sprite memoIcon;
+    [SerializeField] private Sprite closeIcon;
+    [SerializeField] private Image buttonImage;
+    private float memoIconHeight = 611f;
+    private float closeIconHeight = 574f;
+    private float iconWidth = 574f;
+
     void Start()
     {
-        memoBG = GameObject.Find("MemoBG");
         memoBG.SetActive(false);
-        buttonText = GetComponentInChildren<TextMeshProUGUI>();
     }
 
     public void ToggleMemo()
@@ -19,11 +24,15 @@ public class MemoToggle : MonoBehaviour
         memoBG.SetActive(!memoBG.activeSelf);
         if(memoBG.activeSelf)
         {
-            // buttonText.text = "x";
+            buttonImage.sprite = closeIcon;
+            Vector2 newTrans = new Vector2(iconWidth, closeIconHeight);
+            buttonImage.rectTransform.sizeDelta = newTrans;
         }
         else
         {
-            // buttonText.text = "memo";
+            buttonImage.sprite = memoIcon;
+            Vector2 newTrans = new Vector2(iconWidth, memoIconHeight);
+            buttonImage.rectTransform.sizeDelta = newTrans;
         }
     }
 
