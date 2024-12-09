@@ -760,6 +760,10 @@ PrefabInstance:
       propertyPath: attackingSpellButtonSprite
       value: 
       objectReference: {fileID: 21300000, guid: d2e35230ea99649d58055671d32142cb, type: 3}
+    - target: {fileID: 8828475109760790770, guid: 89ae0cdfc7df548b3964f552be417ba0, type: 3}
+      propertyPath: notAttackSpellButtonSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 054a9462432c54b4891ef4e063fceb3c, type: 3}
     - target: {fileID: 8894119077182238874, guid: 89ae0cdfc7df548b3964f552be417ba0, type: 3}
       propertyPath: m_SizeDelta.x
       value: 87.64945

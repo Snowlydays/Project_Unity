@@ -49,6 +49,7 @@ public class QutstionController : MonoBehaviour
 
     [SerializeField] private Sprite questionSpellButtonSprite;  // 通常時のSpellButtonのスプライト
     [SerializeField] private Sprite attackingSpellButtonSprite; // 攻撃時のSpellButtonのスプライト
+    [SerializeField] private Sprite notAttackSpellButtonSprite; // 攻撃不可のSpellButtonのスプライト
 
     private Image questionBGImage;    // QuestionBGのImage
     private Image spellButtonImage;   // SpellButtonのImage
@@ -106,13 +107,14 @@ public class QutstionController : MonoBehaviour
             
             // 通常時のスプライトに初期化
             questionBGImage.sprite = questionQuestionBGSprite;
-            spellButtonImage.sprite = questionSpellButtonSprite;
+            spellButtonImage.sprite = isNotAttack ?notAttackSpellButtonSprite : questionSpellButtonSprite;
             
             cardPanel.GameObject().SetActive(true);
             cardsManager.PlaceCardsOnPanel(cardPanel,ToggleCardSelection, cardWidth, cardSpacing, paddingLeft, paddingRight);
             
             MoveParentMyCardPanel();
             myCardPanel.gameObject.SetActive(false);
+            
         }else{
             //質問ができない場合はアイテム効果系bool変数を無効化してToggleReadyする。
             Debug.Log("相手のアイテム4の効果で質問ができない");
