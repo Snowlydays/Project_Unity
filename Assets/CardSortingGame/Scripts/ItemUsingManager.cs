@@ -540,7 +540,7 @@ public class ItemUsingManager : MonoBehaviour
         if(cardNumber > chooseNumber)
         {
             //カードの値より入力した値が大きかった時
-            Debug.Log($"{itemNameDict[6]}の効果:カード{CardsManager.intToAlph[cardNumber]}は{chooseNumber + 1}以上です");
+            Debug.Log($"{itemNameDict[6]}の効果:カード{CardsManager.intToAlph[cardAlph]}は{chooseNumber + 1}より大きいです");
             networkSystem.Log(LogUnit.ElixerEffectMore, cardAlph, chooseNumber);
             networkSystem.informationManager.AddInformationText($"{itemNameDict[6]}の効果:カードの数字{CardsManager.intToAlph[cardAlph]}は{chooseNumber}より大きい");
         }
@@ -552,7 +552,7 @@ public class ItemUsingManager : MonoBehaviour
         }
         else{
             //入力した値がカードの値より小さかった時
-            Debug.Log($"{itemNameDict[6]}の効果:カードの数値は{chooseNumber}以下です");
+            Debug.Log($"{itemNameDict[6]}の効果:カードの数値は{chooseNumber}より小さいです");
             networkSystem.Log(LogUnit.ElixerEffectLess, cardAlph, chooseNumber);
             networkSystem.informationManager.AddInformationText($"{itemNameDict[6]}の効果:カードの数字{CardsManager.intToAlph[cardAlph]}は{chooseNumber}より小さい");
         }
