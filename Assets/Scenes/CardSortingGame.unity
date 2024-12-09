@@ -4057,6 +4057,8 @@ MonoBehaviour:
   penHeight: 8
   eraserWidth: 30
   eraserHeight: 30
+  penButtonImage: {fileID: 883847229}
+  eraserButtonImage: {fileID: 1122819012}
 --- !u!1 &1421911577
 GameObject:
   m_ObjectHideFlags: 0
