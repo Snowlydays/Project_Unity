@@ -92,12 +92,17 @@ MonoBehaviour:
   phaseAnimObject: {fileID: 129355552834074673, guid: 884399d0f58514f469b7e1c06a1cf949, type: 3}
   animobj: {fileID: 0}
   logoSound: {fileID: 0}
-  logoSoundObject: {fileID: 0}
+  SoundObject: {fileID: 8952582336682380940, guid: 5e86fc38c315040b0949fc764056978c, type: 3}
   itemSprites: []
   itemThreeMyObject: {fileID: 0}
   itemThreeOtherObject: {fileID: 0}
   itemDefaultObject: {fileID: 0}
+  itemDefaultOtherObject: {fileID: 0}
   newSprite: {fileID: 0}
+  itemAppearSound: {fileID: 8300000, guid: 1019770e8996d4ac5be1aa28ede506d2, type: 3}
+  rolingSound: {fileID: 8300000, guid: 73161407be9324fa5b10f866d8fc6e75, type: 3}
+  pickSound: {fileID: 8300000, guid: 32ae9aeb40a944d099e80b6f1cfb960a, type: 3}
+  threeRolingSound: {fileID: 8300000, guid: 9db1c1f1ff1584978bf0b924dacecb04, type: 3}
 --- !u!95 &1292648826168163472
 Animator:
   serializedVersion: 5
