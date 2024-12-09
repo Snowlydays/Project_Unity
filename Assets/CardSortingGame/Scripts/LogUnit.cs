@@ -88,13 +88,22 @@ public class LogUnit
             }
             else if(dataB >= 0)
             {
+                Debug.Log("dataA:"+dataA);
+                Debug.Log("dataB:"+dataB);
+                Debug.Log("dataC:"+dataC);
                 Dictionary<int, string> logTexts = new Dictionary<int, string> {
                     {OrbEffect, $"カード{CardsManager.intToAlph[dataA]}を{dataB}回動かした!"},
                     {ElixerEffectMore, $"カード{CardsManager.intToAlph[dataA]}の数字は{dataB}より大きい!"},
                     {ElixerEffectEqual, $"カード{CardsManager.intToAlph[dataA]}の数字は{dataB}と等しい!"},
                     {ElixerEffectLess, $"カード{CardsManager.intToAlph[dataA]}の数字は{dataB}より小さい!"},
-                    {NomalResult, $"カードの数字は {CardsManager.intToAlph[dataA]} < {CardsManager.intToAlph[dataB]}"},
                 };
+                
+                // NomalResultはわけないと、アイテム6を使用して、選んだカードの数字が5の場合にIndexOutOfRangeExceptionが発生する
+                // これはdataBに選んだカードの数字を入れているため。
+                if (dataA < CardsManager.intToAlph.Length && dataB < CardsManager.intToAlph.Length)
+                {
+                    logTexts[NomalResult] = $"カードの数字は {CardsManager.intToAlph[dataA]} < {CardsManager.intToAlph[dataB]}";
+                }
                 logTextTrans.GetComponent<TextMeshProUGUI>().text = logTexts[messageNum];
             }
             else
