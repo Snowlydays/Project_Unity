@@ -26,6 +26,7 @@ public class ChooseServerManager : NetworkBehaviour
     GameObject waitObj;
     GameObject joinButton;
     GameObject backButton;
+    GameObject backRoomButton;
     private GameObject connectPanel;
     private Button roomJoinButtonComponent;
     private Button backButtonComponent;
@@ -63,6 +64,7 @@ public class ChooseServerManager : NetworkBehaviour
         joinButton = GameObject.Find("RoomJoinButton");
         connectPanel = GameObject.Find("ConnectPanel");
         backButton = GameObject.Find("BackButton");
+        backRoomButton = GameObject.Find("BackRoomButton");
         connectionErrorImage = connectPanel.transform.Find("ConnectionErrorImage").gameObject;
         connectionErrorImage.SetActive(false);
 
@@ -84,6 +86,10 @@ public class ChooseServerManager : NetworkBehaviour
                 backButtonComponent.onClick.AddListener(OnBackButtonClicked);
                 Debug.Log("Listener added to BackButton.");
             }
+        }
+        if (backRoomButton != null)
+        {
+            backRoomButton.GetComponent<Button>().onClick.AddListener(OnBackRoomButtonClicked);
         }
         
         GameObject codeTextObject = GameObject.Find("JoinCodeText");//sceneからjoincodeを表示するテキストを取得
@@ -126,6 +132,20 @@ public class ChooseServerManager : NetworkBehaviour
             connectPanel.SetActive(false);
             GameObject soundobj=Instantiate(SoundObject);
             soundobj.GetComponent<PlaySound>().PlaySE(cancelSound);
+        }
+    }
+
+    public void OnBackRoomButtonClicked()
+    {
+        if(hoststart==false & clientstart==false){
+            GameObject soundobj=Instantiate(SoundObject);
+            soundobj.GetComponent<PlaySound>().PlaySE(decideSound);
+            AuthenticationService.Instance.SignOut();
+            if (NetworkManager.Singleton != null)
+            {
+                Destroy(NetworkManager.Singleton.gameObject);
+            }
+            SceneManager.LoadScene("ChooseMatchSoA"); 
         }
     }
     

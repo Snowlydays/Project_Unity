@@ -15,7 +15,7 @@ public class AnimationController : MonoBehaviour
 
     public AudioClip logoSound;
 
-    public GameObject logoSoundObject;
+    public GameObject SoundObject;
 
     public Sprite[] itemSprites;
 
@@ -29,6 +29,11 @@ public class AnimationController : MonoBehaviour
 
     public Sprite newSprite;
 
+    public AudioClip itemAppearSound;
+    public AudioClip rolingSound;
+    public AudioClip pickSound;
+    public AudioClip threeRolingSound;
+
     void Start(){
         networkSystem = FindObjectOfType<NetworkSystem>(); 
     }
@@ -41,13 +46,38 @@ public class AnimationController : MonoBehaviour
         Destroy(this.gameObject);
     }
 
+    public void OnItemAppear(){
+        if(GetComponent<RectTransform>().anchoredPosition.x<=1f){
+            GameObject soundobj=Instantiate(SoundObject);
+            soundobj.GetComponent<PlaySound>().PlaySE(itemAppearSound);
+        }
+    }
+
+    public void OnRolingStart(){
+        if(GetComponent<RectTransform>().anchoredPosition.x<=1f){
+            GameObject soundobj=Instantiate(SoundObject);
+            soundobj.GetComponent<PlaySound>().PlaySE(rolingSound);
+        }
+    }
+
+    public void OnThreeRolingStart(){
+        if(GetComponent<RectTransform>().anchoredPosition.x<=1f){
+            GameObject soundobj=Instantiate(SoundObject);
+            soundobj.GetComponent<PlaySound>().PlaySE(threeRolingSound);
+        }
+    }
+
     public void OnChangeThreeItem(){
         //スプライトを変更
         this.GetComponent<Image>().overrideSprite=newSprite;
+        if(GetComponent<RectTransform>().anchoredPosition.x<=1f){
+            GameObject soundobj=Instantiate(SoundObject);
+            soundobj.GetComponent<PlaySound>().PlaySE(pickSound);
+        }
     }
 
     public void CreatePhaseLogo(Sprite sprite){
-        GameObject soundobj=Instantiate(logoSoundObject);
+        GameObject soundobj=Instantiate(SoundObject);
         soundobj.GetComponent<PlaySound>().PlaySE(logoSound);
         GameObject canvas=networkSystem.itemUsingManager.itemUseCanvas;
         animobj=Instantiate(phaseAnimObject);

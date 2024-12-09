@@ -65,7 +65,7 @@ public class PhaseManager : MonoBehaviour
         {
             case InitialPhase:
                 networkSystem.informationManager.ShowQuestionResult();
-                networkSystem.mainSystemScript.readyButton.gameObject.GetComponent<Animator>().SetBool("blStarted", false);
+                //networkSystem.mainSystemScript.readyButton.gameObject.GetComponent<Animator>().SetBool("blStarted", false);
                 AttackAction();
                 networkSystem.itemWindowManager.DisappearWindow();
                 break;
@@ -96,13 +96,12 @@ public class PhaseManager : MonoBehaviour
 
         if (hostAttacked || clientAttacked)
         {
-            if (networkSystem.IsHost)
-            {
             networkSystem.HandleAttackAction(hostAttacked,clientAttacked);
-            }
             
             // 攻撃トグルのリセット
             networkSystem.ToggleAttackedReset();
+        }else{
+            networkSystem.timerController.StartDrawBar();
         }
     }
 
