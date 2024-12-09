@@ -65,11 +65,14 @@ public class QutstionController : MonoBehaviour
     public AudioClip decideSound;
     public AudioClip cancelSound;
     public GameObject SoundObject;
+    
+    private MainSystemScript mainSystemScript;
 
     void Start()
     {
         cardsManager = FindObjectOfType<CardsManager>();
         networkSystem = FindObjectOfType<NetworkSystem>();
+        mainSystemScript = FindObjectOfType<MainSystemScript>();
         
         questionBG = GameObject.Find("QuestioningBG");
         cardPanel = GameObject.Find("QuestionCardPanel").transform;
@@ -199,6 +202,8 @@ public class QutstionController : MonoBehaviour
         // 背面の変更
         if (isAttacking)
         {
+            mainSystemScript.SetDraggable(true);
+            DestroyCloneCards();
             // 攻撃時のスプライトに変更
             GameObject soundobj=Instantiate(SoundObject);
             soundobj.GetComponent<PlaySound>().PlaySE(decideSound);
@@ -210,6 +215,8 @@ public class QutstionController : MonoBehaviour
         }
         else
         {
+            mainSystemScript.SetDraggable(false);
+            cardsManager.PlaceCardsOnPanel(cardPanel,ToggleCardSelection, cardWidth, cardSpacing, paddingLeft, paddingRight);
             // 通常時のスプライトに戻す
             GameObject soundobj=Instantiate(SoundObject);
             soundobj.GetComponent<PlaySound>().PlaySE(cancelSound);
@@ -325,9 +332,7 @@ public class QutstionController : MonoBehaviour
             selectedCards.Clear();
 
             // クローンカードのUIを削除
-            cardPanel.gameObject.SetActive(true); // 攻撃時にカードパネルが非表示だと削除できないため、ここで必ずtrueになるように調整
-            GameObject[] clonedCards = GameObject.FindGameObjectsWithTag("ClonedCard");
-            foreach (GameObject card in clonedCards) Destroy(card);
+            DestroyCloneCards();
 
             // 背景のパネルを非表示に
             myCardPanel.gameObject.SetActive(true);
@@ -352,6 +357,13 @@ public class QutstionController : MonoBehaviour
         {
             Debug.Log("Please select exactly two cards to compare.");
         }
+    }
+
+    void DestroyCloneCards()
+    {
+        cardPanel.gameObject.SetActive(true); // 攻撃時にカードパネルが非表示だと削除できないため、ここで必ずtrueになるように調整
+        GameObject[] clonedCards = GameObject.FindGameObjectsWithTag("ClonedCard");
+        foreach (GameObject card in clonedCards) Destroy(card);
     }
     
     int CompareCards(GameObject leftCard, GameObject rightCard)
