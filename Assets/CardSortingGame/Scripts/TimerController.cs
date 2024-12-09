@@ -19,6 +19,8 @@ public class TimerController : MonoBehaviour
     [SerializeField] private Sprite CountingSprite;
     [SerializeField] private Sprite notCountingSprite;
     private TextMeshProUGUI countText;
+    public AudioClip warningSound;
+    public GameObject SoundObject;
 
     NetworkSystem networkSystem;
 
@@ -39,6 +41,7 @@ public class TimerController : MonoBehaviour
     void FixedUpdate(){
         if(isCountNow){
             float timeScale=nowTime/timerSec;
+            string nowtext=countText.text;
             circleImage.color=Color.HSVToRGB(H*timeScale, S, V);
             circleImage.fillAmount=timeScale;
             readyButton.GetComponent<RectTransform>().anchoredPosition=new Vector3(
@@ -48,6 +51,10 @@ public class TimerController : MonoBehaviour
             );
             nowTime-=1f/50f;
             countText.text=Mathf.Ceil(nowTime).ToString();
+            if(nowtext!=countText.text && nowTime<=10f){
+                GameObject soundobj=Instantiate(SoundObject);
+                soundobj.GetComponent<PlaySound>().PlaySE(warningSound);
+            }
             if(nowTime<=0f){
                 networkSystem.mainSystemScript.OnReadyButtonClicked();
                 isCountNow=false;
@@ -72,6 +79,5 @@ public class TimerController : MonoBehaviour
         textObj.SetActive(false);
         readyButton.GetComponent<RectTransform>().anchoredPosition=new Vector3(buttonX,buttonY,0f);
         readyButton.GetComponent<Button>().enabled=false;
-        
     }
 }
