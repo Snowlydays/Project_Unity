@@ -125,6 +125,16 @@ public class MainSystemScript : MonoBehaviour
             draggable.isDraggable = false;
         }
     }
+
+    public void SetDraggable(bool value)
+    {
+        for (int i = 0; i < mycard.Length; i++)
+        {   
+            DraggableCard draggable = mycard[i].GetComponent<DraggableCard>();
+            draggable.isDraggable = value;
+            mycard[i].GetComponent<Image>().color = (value ? new Color(1f, 1f, 1f, 1f) : new Color(0.7f, 0.7f, 0.7f, 1f));
+        }
+    }
     
     public void UpdateOtherCardUI()
     {

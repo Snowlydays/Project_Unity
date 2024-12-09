@@ -181,7 +181,15 @@ public class NetworkSystem : NetworkBehaviour
             Debug.Log($"フェーズが {newParam} になりました。");
             phaseManager.HandlePhaseChange(newParam);
             mainSystemScript.ChangeGuideImage(newParam);
-            if(newParam == initialPhase) PhaseManager.ProgressRound();
+            if(newParam == initialPhase)
+            {
+                mainSystemScript.SetDraggable(true);
+                PhaseManager.ProgressRound();
+            }
+            else
+            {
+                mainSystemScript.SetDraggable(false);
+            }
         };
 
         netHostReady.OnValueChanged += (bool oldParam, bool newParam) =>
