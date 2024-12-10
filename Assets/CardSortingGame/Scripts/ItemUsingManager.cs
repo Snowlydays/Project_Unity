@@ -43,7 +43,7 @@ public class ItemUsingManager : MonoBehaviour
 
     TMP_InputField inputField;
 
-    int chooseNumber=-1;
+    public static int chooseNumber=-1;
 
     int chooseCompareTo=-1;//アイテム1で大小どちらへ比較するか、1で大、-1で小、0で無選択
 
@@ -123,7 +123,10 @@ public class ItemUsingManager : MonoBehaviour
 
     IEnumerator StartItemUsePhaseIEnumerator()
     {
-        networkSystem.itemPhaseManager.UpdateInventoryUI(); // UIを更新
+        networkSystem.itemPhaseManager.UpdateInventoryUI(); // アイテムのUIを更新
+        
+        FindObjectOfType<Item6CardSelector>().ResetItemSixSelectNumber();
+        
         mylist = new List<int>(myItems);
         otherlist = new List<int>(otherItems);
 

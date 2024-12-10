@@ -6,7 +6,7 @@ public class CardNumManager : MonoBehaviour
 {
     private const int InitCardNum = 5;
     private const int MinCardNum = 3;
-    private const int MaxCardNum = 5;
+    public static int MaxCardNum = 5;
     [SerializeField] private GameObject numberObj;
     
     [SerializeField] private Button increaseCardButton;
