@@ -4,7 +4,6 @@ using UnityEngine.UI;
 
 public class Item6CardSelector : MonoBehaviour
 {
-    // public int selectNumber = 5;
     private const int MinNumber = 1;
     [SerializeField] private GameObject numberObj;
     
