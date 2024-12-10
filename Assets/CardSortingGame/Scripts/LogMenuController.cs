@@ -4,7 +4,7 @@ using TMPro;
 using System.Collections;
 using System.Collections.Generic;
 
-public enum TabType { All, Myself, Opponent }
+public enum TabType { All, Myself, Opponent, Possesed }
 
 public class LogMenuController : MonoBehaviour
 {
