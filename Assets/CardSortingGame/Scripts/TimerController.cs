@@ -35,7 +35,7 @@ public class TimerController : MonoBehaviour
         circleObject.SetActive(false);
         textObj.SetActive(false);
         Color.RGBToHSV(circleImage.color, out H, out S, out V);
-        StartDrawBar();
+        // StartDrawBar();
     }
 
     void FixedUpdate(){
