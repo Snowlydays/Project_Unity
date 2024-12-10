@@ -6,6 +6,9 @@ using System.Collections.Generic;
 
 public class ItemMenuController : MonoBehaviour
 {
+    public ItemInfoUnit[] allInfoUnits = new ItemInfoUnit[6];
+    public ItemInfoUnit[] possesedInfoUnits = new ItemInfoUnit[6];
+
     public Button allButton, closeButton;
     public List<LogUnit> allItems = new List<LogUnit>();
     public List<LogUnit> invItems = new List<LogUnit>();
@@ -58,7 +61,8 @@ public class ItemMenuController : MonoBehaviour
         
         for(int i = 1; i <= 6; i++)
         {
-            new ItemInfoUnit(TabType.All, i);
+            allInfoUnits[i - 1] = new ItemInfoUnit(TabType.All, i);
+            possesedInfoUnits[i - 1] = new ItemInfoUnit(TabType.Possesed, i);
         }
     }
 

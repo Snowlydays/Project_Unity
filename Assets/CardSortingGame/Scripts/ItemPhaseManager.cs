@@ -33,6 +33,7 @@ public class ItemPhaseManager : MonoBehaviour
     [SerializeField] private Color toggleOnColor = Color.green; // トグルがオンの時の色
     [SerializeField] private Color toggleOffColor = Color.white; // トグルがオフの時の色
 
+    [SerializeField] private ItemMenuController itemMenuController;
     private NetworkSystem networkSystem;
 
     public AudioClip decideSound;
@@ -174,6 +175,8 @@ public class ItemPhaseManager : MonoBehaviour
         selectedItems.Clear(); // 選択していたアイテムをクリア
         itemDisplayPanel.gameObject.SetActive(false);
         confirmButton.gameObject.SetActive(false);
+
+        itemMenuController.CloseDrawer();
     }
 
     // プレイヤーにアイテムを配布するメソッド
