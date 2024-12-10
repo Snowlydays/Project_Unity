@@ -2722,7 +2722,7 @@ GameObject:
   - component: {fileID: 455605327}
   - component: {fileID: 455605326}
   m_Layer: 5
-  m_Name: BackButton
+  m_Name: CloseButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3146,7 +3146,7 @@ MonoBehaviour:
   prevButton: {fileID: 1412937606}
   nextButton: {fileID: 1062489845}
   showTutorialButton: {fileID: 208818472}
-  backButton: {fileID: 455605326}
+  closeTutorialButton: {fileID: 455605326}
   prevDisabledSprite: {fileID: 21300000, guid: 067b1c76a156641b08e595694ff9f417, type: 3}
   prevEnabledSprite: {fileID: 21300000, guid: f5a150dced0514667ab796bd65a9d255, type: 3}
   nextDisabledSprite: {fileID: 21300000, guid: 202d7e2fa68db4c3389d868f2f9eda16, type: 3}

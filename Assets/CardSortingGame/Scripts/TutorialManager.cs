@@ -6,6 +6,7 @@ namespace CardSortingGame.Scripts
 {
     public class TutorialManager : MonoBehaviour
     {
+        private bool isFirstTutorialClosed = false;
         private int currentShowTutorialNumber = 0;
         private const int TutorialPageSize = 4;
 
@@ -15,7 +16,7 @@ namespace CardSortingGame.Scripts
         [SerializeField] private Button prevButton;
         [SerializeField] private Button nextButton;
         [SerializeField] private Button showTutorialButton;
-        [SerializeField] private Button backButton;
+        [SerializeField] private Button closeTutorialButton;
 
         [SerializeField] private Sprite prevDisabledSprite;
         [SerializeField] private Sprite prevEnabledSprite;
@@ -25,16 +26,12 @@ namespace CardSortingGame.Scripts
         
         private void Awake()
         {
-            // foreach (Transform obj in tutorialPageObjects)
-            // {
-            //     obj.gameObject.SetActive(false);
-            // }
-
+            isFirstTutorialClosed = false;
             prevButton.onClick.AddListener(OnPrevButtonClicked);
             nextButton.onClick.AddListener(OnNextButtonClicked);
-            backButton.onClick.AddListener(OnBackButtonClicked);
             showTutorialButton.onClick.AddListener(OnShowTutorialButtonClicked);
-            
+            closeTutorialButton.onClick.AddListener(OnCloseTutorialButtonClicked);
+
             ResetTutorialPage();
         }
         
@@ -60,8 +57,13 @@ namespace CardSortingGame.Scripts
         {
             tutorialPage.gameObject.SetActive(true);
         }
-        private void OnBackButtonClicked()
+        private void OnCloseTutorialButtonClicked()
         {
+            if (!isFirstTutorialClosed)
+            {
+                FindObjectOfType<TimerController>().StartDrawBar();
+                isFirstTutorialClosed = true;
+            }
             ResetTutorialPage();
             tutorialPage.gameObject.SetActive(false);
         }
