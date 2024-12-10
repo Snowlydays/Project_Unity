@@ -33,6 +33,15 @@ public class ItemMenuController : MonoBehaviour
     public ItemPhaseManager itemPhaseManager;
     private NetworkSystem networkSystem;
 
+    public static Dictionary<int, string> itemDescriptionDict = new Dictionary<int, string> {
+        { 1, "カード一枚と大小を選択。選んだ方向に隣り合うカードとの関係が正しくなければ交換し続ける。" },
+        { 2, "質問で比較するカードの差がわかる" },
+        { 3, "相手の使ったアイテムの効果を奪う" },
+        { 4, "相手は詠唱することができない" },
+        { 5, "質問でカードを3つ比較する" },
+        { 6, "カード一枚を選択し数字を指定。それより大きいか小さいかがわかる。" }
+    };
+
     void Start()
     {
         possesedItemMenu.SetActive(true);
@@ -46,6 +55,11 @@ public class ItemMenuController : MonoBehaviour
 
         drawerPanel.anchoredPosition = new Vector2(drawerPanel.rect.width, drawerPanel.anchoredPosition.y);
         networkSystem = FindObjectOfType<NetworkSystem>();
+        
+        for(int i = 1; i <= 6; i++)
+        {
+            new ItemInfoUnit(TabType.All, i);
+        }
     }
 
     private void ManageTabState()

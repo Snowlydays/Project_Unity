@@ -21,7 +21,7 @@ public class ItemPhaseManager : MonoBehaviour
     [SerializeField] private Transform myInventoryPanel; // 自分の所有アイテムを表示するパネル
     [SerializeField] private Transform otherInventoryPanel; // 相手の所有アイテムを表示するパネル
     [SerializeField] private GameObject inventoryItemPrefab; // 所有アイテム表示用のプレハブ
-    [SerializeField] private Sprite[] itemIcons; // 各アイテムのアイコン
+    [SerializeField] public Sprite[] itemIcons; // 各アイテムのアイコン
     [SerializeField] private Sprite[] itemDescriptions; // 各アイテムの説明
 
     // PopupCanvasのPopupParent参照
