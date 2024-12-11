@@ -202,6 +202,7 @@ public class QutstionController : MonoBehaviour
         // 背面の変更
         if (isAttacking)
         {
+            selectedCards.Clear();
             mainSystemScript.SetDraggable(true);
             DestroyCloneCards();
             // 攻撃時のスプライトに変更
