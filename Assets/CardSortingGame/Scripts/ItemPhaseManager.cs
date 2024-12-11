@@ -45,6 +45,16 @@ public class ItemPhaseManager : MonoBehaviour
 
     public int currentItemIdx;
 
+    private Dictionary<int,string> itemDescriptionDict = new Dictionary<int, string>()
+    {
+        {1,"アイテム1の説明"},
+        {2,"アイテム2の説明"},
+        {3,"アイテム3の説明"},
+        {4,"アイテム4の説明"},
+        {5,"アイテム5の説明"},
+        {6,"アイテム6の説明"}
+    };
+        
     void Awake()
     {
         networkSystem = FindObjectOfType<NetworkSystem>();
@@ -87,7 +97,6 @@ public class ItemPhaseManager : MonoBehaviour
     }
 
     // 表示するアイテムを更新するメソッド
-// 表示するアイテムを更新するメソッド
     private void UpdateInventory(bool[] items, Transform panel)
     {
         // すべてのスロットをクリア
@@ -260,7 +269,7 @@ public class ItemPhaseManager : MonoBehaviour
         if (longPressHandler != null)
         {
             longPressHandler.Initialize(
-                itemDescriptions[itemIdx],
+                itemDescriptionDict[itemIdx+1],
                 itemDescriptionPopupPrefab,
                 popupParentTransform
             );
