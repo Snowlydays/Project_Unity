@@ -13,15 +13,11 @@ public class MemoController : MonoBehaviour
     private bool isEraserMode = false;
     private Color defaultColor;
     private Color penColor;
-    private Color buttonSelected = new Color(0.7f, 0.7f, 0.7f, 1f);
-    private Color buttonNomal = new Color(1f, 1f, 1f, 1f);
 	[SerializeField]private RawImage m_image = null;
     [SerializeField]private int penWidth = 8;
     [SerializeField]private int penHeight = 8;
     [SerializeField]private int eraserWidth = 30;
     [SerializeField]private int eraserHeight = 30;
-    [SerializeField]private Image penButtonImage;
-    [SerializeField]private Image eraserButtonImage;
 
 	public void OnDrag(BaseEventData arg) //線を描画
     {
@@ -141,16 +137,12 @@ public class MemoController : MonoBehaviour
     public void SetPenMode()
     {
         isEraserMode = false;
-        penButtonImage.color = buttonSelected;
-        eraserButtonImage.color = buttonNomal;
         Debug.Log("pen mode");
     }
 
     public void SetEraserMode()
     {
         isEraserMode = true;
-        penButtonImage.color = buttonNomal;
-        eraserButtonImage.color = buttonSelected;
         Debug.Log("eraser mode");
     }
 
@@ -179,7 +171,5 @@ public class MemoController : MonoBehaviour
         m_image.texture = m_texture;
 
         DefaultTexture();
-
-        penButtonImage.color = buttonSelected;
     }
 }
