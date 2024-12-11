@@ -78,6 +78,7 @@ public class NetworkSystem : NetworkBehaviour
     public MainSystemScript mainSystemScript;
     public ItemWindowManager itemWindowManager;
     public TimerController timerController;
+    public ItemMenuController itemMenuController;
 
     public Sprite attackSprite;
     
@@ -170,6 +171,7 @@ public class NetworkSystem : NetworkBehaviour
         mainSystemScript = FindObjectOfType<MainSystemScript>();
         itemWindowManager = FindObjectOfType<ItemWindowManager>();
         timerController = FindObjectOfType<TimerController>();
+        itemMenuController = FindObjectOfType<ItemMenuController>();
 
         NetworkManager.Singleton.OnClientDisconnectCallback += DisconnectGame;
         
@@ -319,6 +321,13 @@ public class NetworkSystem : NetworkBehaviour
             if (IsHost) itemPhaseManager.myItems[i] = netHostItems[i];
             else itemPhaseManager.otherItems[i] = netHostItems[i];
         }
+       
+        // アイテム情報の表示を切り替え
+        for(int i = 0; i < 6; i++)
+        {
+            if(itemPhaseManager.myItems[i]) itemMenuController.possesedInfoUnits[i].itemInfoObject.SetActive(true);
+            else itemMenuController.possesedInfoUnits[i].itemInfoObject.SetActive(false);
+        } 
     }
 
     private void OnNetClientItemChanged(NetworkListEvent<bool> changeEvent)
@@ -328,6 +337,13 @@ public class NetworkSystem : NetworkBehaviour
         {
             if (IsHost) itemPhaseManager.otherItems[i] = netClientItems[i]; 
             else itemPhaseManager.myItems[i] = netClientItems[i]; 
+        }
+
+        // アイテム情報の表示を切り替え
+        for(int i = 0; i < 6; i++)
+        {
+            if(itemPhaseManager.myItems[i]) itemMenuController.possesedInfoUnits[i].itemInfoObject.SetActive(true);
+            else itemMenuController.possesedInfoUnits[i].itemInfoObject.SetActive(false);
         }
     }
 
