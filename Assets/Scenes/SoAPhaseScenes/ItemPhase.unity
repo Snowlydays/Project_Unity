@@ -805,7 +805,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 101
@@ -1378,6 +1378,7 @@ MonoBehaviour:
   otherItems: 000000000000
   itemDisplayPanel: {fileID: 1353334399}
   itemTogglePrefab: {fileID: 4444555943351918298, guid: 996ff370f383e4aeca1b336a3d1e7b9b, type: 3}
+  newTextPrefab: {fileID: 629619815376933186, guid: 85a8273551a9b4125b39f275da7afbe9, type: 3}
   confirmButton: {fileID: 1310864688}
   itemDescriptionPanel: {fileID: 0}
   myInventoryPanel: {fileID: 0}
@@ -1401,11 +1402,13 @@ MonoBehaviour:
   itemDescriptionPopupPrefab: {fileID: 6603290080751709587, guid: aa0f9d33aefd2466f84d5b325e3a66ab, type: 3}
   toggleOnColor: {r: 0, g: 1, b: 0, a: 1}
   toggleOffColor: {r: 1, g: 1, b: 1, a: 1}
+  newText: {fileID: 0}
   itemMenuController: {fileID: 527227367}
   decideSound: {fileID: 8300000, guid: ee50a08976b8c4329b7e3ddc170296cc, type: 3}
   cancelSound: {fileID: 8300000, guid: c9eb5b79b814b44be9550b25e97b128a, type: 3}
   confirmSound: {fileID: 8300000, guid: 6c4f139faedb544819dbc708a03edf9a, type: 3}
   SoundObject: {fileID: 8952582336682380940, guid: 5e86fc38c315040b0949fc764056978c, type: 3}
+  currentItemIdx: 0
 --- !u!4 &1774143079
 Transform:
   m_ObjectHideFlags: 0

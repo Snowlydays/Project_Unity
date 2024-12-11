@@ -14,6 +14,7 @@ public class ItemPhaseManager : MonoBehaviour
 
     [SerializeField] private Transform itemDisplayPanel; // アイテム使用ボタンを表示するパネル
     [SerializeField] private GameObject itemTogglePrefab; // アイテム選択用トグルのプレハブ
+    [SerializeField] private GameObject newTextPrefab; // "new"のプレハブ
     [SerializeField] private Button confirmButton; // 決定ボタン
     [SerializeField] private GameObject itemDescriptionPanel; // アイテム説明を表示するパネル
 
@@ -32,6 +33,7 @@ public class ItemPhaseManager : MonoBehaviour
     private List<GameObject> toggleList = new List<GameObject>();
     [SerializeField] private Color toggleOnColor = Color.green; // トグルがオンの時の色
     [SerializeField] private Color toggleOffColor = Color.white; // トグルがオフの時の色
+    [SerializeField] private GameObject newText;
 
     [SerializeField] private ItemMenuController itemMenuController;
     private NetworkSystem networkSystem;
@@ -40,6 +42,8 @@ public class ItemPhaseManager : MonoBehaviour
     public AudioClip cancelSound;
     public AudioClip confirmSound;
     public GameObject SoundObject;
+
+    public int currentItemIdx;
 
     void Awake()
     {
@@ -172,6 +176,8 @@ public class ItemPhaseManager : MonoBehaviour
             }
         }
 
+        Destroy(newText);
+        newText = null;
         selectedItems.Clear(); // 選択していたアイテムをクリア
         itemDisplayPanel.gameObject.SetActive(false);
         confirmButton.gameObject.SetActive(false);
@@ -197,6 +203,7 @@ public class ItemPhaseManager : MonoBehaviour
             // 未所有のアイテムリストからランダムに選び、プレイヤーへ配る
             int randomIdx = UnityEngine.Random.Range(0, unownedItems.Count);
             int distributedItemIdx = unownedItems[randomIdx];
+            currentItemIdx = distributedItemIdx;
             networkSystem.ChangeItems(distributedItemIdx, true);
             Debug.Log($"アイテム{distributedItemIdx + 1}:を配布");
 
@@ -214,6 +221,7 @@ public class ItemPhaseManager : MonoBehaviour
     {
         // プレハブをインスタンス化して、itemDisplayPanelの子として配置
         GameObject toggleObj = Instantiate(itemTogglePrefab, itemDisplayPanel.Find("LayoutGroup"));
+        newText = Instantiate(newTextPrefab, toggleObj.transform);
 
         // Layout Groupを機能させるために、RectTransformをリセット
         RectTransform rectTransform = toggleObj.GetComponent<RectTransform>();
