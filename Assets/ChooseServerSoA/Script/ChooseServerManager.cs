@@ -120,8 +120,7 @@ public class ChooseServerManager : NetworkBehaviour
         if (connectPanel != null)
         {
             connectPanel.SetActive(true);
-            GameObject soundobj=Instantiate(SoundObject);
-            soundobj.GetComponent<PlaySound>().PlaySE(decideSound);
+            SoundManager.PlaySE(decideSound);
         }
     }
     

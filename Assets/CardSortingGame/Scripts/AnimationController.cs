@@ -27,6 +27,8 @@ public class AnimationController : MonoBehaviour
 
     public GameObject itemDefaultOtherObject;
 
+    public GameObject fadeOutObject;
+
     public Sprite newSprite;
 
     public AudioClip itemAppearSound;
@@ -121,5 +123,14 @@ public class AnimationController : MonoBehaviour
         animobj.GetComponent<RectTransform>().anchoredPosition=new Vector3(posx,0f,0f);
         animobj.transform.localScale=new Vector3(1f,-1f,1f);
         animobj.GetComponent<Image>().overrideSprite=itemSprites[newitem];
+    }
+
+    public void StartFadeOut(){
+        fadeOutObject.GetComponent<Animator>().SetBool("toStart", true);
+    }
+
+    public void endFadeOutAnim(){
+        GetComponent<Animator>().SetBool("toStart", false);
+        GetComponent<Image>().color=new Vector4(1f,1f,1f,1f);
     }
 }

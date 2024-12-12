@@ -27,12 +27,14 @@ public class MemoToggle : MonoBehaviour
             buttonImage.sprite = closeIcon;
             Vector2 newTrans = new Vector2(iconWidth, closeIconHeight);
             buttonImage.rectTransform.sizeDelta = newTrans;
+            SoundManager.PlaySEnum(3);
         }
         else
         {
             buttonImage.sprite = memoIcon;
             Vector2 newTrans = new Vector2(iconWidth, memoIconHeight);
             buttonImage.rectTransform.sizeDelta = newTrans;
+            SoundManager.PlaySEnum(0);
         }
     }
 

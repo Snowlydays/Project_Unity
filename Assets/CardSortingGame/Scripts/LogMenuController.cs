@@ -118,6 +118,8 @@ public class LogMenuController : MonoBehaviour
     private void SwitchTab(TabType tab)
     {
         currentTab = tab;
+
+        SoundManager.PlaySEnum(3);
         
         switch(currentTab)
         {
@@ -144,12 +146,14 @@ public class LogMenuController : MonoBehaviour
 
     public void CloseDrawer()
     {
+        if(drawerPanel.anchoredPosition.x==-640)SoundManager.PlaySEnum(0);
         StartCoroutine(SlideDrawer(-drawerPanel.rect.width));
     }
 
     // メニューを開く関数
     public void OpenDrawer()
     {
+        if(drawerPanel.anchoredPosition.x==-drawerPanel.rect.width)SoundManager.PlaySEnum(3);
         StartCoroutine(SlideDrawer(-640));
     }
 

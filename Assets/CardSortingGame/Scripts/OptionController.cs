@@ -57,11 +57,13 @@ public class OptionController : MonoBehaviour
     void OnOptionButtonClicked(){
         movedY=0f;
         noClickObject.SetActive(true);
+        SoundManager.PlaySEnum(3);
     }
 
     void OnBackButtonClicked(){
         movedY=750f;
         noClickObject.SetActive(false);
+        SoundManager.PlaySEnum(0);
     }
 
     void OnEndButtonClicked(){
@@ -69,6 +71,7 @@ public class OptionController : MonoBehaviour
        //タイトルに戻るのスプライトを使う予定だったが、optionからゲーム画面に戻るボタンとごちゃつくと判断し
        //仮置きボタンで適応
        networkSystem.EndGame();
+       SoundManager.PlaySEnum(2);
     }
     
     void OnBGMSlide(float value){

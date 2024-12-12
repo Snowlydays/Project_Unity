@@ -41,6 +41,7 @@ namespace CardSortingGame.Scripts
             {
                 currentShowTutorialNumber++;
                 UpdateTutorialUI();
+                SoundManager.PlaySEnum(3);
             }
         }
 
@@ -50,12 +51,14 @@ namespace CardSortingGame.Scripts
             {
                 currentShowTutorialNumber--;
                 UpdateTutorialUI();
+                SoundManager.PlaySEnum(3);
             }
         }
 
         private void OnShowTutorialButtonClicked()
         {
             tutorialPage.gameObject.SetActive(true);
+            SoundManager.PlaySEnum(2);
         }
         private void OnCloseTutorialButtonClicked()
         {
@@ -66,6 +69,7 @@ namespace CardSortingGame.Scripts
             }
             ResetTutorialPage();
             tutorialPage.gameObject.SetActive(false);
+            SoundManager.PlaySEnum(0);
         }
         private void UpdateTutorialUI()
         {

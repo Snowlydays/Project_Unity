@@ -8,16 +8,25 @@ public class SoundManager : MonoBehaviour
     public AudioClip TitleBGM;
     public AudioClip GameBGM;
 
-    AudioClip nowPlayBGM;
+    public static AudioClip nowPlayBGM;
 
-    AudioSource myAudio;
+    public static AudioSource myAudio;
 
     public static float BGMvolume;//BGMの音量
     public static float SFXvolume;//効果音の音量
 
+    public GameObject SoundObject;
+
+    public AudioClip[] sounds;
+
+    private static GameObject staticSoundObject;
+    private static AudioClip[] staticSounds;
+
     void Start()
     {
         myAudio=GetComponent<AudioSource>();
+        staticSoundObject = SoundObject;
+        staticSounds = sounds;
         //cookieから音量設定を取得、なければデフォルト値にする
         float BGMvalue=Helper.GetCookieValue("BGM");
         if(BGMvalue==-1f){
@@ -83,4 +92,25 @@ public class SoundManager : MonoBehaviour
         }
     }
 
+    public static int StopBGM(){
+        myAudio.Stop();
+        return 1;
+    }
+
+    public static int PlaySE(AudioClip sound){
+        GameObject soundobj=Instantiate(staticSoundObject);
+        soundobj.GetComponent<PlaySound>().PlaySE(sound);
+        return 1;
+    }
+
+    public static int PlaySEnum(int num){
+        /*
+        0:sndcancel 1:sndcard 2:sndconfirm 3:snddecide 4:snddraw
+        5:snditemappear 6:sndlogo 7:sndlose 8:snfdrolingitem
+        9:sndthreeitempick 10:sndthreeroling 11:sndwarning 12:sndwin
+        */
+        GameObject soundobj=Instantiate(staticSoundObject);
+        soundobj.GetComponent<PlaySound>().PlaySE(staticSounds[num]);
+        return 1;
+    }
 }

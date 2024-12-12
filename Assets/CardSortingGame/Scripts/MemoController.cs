@@ -18,6 +18,7 @@ public class MemoController : MonoBehaviour
     [SerializeField]private int penHeight = 8;
     [SerializeField]private int eraserWidth = 30;
     [SerializeField]private int eraserHeight = 30;
+    private bool isPlaySound=false;
 
 	public void OnDrag(BaseEventData arg) //線を描画
     {
@@ -138,12 +139,14 @@ public class MemoController : MonoBehaviour
     {
         isEraserMode = false;
         Debug.Log("pen mode");
+        SoundManager.PlaySEnum(3);
     }
 
     public void SetEraserMode()
     {
         isEraserMode = true;
         Debug.Log("eraser mode");
+        SoundManager.PlaySEnum(3);
     }
 
     //テクスチャを初期化する関数
@@ -161,6 +164,7 @@ public class MemoController : MonoBehaviour
             }
         }
         m_texture.Apply();
+        if(isPlaySound)SoundManager.PlaySEnum(2);
     }
 
     private void Start()
@@ -171,5 +175,6 @@ public class MemoController : MonoBehaviour
         m_image.texture = m_texture;
 
         DefaultTexture();
+        isPlaySound=true;
     }
 }

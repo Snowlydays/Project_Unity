@@ -524,9 +524,34 @@ public class NetworkSystem : NetworkBehaviour
         animationController.CreatePhaseLogo(attackSprite);
     }
 
+    [ClientRpc]
+    private void StartFadeOutClientRpc(){
+        SoundManager.StopBGM();
+        animationController.StartFadeOut();
+    }
+
+    [ClientRpc]
+    private void HostAscendingCheckEndClientRpc(){
+        toEndGame=false;
+        timerController.StartDrawBar();
+    }
+
     IEnumerator HandleAttackActionIEnumerator(bool hostAttacked, bool clientAttacked)
     {
+        if(!IsHost){
+            yield break;
+        }
+        
         CreateAttackLogoClientRpc();
+
+        bool hostAsc = netIsHostAscending.Value;
+        bool clientAsc = netIsClientAscending.Value;
+
+        if(hostAttacked)hostAsc = CheckAscending(hostCard);
+        if(clientAttacked)clientAsc = CheckAscending(clientCard);
+
+        netIsHostAscending.Value = hostAsc;
+        netIsClientAscending.Value = clientAsc;
 
         //アニメーションが終了するまで待機
         yield return new WaitForSeconds(1f);
@@ -534,21 +559,16 @@ public class NetworkSystem : NetworkBehaviour
             yield return null;
         }
 
-        timerController.StartDrawBar();
-
-        //以降の処理をホストに託す
-        if(!IsHost){
-            yield break;
-        }
-        bool hostAsc = netIsHostAscending.Value;
-        bool clientAsc = netIsClientAscending.Value;
-        if(hostAttacked)hostAsc = CheckAscending(hostCard);
-        if(clientAttacked)clientAsc = CheckAscending(clientCard);
-
-        netIsHostAscending.Value = hostAsc;
-        netIsClientAscending.Value = clientAsc;
-
         toEndGame=true;
+
+        if (hostAsc || clientAsc){
+            StartFadeOutClientRpc();
+        }
+
+        yield return new WaitForSeconds(1f);
+        while(animationController.fadeOutObject.GetComponent<Animator>().GetBool("toStart")==true){
+            yield return null;
+        }
 
         if (hostAsc && clientAsc)
         {
@@ -575,6 +595,7 @@ public class NetworkSystem : NetworkBehaviour
         {
             Debug.Log("どちらのプレイヤーもカードが昇順ではない");
             toEndGame=false;
+            HostAscendingCheckEndClientRpc();
             if (hostAttacked)
             {
                 Debug.Log("攻撃失敗！");
