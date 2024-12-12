@@ -47,12 +47,12 @@ public class ItemPhaseManager : MonoBehaviour
 
     private Dictionary<int,string> itemDescriptionDict = new Dictionary<int, string>()
     {
-        {1,"アイテム1の説明"},
-        {2,"アイテム2の説明"},
-        {3,"アイテム3の説明"},
-        {4,"アイテム4の説明"},
-        {5,"アイテム5の説明"},
-        {6,"アイテム6の説明"}
+        {1,"1枚選択し大小を選ぶ。比較し間違っていたら並び替える。これを繰り返す"},
+        {2,"次比較するカードの差がわかる"},
+        {3,"相手の使ったアイテムの効果を奪う"},
+        {4,"相手は質問することができない"},
+        {5,"次の質問でカードを3つ比較する"},
+        {6,"1まい選択し数字を指定する。それより大きいか、小さいかが知れる"}
     };
         
     void Awake()
@@ -271,7 +271,9 @@ public class ItemPhaseManager : MonoBehaviour
             longPressHandler.Initialize(
                 itemDescriptionDict[itemIdx+1],
                 itemDescriptionPopupPrefab,
-                popupParentTransform
+                popupParentTransform,
+                itemIcons[itemIdx],
+                ItemUsingManager.itemNameDict[itemIdx+1]
             );
         }
     }

@@ -9,6 +9,8 @@ public class ItemLongPressHandler : MonoBehaviour, IPointerDownHandler, IPointer
 {
     public float longPressThreshold = 0.5f; // 長押しとみなす時間（秒）
 
+    private Sprite itemIcon;
+    public string itemName; // アイテムの名前
     public string itemDescription; // アイテムの説明
     public GameObject descriptionPopupPrefab; // 説明ポップアップのプレハブ
 
@@ -25,11 +27,13 @@ public class ItemLongPressHandler : MonoBehaviour, IPointerDownHandler, IPointer
 
     private Toggle toggle;
     
-    public void Initialize(string description, GameObject popupPrefab, Transform popupParent)
+    public void Initialize(string description, GameObject popupPrefab, Transform popupParent, Sprite icon, string iName)
     {
         itemDescription = description;
         descriptionPopupPrefab = popupPrefab;
         popupParentTransform = popupParent;
+        itemIcon = icon;
+        itemName = iName;
     }
 
     public bool HasLongPressed
@@ -139,15 +143,13 @@ public class ItemLongPressHandler : MonoBehaviour, IPointerDownHandler, IPointer
             popupRect.anchoredPosition = localPoint + offset;
 
             // アイテムの説明を設定
-            TMP_Text itemDescText = activePopup.GetComponentInChildren<TMP_Text>();
+            TMP_Text itemNameText = activePopup.transform.Find("ItemNameText").GetComponent<TMP_Text>();
+            itemNameText.text = itemName;
+            TMP_Text itemDescText = activePopup.transform.Find("ItemDescriptionText").GetComponent<TMP_Text>();
             itemDescText.text = itemDescription;
             
-            // Image descImage = activePopup.GetComponentInChildren<Image>();
-            // if (descImage != null)
-            // {
-            //     descImage.sprite = itemDescription;
-            //     descImage.SetNativeSize();
-            // }
+            Image iconImage = activePopup.transform.Find("icon").GetComponent<Image>();
+            if (iconImage != null) iconImage.sprite = itemIcon;
 
             activePopup.transform.SetAsLastSibling();
             currentActivePopup = activePopup;
