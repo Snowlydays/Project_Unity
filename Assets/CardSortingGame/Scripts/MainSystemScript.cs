@@ -13,7 +13,7 @@ public class MainSystemScript : MonoBehaviour
     private NetworkSystem networkSystem;
     private CardsManager cardsManager;
 
-    public GameObject[] mycard;//自分の手札
+    public static GameObject[] mycard;//自分の手札
     private GameObject[] othercard;//相手の手札
     public GameObject[] mySlots; // スロットを保持する配列
     private GameObject[] otherSlots; // スロットを保持する配列
@@ -36,7 +36,7 @@ public class MainSystemScript : MonoBehaviour
     public AudioClip confirmSound;
     public GameObject SoundObject;
     
-    [SerializeField] private Sprite[] numberSprites = new Sprite[10]; // 数字のスプライト(0-9まで)
+    [SerializeField] public Sprite[] numberSprites = new Sprite[10]; // 数字のスプライト(0-9まで)
     [SerializeField] private Sprite[] alphabetSprites = new Sprite[5]; // アルファベットのスプライト(A-Zまでを添字0-4に対応)
     public int[] otherCardNumber;
 
