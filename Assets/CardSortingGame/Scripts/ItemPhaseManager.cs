@@ -264,8 +264,15 @@ public class ItemPhaseManager : MonoBehaviour
         // Toggleのリスナーを追加し、色を変更
         toggle.onValueChanged.AddListener((isOn) =>
         {
-            backgroundImage.color = isOn ? toggleOnColor : toggleOffColor;
-            OnToggleValueChanged(isOn, itemIdx, toggleObj);
+            if(!(itemIdx == 2 - 1 && selectedItems.Contains(5 - 1) || itemIdx == 5 - 1 && selectedItems.Contains(2 - 1)))
+            {
+                backgroundImage.color = isOn ? toggleOnColor : toggleOffColor;
+                OnToggleValueChanged(isOn, itemIdx, toggleObj);
+            }
+            else
+            {
+                toggle.isOn = false;
+            }
         });
 
         // Toggleをリストに追加
