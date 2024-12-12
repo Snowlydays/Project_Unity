@@ -78,7 +78,7 @@ namespace CardSortingGame.Scripts
             Image nextImage = nextButton.GetComponent<Image>();
             tutorialPageImage.sprite = tutorialSprites[currentShowTutorialNumber];
             prevImage.sprite = (currentShowTutorialNumber <= 0 ? prevDisabledSprite : prevEnabledSprite);
-            nextImage.sprite = (currentShowTutorialNumber >= TutorialPageSize ? nextDisabledSprite : nextEnabledSprite);
+            nextImage.sprite = (currentShowTutorialNumber >= TutorialPageSize-1 ? nextDisabledSprite : nextEnabledSprite);
 
             foreach (Transform obj in tutorialPageObjects) obj.gameObject.SetActive(false);
             tutorialPageObjects[currentShowTutorialNumber].gameObject.SetActive(true);

@@ -128,7 +128,7 @@ public class NetworkSystem : NetworkBehaviour
         netIsClientWaiting?.Dispose();
         netCardNum?.Dispose();
     }
-
+    
     public override void OnNetworkSpawn()
     {
         Debug.Log("OnNetworkSpawn");

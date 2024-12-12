@@ -45,6 +45,16 @@ public class ItemPhaseManager : MonoBehaviour
 
     public int currentItemIdx;
 
+    private Dictionary<int,string> itemDescriptionDict = new Dictionary<int, string>()
+    {
+        {1,"1枚選択し大小を選ぶ。比較し間違っていたら並び替える。これを繰り返す"},
+        {2,"次比較するカードの差がわかる"},
+        {3,"相手の使ったアイテムの効果を奪う"},
+        {4,"相手は質問することができない"},
+        {5,"次の質問でカードを3つ比較する"},
+        {6,"1枚選択し数字を指定する。それより大きいか、小さいかが知れる"}
+    };
+        
     void Awake()
     {
         networkSystem = FindObjectOfType<NetworkSystem>();
@@ -87,7 +97,6 @@ public class ItemPhaseManager : MonoBehaviour
     }
 
     // 表示するアイテムを更新するメソッド
-// 表示するアイテムを更新するメソッド
     private void UpdateInventory(bool[] items, Transform panel)
     {
         // すべてのスロットをクリア
@@ -138,18 +147,25 @@ public class ItemPhaseManager : MonoBehaviour
         }
     }
 
+    private Dictionary<int, GameObject> activePopups = new Dictionary<int, GameObject>();
     private void ShowItemDescription(GameObject item, int itemIdx)
     {
-        Image itemDescription = itemDescriptionPanel.GetComponent<Image>();
-        if (itemDescription.sprite == itemDescriptions[itemIdx])
+        if (activePopups.ContainsKey(itemIdx))
         {
-            itemDescription.sprite = null;
-            itemDescription.color = new Color(0f, 0f, 0f, 0f);
+            Destroy(activePopups[itemIdx]);
+            activePopups.Remove(itemIdx);
         }
         else
         {
-            itemDescription.sprite = itemDescriptions[itemIdx];
-            itemDescription.color = new Color(1f, 1f, 1f, 1f);
+            GameObject popup = Instantiate(itemDescriptionPopupPrefab, itemDescriptionPanel.transform);
+            TMP_Text itemNameText = popup.transform.Find("ItemNameText").GetComponent<TMP_Text>();
+            TMP_Text itemDescText = popup.transform.Find("ItemDescriptionText").GetComponent<TMP_Text>();
+            Image iconImage = popup.transform.Find("icon").GetComponent<Image>();
+            itemNameText.text = ItemUsingManager.itemNameDict[itemIdx+1];
+            itemDescText.text = itemDescriptionDict[itemIdx + 1];
+            iconImage.sprite = itemIcons[itemIdx];
+        
+            activePopups.Add(itemIdx, popup);
         }
     }
 
@@ -260,9 +276,11 @@ public class ItemPhaseManager : MonoBehaviour
         if (longPressHandler != null)
         {
             longPressHandler.Initialize(
-                itemDescriptions[itemIdx],
+                itemDescriptionDict[itemIdx+1],
                 itemDescriptionPopupPrefab,
-                popupParentTransform
+                popupParentTransform,
+                itemIcons[itemIdx],
+                ItemUsingManager.itemNameDict[itemIdx+1]
             );
         }
     }

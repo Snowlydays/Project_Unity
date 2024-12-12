@@ -3,12 +3,15 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 
 public class ItemLongPressHandler : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
 {
     public float longPressThreshold = 0.5f; // 長押しとみなす時間（秒）
 
-    public Sprite itemDescriptionImage; // アイテムの説明画像
+    private Sprite itemIcon;
+    public string itemName; // アイテムの名前
+    public string itemDescription; // アイテムの説明
     public GameObject descriptionPopupPrefab; // 説明ポップアップのプレハブ
 
     private bool isPressed = false;
@@ -24,11 +27,13 @@ public class ItemLongPressHandler : MonoBehaviour, IPointerDownHandler, IPointer
 
     private Toggle toggle;
     
-    public void Initialize(Sprite descriptionImg, GameObject popupPrefab, Transform popupParent)
+    public void Initialize(string description, GameObject popupPrefab, Transform popupParent, Sprite icon, string iName)
     {
-        itemDescriptionImage = descriptionImg;
+        itemDescription = description;
         descriptionPopupPrefab = popupPrefab;
         popupParentTransform = popupParent;
+        itemIcon = icon;
+        itemName = iName;
     }
 
     public bool HasLongPressed
@@ -115,7 +120,7 @@ public class ItemLongPressHandler : MonoBehaviour, IPointerDownHandler, IPointer
 
     private void ShowDescriptionPopup()
     {
-        if (descriptionPopupPrefab != null && itemDescriptionImage != null && popupParentTransform != null)
+        if (descriptionPopupPrefab != null && itemDescription != null && popupParentTransform != null)
         {
             activePopup = Instantiate(descriptionPopupPrefab, popupParentTransform);
 
@@ -137,13 +142,14 @@ public class ItemLongPressHandler : MonoBehaviour, IPointerDownHandler, IPointer
 
             popupRect.anchoredPosition = localPoint + offset;
 
-            // 説明画像を設定
-            Image descImage = activePopup.GetComponentInChildren<Image>();
-            if (descImage != null)
-            {
-                descImage.sprite = itemDescriptionImage;
-                descImage.SetNativeSize();
-            }
+            // アイテムの説明を設定
+            TMP_Text itemNameText = activePopup.transform.Find("ItemNameText").GetComponent<TMP_Text>();
+            itemNameText.text = itemName;
+            TMP_Text itemDescText = activePopup.transform.Find("ItemDescriptionText").GetComponent<TMP_Text>();
+            itemDescText.text = itemDescription;
+            
+            Image iconImage = activePopup.transform.Find("icon").GetComponent<Image>();
+            if (iconImage != null) iconImage.sprite = itemIcon;
 
             activePopup.transform.SetAsLastSibling();
             currentActivePopup = activePopup;
