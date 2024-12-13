@@ -2905,6 +2905,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: e57e417985eb84505bbc7986b8763957, type: 3}
   - {fileID: 21300000, guid: 30998fd91b3044c3cbdcda3caa7fd447, type: 3}
   - {fileID: 21300000, guid: 92689472c318c4a1d866ccfcd5efbefd, type: 3}
+  - {fileID: 21300000, guid: 353d2982f5d28489ab6d18f1b15de9dd, type: 3}
+  - {fileID: 21300000, guid: f7c259e7f7f0e46228854910a9784473, type: 3}
   otherCardNumber: 0000000000000000000000000000000000000000
   cardWidth: 85
   cardSpacing: 12.5
