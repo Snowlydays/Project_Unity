@@ -745,7 +745,6 @@ RectTransform:
   - {fileID: 1424685617}
   - {fileID: 1201018010}
   - {fileID: 143394722}
-  - {fileID: 208818471}
   - {fileID: 1647248430}
   - {fileID: 3462718540611381655}
   - {fileID: 2083373796}
@@ -1528,12 +1527,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 208818470}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.14, y: 0.14, z: 0.14}
+  m_LocalScale: {x: 0.14000002, y: 0.14000002, z: 0.14000002}
   m_ConstrainProportionsScale: 1
   m_Children: []
-  m_Father: {fileID: 51677879}
+  m_Father: {fileID: 1041679616}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2905,6 +2904,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: e57e417985eb84505bbc7986b8763957, type: 3}
   - {fileID: 21300000, guid: 30998fd91b3044c3cbdcda3caa7fd447, type: 3}
   - {fileID: 21300000, guid: 92689472c318c4a1d866ccfcd5efbefd, type: 3}
+  - {fileID: 21300000, guid: 353d2982f5d28489ab6d18f1b15de9dd, type: 3}
+  - {fileID: 21300000, guid: f7c259e7f7f0e46228854910a9784473, type: 3}
   otherCardNumber: 0000000000000000000000000000000000000000
   cardWidth: 85
   cardSpacing: 12.5
@@ -4684,6 +4685,7 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 208818471}
   - {fileID: 1257080612}
   - {fileID: 540954532}
   - {fileID: 1397842340}

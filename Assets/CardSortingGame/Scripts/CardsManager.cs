@@ -20,7 +20,7 @@ public class CardsManager : MonoBehaviour
     private float selectionOffset = 30f; // 選択時の移動量
     private Dictionary<GameObject, Vector3> originalCardPositions = new Dictionary<GameObject, Vector3>(); // 選択されたカードとその元の位置を保持するディクショナリ
     public Dictionary<int, int> cardAlphabet = new Dictionary<int, int>(); //カードの番号とアルファベットの対応
-    public static string[] intToAlph = {"A", "B", "C", "D", "E"};
+    public static string[] intToAlph = {"A", "B", "C", "D", "E", "F", "G"};
 
     void Start()
     {

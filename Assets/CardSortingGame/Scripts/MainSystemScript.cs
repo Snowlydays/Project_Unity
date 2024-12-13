@@ -37,7 +37,7 @@ public class MainSystemScript : MonoBehaviour
     public GameObject SoundObject;
     
     [SerializeField] public Sprite[] numberSprites = new Sprite[10]; // 数字のスプライト(0-9まで)
-    [SerializeField] private Sprite[] alphabetSprites = new Sprite[5]; // アルファベットのスプライト(A-Zまでを添字0-4に対応)
+    [SerializeField] private Sprite[] alphabetSprites = new Sprite[CardNumManager.MaxCardNum]; // アルファベットのスプライト(A-Zまでを添字0-4に対応)
     public int[] otherCardNumber;
 
     public GameObject[] GetMyCards()
