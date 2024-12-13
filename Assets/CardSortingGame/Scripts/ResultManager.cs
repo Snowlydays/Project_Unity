@@ -39,8 +39,7 @@ public class ResultManager : MonoBehaviour
         if (scenename == "LoseScene") cardPanel = GameObject.Find("LoseCardPanel").transform;
         if (scenename == "DrawScene") cardPanel = GameObject.Find("DrawCardPanel").transform;
         
-        if(cardPanel == null)Debug.Log("cardpanel = null");
-        AdjustPanel(cardPanel.GetComponent<RectTransform>(),85,10,10,10);
+        AdjustPanel(cardPanel.GetComponent<RectTransform>(),85,12.5f,10,10);
         for (int i = 0; i < NetworkSystem.cardNum; i++)
         {
             GameObject card = Instantiate(CardPrefab, cardPanel);
