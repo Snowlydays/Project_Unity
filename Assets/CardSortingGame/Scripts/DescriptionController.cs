@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,6 +24,8 @@ namespace CardSortingGame.Scripts
 
         private void Awake()
         {
+            ResetDescriptionPage();
+            descriptionPage.gameObject.SetActive(false);
             prevButton.onClick.AddListener(OnPrevButtonClicked);
             nextButton.onClick.AddListener(OnNextButtonClicked);
             showDescriptionButton.onClick.AddListener(OnShowDescriptionButtonClicked);
