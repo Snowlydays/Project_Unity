@@ -6,7 +6,7 @@ namespace CardSortingGame.Scripts
 {
     public class DescriptionController : MonoBehaviour
     {
-        private const int DescriptionPageSize = 4;
+        private const int DescriptionPageSize = 5;
         private int curPage = 0;
 
         [SerializeField] private Transform descriptionPage;
