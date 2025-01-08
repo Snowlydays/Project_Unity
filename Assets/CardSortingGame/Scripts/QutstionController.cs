@@ -199,6 +199,11 @@ public class QutstionController : MonoBehaviour
         isAttacking = !isAttacking;
         networkSystem.ToggleAttacked();
 
+        if(networkSystem.tutorialManager.tutorialPhase<4 & networkSystem.tutorialManager.nowTutorialViewing){
+            networkSystem.tutorialManager.ChangeTutorialPhase(networkSystem.tutorialManager.tutorialPhase+1);
+            networkSystem.tutorialManager.ShowTutorial();
+        }
+
         // 背面の変更
         if (isAttacking)
         {
@@ -213,6 +218,8 @@ public class QutstionController : MonoBehaviour
             instruction.gameObject.SetActive(false);
             myCardPanel.gameObject.SetActive(true); // 交換用パネルを表示させる
             cardPanel.gameObject.SetActive(false); // 比較用パネルを非表示にする
+
+            if(!networkSystem.tutorialManager.nowTutorialViewing)networkSystem.tutorialManager.ChangeTutorialPhase(3);
         }
         else
         {
@@ -226,6 +233,8 @@ public class QutstionController : MonoBehaviour
             instruction.gameObject.SetActive(true);
             myCardPanel.gameObject.SetActive(false); // 交換用パネルを非表示にする
             cardPanel.gameObject.SetActive(true); // 比較用パネルを表示させる
+
+            if(!networkSystem.tutorialManager.nowTutorialViewing)networkSystem.tutorialManager.ChangeTutorialPhase(2);
         }
         
         // ガイドの変更
@@ -325,6 +334,7 @@ public class QutstionController : MonoBehaviour
             }
             // 比較後に選択状態をリセット
             GameObject soundobj=Instantiate(SoundObject);
+            networkSystem.tutorialManager.ChangeTutorialPhase(5);
             soundobj.GetComponent<PlaySound>().PlaySE(confirmSound);
             foreach (GameObject card in selectedCards)
             {

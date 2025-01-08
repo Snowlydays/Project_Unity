@@ -79,6 +79,7 @@ public class NetworkSystem : NetworkBehaviour
     public ItemWindowManager itemWindowManager;
     public TimerController timerController;
     public ItemMenuController itemMenuController;
+    public TutorialManager tutorialManager;
 
     public Sprite attackSprite;
     
@@ -172,6 +173,7 @@ public class NetworkSystem : NetworkBehaviour
         itemWindowManager = FindObjectOfType<ItemWindowManager>();
         timerController = FindObjectOfType<TimerController>();
         itemMenuController = FindObjectOfType<ItemMenuController>();
+        tutorialManager = FindObjectOfType<TutorialManager>();
 
         NetworkManager.Singleton.OnClientDisconnectCallback += DisconnectGame;
         
@@ -283,7 +285,7 @@ public class NetworkSystem : NetworkBehaviour
     private void DisconnectGame(ulong clientId){
         //相手が強制終了した等正当な手続きなく切断された時に自分を引き分け画面に移行させる
         //それ以外の場合では実行されない
-        if(!toEndGame)SceneManager.LoadScene("Scenes/ResultsScenes/DrawScene");
+        //if(!toEndGame)SceneManager.LoadScene("Scenes/ResultsScenes/DrawScene");
     }
 
     private void OnNetHostCardChanged(NetworkListEvent<int> changeEvent)
@@ -534,6 +536,7 @@ public class NetworkSystem : NetworkBehaviour
     private void HostAscendingCheckEndClientRpc(){
         toEndGame=false;
         timerController.StartDrawBar();
+        tutorialManager.ShowTutorial();
     }
 
     IEnumerator HandleAttackActionIEnumerator(bool hostAttacked, bool clientAttacked)
