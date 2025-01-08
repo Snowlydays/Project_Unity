@@ -218,6 +218,10 @@ public class ItemPhaseManager : MonoBehaviour
         {
             // 未所有のアイテムリストからランダムに選び、プレイヤーへ配る
             int randomIdx = UnityEngine.Random.Range(0, unownedItems.Count);
+            if(networkSystem.tutorialManager.nowTutorialViewing){
+                //チュートリアル中は辻褄合わせのため、3枚比較アイテムと詠唱不可アイテムを出さない
+                while(unownedItems[randomIdx]==3 || unownedItems[randomIdx]==4)randomIdx = UnityEngine.Random.Range(0, unownedItems.Count);
+            }
             int distributedItemIdx = unownedItems[randomIdx];
             currentItemIdx = distributedItemIdx;
             networkSystem.ChangeItems(distributedItemIdx, true);

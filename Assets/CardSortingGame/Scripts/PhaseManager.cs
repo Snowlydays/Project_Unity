@@ -68,6 +68,11 @@ public class PhaseManager : MonoBehaviour
                 //networkSystem.mainSystemScript.readyButton.gameObject.GetComponent<Animator>().SetBool("blStarted", false);
                 AttackAction();
                 networkSystem.itemWindowManager.DisappearWindow();
+                if(!networkSystem.tutorialManager.nowTutorialViewing){
+                    networkSystem.tutorialManager.ChangeTutorialPhase(0);
+                }else{
+                    networkSystem.tutorialManager.ChangeTutorialPhase(5);
+                }
                 break;
 
             case ItemPhase:
@@ -75,11 +80,15 @@ public class PhaseManager : MonoBehaviour
                 networkSystem.itemPhaseManager.StartItemPhase();
                 networkSystem.animationController.CreatePhaseLogo(itemSprite);
                 //networkSystem.mainSystemScript.readyButton.gameObject.GetComponent<Animator>().SetBool("blStarted", true);
+                networkSystem.tutorialManager.ChangeTutorialPhase(1);
+                networkSystem.tutorialManager.ShowTutorial();
                 break;
 
             case QuestionPhase:
                 networkSystem.questionController.StartQuestionPhase();
                 networkSystem.animationController.CreatePhaseLogo(questionSprite);
+                networkSystem.tutorialManager.ChangeTutorialPhase(2);
+                networkSystem.tutorialManager.ShowTutorial();
                 break;
 
             case ItemUsingPhase:
@@ -102,6 +111,7 @@ public class PhaseManager : MonoBehaviour
             networkSystem.ToggleAttackedReset();
         }else{
             networkSystem.timerController.StartDrawBar();
+            networkSystem.tutorialManager.ShowTutorial();
         }
     }
 
